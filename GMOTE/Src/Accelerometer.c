@@ -1,0 +1,137 @@
+#include "Accelerometer.h"
+#include <stdio.h>
+
+#define CS_HIGH() HAL_GPIO_WritePin(GPIOE, GPIO_PIN_3, GPIO_PIN_SET);
+#define CS_LOW()  HAL_GPIO_WritePin(GPIOE, GPIO_PIN_3, GPIO_PIN_RESET);
+
+/***************************************/
+#define W_BUFF writeStrInc
+#define BUFFSIZE (7)
+
+uint8_t writeStrInc[] = { ACCEL_OUT_XL | 0x80, 0, 0, 0, 0, 0, 0};
+/***************************************/
+
+extern SPI_HandleTypeDef hspi1;
+
+void accelConfig(void);
+void read_sample(uint8_t* buff);
+uint8_t accel_multiRead(uint8_t addr);
+uint8_t accel_read(uint8_t addr);
+void accel_write(uint8_t addr, uint8_t wat);
+
+inline void start_accel(int speed)
+{
+	volatile int tempSpeed = speed;
+	
+	tempSpeed = tempSpeed >> 4;
+	
+	if((tempSpeed < 1) || (tempSpeed > 9)){
+		error("Accel invalid frequency", 1);
+		return;
+	}
+	
+	accel_write(ACCEL_CTRL_REG4, speed | EN_ALL_AX | 0x08); //with BDU
+}
+
+inline void pause_accel(void)
+{
+	accel_write(ACCEL_CTRL_REG4, HZ_0);
+}
+
+void accelInit(void)
+{
+	int ret = 0;
+
+	accel_write(ACCEL_CTRL_REG6, 0x80);		// reboot
+	HAL_Delay(100);
+	
+	accel_write(ACCEL_CTRL_REG5, 0xC0);		// Anti aliasing filter bandwidth 50Hz, +/-2G, self-test, 4-wire interface
+	accel_write(ACCEL_CTRL_REG6, 0x10);		// ADD_INC
+	accel_write(ACCEL_CTRL_REG3, 0xE8);   // DRDY, interrupt active high, interrupt pulsed, Enable IT	
+	
+	ret = accel_read(ACCEL_CTRL_REG5);
+	if(ret != 0xC0)
+		goto ERROR;
+	
+	ret = accel_read(ACCEL_CTRL_REG6);
+	if(ret != 0x10)
+		goto ERROR;
+	
+	ret = accel_read(ACCEL_CTRL_REG3);
+	if(ret != 0xE8)
+		goto ERROR;
+	
+	ret = accel_read(ACCEL_WHO_AM_I);
+	if(ret != 0x3F)
+		goto ERROR;
+	
+	return;
+	
+ERROR:
+	error("Accel configuration failure", 3);
+}
+
+void read_sample(uint8_t* buff)
+{
+	int i = 0;
+	uint8_t ret = 0;
+	
+	CS_LOW();
+	for(i = 0; i < 7; i++)
+	{
+		ret = accel_multiRead(W_BUFF[i]);
+
+		if(i > 0)
+				*(buff + (i-1)) = ret;
+	}
+	CS_HIGH();
+}
+
+uint8_t accel_read(uint8_t addr)
+{
+	uint8_t c = 0;
+	addr |= 0x80;
+	
+	CS_LOW();
+	
+	if(HAL_SPI_Transmit(&hspi1, &addr, 1, 1000) != HAL_OK)
+		goto ERROR;
+	if(HAL_SPI_Receive(&hspi1, &c, 1, 1000) != HAL_OK)
+		goto ERROR;
+			
+	CS_HIGH();
+	
+	return c;
+		
+ERROR:
+	CS_HIGH();
+	error("Accel comunication failure: reading", 2);
+	return 0xFF;
+}
+
+void accel_write(uint8_t addr, uint8_t wat)
+{	
+	CS_LOW();
+	if(HAL_SPI_Transmit(&hspi1, (uint8_t*)&addr, 1, 100) != HAL_OK)
+		goto ERROR;
+	if(HAL_SPI_Transmit(&hspi1, (uint8_t*)&wat,  1, 100) != HAL_OK)
+		goto ERROR;
+	CS_HIGH();
+	
+	return;
+ERROR:
+	error("Accel comunication failure: writing", 2);
+}
+
+uint8_t accel_multiRead(uint8_t addr)
+{
+	uint8_t c = 0;	
+	addr |= 0x80; //read
+	
+	if(HAL_SPI_TransmitReceive(&hspi1, &addr, &c, 1, 1000) != HAL_OK){
+		CS_HIGH();
+		error("Accel comunication failure: multiple-read", 2);
+	}		
+
+	return c;
+}
