@@ -62,8 +62,8 @@ void gPress(void)
 			/* we received a frame */
 			else{
 				nFrames++;
-				//printFrame(eventAccel.value.p, nFrames == 0);
-				printf("Frame Received!\n");
+				printFrame(eventAccel.value.p, nFrames == 0);
+				//printf("Frame Received!\n");
 			}
 		}
 	}
@@ -107,7 +107,7 @@ void printFrame(int16_t** buff, int firstFrame)
 	
 	for(; i < (FRAME_SIZE + FRAME_OVERLAP); i++)
 	{
-		nrfPrint("%+06hd, %+06hd, %+06hd;\n", buff[0][i], 
+		printf("%+06hd, %+06hd, %+06hd;\n", buff[0][i], 
 																			  buff[1][i], 
 																			  buff[2][i]);
 	}

@@ -40,16 +40,16 @@ inline void pause_accel(void)
 
 #define _FIFO_MODE
 #ifdef _FIFO_MODE
-	#define REG3_CONFIG      0x60  				 // Interrupt active high, interrupt pulsed, Enable IT	
+	#define REG3_CONFIG      0x68  				 // Interrupt active high, interrupt pulsed, Enable IT	
 	#define REG5_CONFIG 		 0xC0  				 // Anti aliasing filter bandwidth 50Hz, +/-2G, self-test, 4-wire interface
-	#define REG6_CONFIG      0x74				 	 // fifo enabled, Watermark enabled, ADD_INC, watermark interrupt
-	#define FIFO_CTRL_CONFIG (0x20 | 0x18) //FIFO mode, watermark on 24th sample
+	#define REG6_CONFIG      0x54				 	 // fifo enabled, ADD_INC, watermark interrupt
+	#define FIFO_CTRL_CONFIG (0x40 | 0x18) //FIFO stream mode, watermark on 24th sample
 #endif
 #ifdef _DATA_READY
 	#define REG3_CONFIG      0xE8  				 // DRDY IT, Interrupt active high, interrupt pulsed, Enable IT	
 	#define REG5_CONFIG 		 0xC0  				 // Anti aliasing filter bandwidth 50Hz, +/-2G, self-test, 4-wire interface
-	#define REG6_CONFIG      0x10				 	// ADD_INC
-	#define FIFO_CTRL_CONFIG (0) //FIFO disabled 
+	#define REG6_CONFIG      0x10				 	 // ADD_INC
+	#define FIFO_CTRL_CONFIG (0) 					 //FIFO disabled 
 #endif
 	
 
@@ -58,12 +58,13 @@ void accelInit(void)
 	volatile int ret = 0;
 
 	accel_write(ACCEL_CTRL_REG6, 0x80);		// reboot
-	HAL_Delay(100);
+	HAL_Delay(10);
 	
 	accel_write(ACCEL_CTRL_REG5, REG5_CONFIG);					
 	accel_write(ACCEL_CTRL_REG6, REG6_CONFIG);				 
-	accel_write(ACCEL_CTRL_REG3, REG3_CONFIG);   		 
-	accel_write(ACCEL_FIFO_CTRL, FIFO_CTRL_CONFIG); 
+	accel_write(ACCEL_CTRL_REG3, REG3_CONFIG);   
+	accel_write(ACCEL_FIFO_CTRL, 0x18); // watermark 24th sample, bypass mode to reset FIFO	
+	accel_write(ACCEL_FIFO_CTRL, FIFO_CTRL_CONFIG);
 	
 	
 	ret = accel_read(ACCEL_CTRL_REG5);
