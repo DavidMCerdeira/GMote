@@ -78,7 +78,6 @@ void StartDefaultTask(void const * argument);
 
 int main(void)
 {
-
   /* USER CODE BEGIN 1 */
 	// don't forget to turn off external interrupt 0 at first
   /* USER CODE END 1 */
@@ -101,9 +100,7 @@ int main(void)
 
   /* USER CODE BEGIN 2 */
 	ORANGE(1);
-	nrf24l01_Init();
-	
-	nrfPrint("LOL\n");
+	//nrf24l01_Init();
 
 	//gyroTest();
   /* USER CODE END 2 */

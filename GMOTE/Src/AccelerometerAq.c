@@ -18,6 +18,7 @@ void runAccelGest(void const * argument)
 	int16_t* ptr[3];
 	volatile osEvent event;
 	int16_t sample[3];
+	uint32_t i = 0;
 	
 	/* infinite cycle */
 	while(1)
@@ -36,25 +37,28 @@ void runAccelGest(void const * argument)
 			/* wait for accelerometer data */
 			osSemaphoreWait(drdySemaph, osWaitForever);
 			
-			/* read sample */
-			read_sample((uint8_t*)(&sample));
-			/* put sample in buffer */
-			aq.samples[0][aq.end] = sample[0];
-			aq.samples[1][aq.end] = sample[1];
-			aq.samples[2][aq.end] = sample[2];
+			/* read 20 samples */
+			for(i = 0; i < 20; i++){
+				read_sample((uint8_t*)(&sample));
+				/* put sample in buffer */
+				aq.samples[0][aq.end] = sample[0];
+				aq.samples[1][aq.end] = sample[1];
+				aq.samples[2][aq.end] = sample[2];
+					
 			
-			/* reached end of frame? */
-			if((++frameCount) >= FRAME_SIZE)
-			{
-				/* reset frame counter */
-				frameCount = 0;
-				/* get next frame if available */
-				if(get_nextFram1(ptr) != -1)
-					/* send frame */
-					osMessagePut(accelFrameReadyMsgQ, (uint32_t)ptr, 10);
+				/* reached end of frame? */
+				if((++frameCount) >= FRAME_SIZE)
+				{
+					/* reset frame counter */
+					frameCount = 0;
+					/* get next frame if available */
+					if(get_nextFram1(ptr) != -1)
+						/* send frame */
+						osMessagePut(accelFrameReadyMsgQ, (uint32_t)ptr, 10);
+				}
+				/* prepare for next sample */
+				aq.end++;	
 			}
-			/* prepare for next sample */
-			aq.end++;
 		}
 		
 		/* send NULL pointer indicating end of aquisition */

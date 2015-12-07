@@ -38,27 +38,38 @@ inline void pause_accel(void)
 	accel_write(ACCEL_CTRL_REG4, HZ_0);
 }
 
+#define REG3_CONFIG      0x28  				 // Interrupt active high, interrupt pulsed, Enable IT	
+#define REG5_CONFIG 		 0xC0  				 // Anti aliasing filter bandwidth 50Hz, +/-2G, self-test, 4-wire interface
+#define REG6_CONFIG      0x74				 // Watermark enabled, ADD_INC, interrupt watermark interrupt
+#define FIFO_CTRL_CONFIG (0x20 | 0x18) //FIFO mode, watermark on 20th sample
+
 void accelInit(void)
 {
-	int ret = 0;
+	volatile int ret = 0;
 
 	accel_write(ACCEL_CTRL_REG6, 0x80);		// reboot
 	HAL_Delay(100);
 	
-	accel_write(ACCEL_CTRL_REG5, 0xC0);		// Anti aliasing filter bandwidth 50Hz, +/-2G, self-test, 4-wire interface
-	accel_write(ACCEL_CTRL_REG6, 0x10);		// ADD_INC
-	accel_write(ACCEL_CTRL_REG3, 0xE8);   // DRDY, interrupt active high, interrupt pulsed, Enable IT	
+	accel_write(ACCEL_CTRL_REG5, REG5_CONFIG);					
+	accel_write(ACCEL_CTRL_REG6, REG6_CONFIG);				 
+	accel_write(ACCEL_CTRL_REG3, REG3_CONFIG);   		 
+	accel_write(ACCEL_FIFO_CTRL, FIFO_CTRL_CONFIG); 
+	
 	
 	ret = accel_read(ACCEL_CTRL_REG5);
-	if(ret != 0xC0)
+	if(ret != REG5_CONFIG)
 		goto ERROR;
 	
 	ret = accel_read(ACCEL_CTRL_REG6);
-	if(ret != 0x10)
+	if(ret != REG6_CONFIG)
 		goto ERROR;
 	
 	ret = accel_read(ACCEL_CTRL_REG3);
-	if(ret != 0xE8)
+	if(ret != REG3_CONFIG)
+		goto ERROR;
+	
+	ret = accel_read(ACCEL_FIFO_CTRL);
+	if(ret != FIFO_CTRL_CONFIG)
 		goto ERROR;
 	
 	ret = accel_read(ACCEL_WHO_AM_I);

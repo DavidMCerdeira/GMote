@@ -23,6 +23,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t pin)
 			osSignalSet(aqManagerId, GStop);		
 		}
 	}
-	if(pin == GPIO_PIN_0)
+	if(pin == GPIO_PIN_0){
 		osSemaphoreRelease(drdySemaph);
+	}
 }
