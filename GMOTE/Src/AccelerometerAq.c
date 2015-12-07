@@ -28,7 +28,7 @@ void runAccelGest(void const * argument)
 		start_accel(HZ_100);
 		
 		/* continue sampling until condition */
-		while((sampleCount++ < AQ_SIZE)){
+		while((sampleCount < AQ_SIZE)){
 			/* stop listening? */
 			event = osSignalWait(STOP, 0);
 			if((event.status == osEventSignal) && (event.value.signals & STOP))
@@ -37,8 +37,8 @@ void runAccelGest(void const * argument)
 			/* wait for accelerometer data */
 			osSemaphoreWait(drdySemaph, osWaitForever);
 			
-			/* read 20 samples */
-			for(i = 0; i < 20; i++){
+			/* read 24 samples */
+			for(i = 0; i < 24; i++, sampleCount++){
 				read_sample((uint8_t*)(&sample));
 				/* put sample in buffer */
 				aq.samples[0][aq.end] = sample[0];

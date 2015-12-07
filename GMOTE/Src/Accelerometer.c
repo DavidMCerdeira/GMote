@@ -38,10 +38,20 @@ inline void pause_accel(void)
 	accel_write(ACCEL_CTRL_REG4, HZ_0);
 }
 
-#define REG3_CONFIG      0x28  				 // Interrupt active high, interrupt pulsed, Enable IT	
-#define REG5_CONFIG 		 0xC0  				 // Anti aliasing filter bandwidth 50Hz, +/-2G, self-test, 4-wire interface
-#define REG6_CONFIG      0x74				 // Watermark enabled, ADD_INC, interrupt watermark interrupt
-#define FIFO_CTRL_CONFIG (0x20 | 0x18) //FIFO mode, watermark on 20th sample
+#define _FIFO_MODE
+#ifdef _FIFO_MODE
+	#define REG3_CONFIG      0x60  				 // Interrupt active high, interrupt pulsed, Enable IT	
+	#define REG5_CONFIG 		 0xC0  				 // Anti aliasing filter bandwidth 50Hz, +/-2G, self-test, 4-wire interface
+	#define REG6_CONFIG      0x74				 	 // fifo enabled, Watermark enabled, ADD_INC, watermark interrupt
+	#define FIFO_CTRL_CONFIG (0x20 | 0x18) //FIFO mode, watermark on 24th sample
+#endif
+#ifdef _DATA_READY
+	#define REG3_CONFIG      0xE8  				 // DRDY IT, Interrupt active high, interrupt pulsed, Enable IT	
+	#define REG5_CONFIG 		 0xC0  				 // Anti aliasing filter bandwidth 50Hz, +/-2G, self-test, 4-wire interface
+	#define REG6_CONFIG      0x10				 	// ADD_INC
+	#define FIFO_CTRL_CONFIG (0) //FIFO disabled 
+#endif
+	
 
 void accelInit(void)
 {

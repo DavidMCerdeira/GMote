@@ -62,8 +62,8 @@ void gPress(void)
 			/* we received a frame */
 			else{
 				nFrames++;
-				printFrame(eventAccel.value.p, nFrames == 0);
-				//nrfPrint("Frame Received!\n");
+				//printFrame(eventAccel.value.p, nFrames == 0);
+				printf("Frame Received!\n");
 			}
 		}
 	}
