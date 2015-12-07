@@ -63,7 +63,7 @@ void runAccelGest(void* argument)
 		}
 		
 		/* send NULL pointer indicating end of aquisition */
-		xQueueSend(accelFrameReadyMsgQ, (void*)ptr, 10);
+		xQueueSend(accelFrameReadyMsgQ, NULL, 10);
 	EXIT:		
 		pause_accel();
 		sampleCount = 0;

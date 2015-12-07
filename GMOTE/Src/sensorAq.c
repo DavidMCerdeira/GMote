@@ -38,10 +38,8 @@ void aqManager(void* argument)
 
 void gPress(void)
 {
-	volatile osEvent eventAccel;
-	volatile osEvent eventUser;
 	static int nFrames = 0;
-	int16_t** buff;
+	uint16_t **buff;
 	BaseType_t msgQRcvd = pdFALSE;
 	BaseType_t notifRcvd = pdFALSE;
 	uint32_t notification;
@@ -52,7 +50,7 @@ void gPress(void)
 
 	while(1){
 		/* wait for frame */
-		msgQRcvd = xQueueReceive(accelFrameReadyMsgQ, (void*)&buff, portMAX_DELAY);
+		msgQRcvd = xQueueReceive(accelFrameReadyMsgQ, buff, portMAX_DELAY);
 		/* check if user released button */
 		notifRcvd = xTaskNotifyWait(GStop, 0, &notification, 0);
 		
@@ -73,7 +71,7 @@ void gPress(void)
 			else{
 				/* deal with it */
 				nFrames++;
-				printFrame(buff, nFrames == 0);
+				printFrame((int16_t**)buff, nFrames == 0);
 				//printf("Frame Received!\n");
 			}
 		}

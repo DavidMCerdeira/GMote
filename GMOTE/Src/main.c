@@ -120,7 +120,7 @@ int main(void)
 	/* changing */
 
   /* USER CODE BEGIN RTOS_THREADS */
-	xTaskCreate(aqManager, "AqManager", 128, NULL, 1, &aqManagerHandle);
+	xTaskCreate(aqManager, "AqManager", 512, NULL, 1, &aqManagerHandle);
   /* USER CODE END RTOS_THREADS */
 
   /* USER CODE BEGIN RTOS_QUEUES */
