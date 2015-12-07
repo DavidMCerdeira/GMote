@@ -4,4 +4,4 @@
 #include "sensors.h"
 #include "nrf24l01.h"
 
-void aqManager(void const * argument);
+void aqManager(void* argument);

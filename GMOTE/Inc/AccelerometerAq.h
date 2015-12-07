@@ -16,7 +16,7 @@ struct aquisitn
 	int16_t samples[3][200];
 }aquisitn;
 
-void runAccelGest(void const * argument);
+void runAccelGest(void* argument);
 void initAccelAq(void);
 
 #endif

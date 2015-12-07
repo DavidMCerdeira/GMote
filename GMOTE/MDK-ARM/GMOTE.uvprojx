@@ -638,6 +638,11 @@
               <FileType>1</FileType>
               <FilePath>..\Middlewares\Third_Party\FreeRTOS\Source\list.c</FilePath>
             </File>
+            <File>
+              <FileName>freertos.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\freertos.c</FilePath>
+            </File>
           </Files>
         </Group>
       </Groups>

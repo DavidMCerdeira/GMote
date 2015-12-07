@@ -51,6 +51,7 @@ inline void pause_accel(void)
 	#define REG6_CONFIG      0x10				 	 // ADD_INC
 	#define FIFO_CTRL_CONFIG (0) 					 // FIFO disabled 
 #endif
+
 	
 
 void accelInit(void)

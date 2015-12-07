@@ -3,7 +3,7 @@
 aquisitn aq;
 
 volatile int interruptEn = 0;
-osSemaphoreId drdySemaph;
+SemaphoreHandle_t  drdySemaph;
 extern volatile osMessageQId accelFrameReadyMsgQ;
 int firstTime = 1;
 
@@ -11,7 +11,7 @@ void printBuffer(void);
 void initBuffer1(void);
 int get_nextFram1(int16_t** buff);
 
-void runAccelGest(void const * argument)
+void runAccelGest(void* argument)
 {
 	volatile int sampleCount = 0;
 	volatile int frameCount = 0;
@@ -19,6 +19,8 @@ void runAccelGest(void const * argument)
 	volatile osEvent event;
 	int16_t sample[3];
 	uint32_t i = 0;
+	BaseType_t notifRcvd = pdFALSE;
+	uint32_t notification;
 	
 	/* infinite cycle */
 	while(1)
@@ -30,12 +32,12 @@ void runAccelGest(void const * argument)
 		/* continue sampling until condition */
 		while((sampleCount < AQ_SIZE)){
 			/* stop listening? */
-			event = osSignalWait(STOP, 0);
-			if((event.status == osEventSignal) && (event.value.signals & STOP))
+			notifRcvd = xTaskNotifyWait(STOP, 0, &notification, 0);
+			if(notifRcvd && (notification & STOP))
 				goto EXIT;
 			
 			/* wait for accelerometer data */
-			osSemaphoreWait(drdySemaph, osWaitForever);
+			xSemaphoreTake(drdySemaph, portMAX_DELAY);
 			
 			/* read 24 samples */
 			for(i = 0; i < 24; i++, sampleCount++){
@@ -45,7 +47,6 @@ void runAccelGest(void const * argument)
 				aq.samples[1][aq.end] = sample[1];
 				aq.samples[2][aq.end] = sample[2];
 					
-			
 				/* reached end of frame? */
 				if((++frameCount) >= FRAME_SIZE)
 				{
@@ -54,7 +55,7 @@ void runAccelGest(void const * argument)
 					/* get next frame if available */
 					if(get_nextFram1(ptr) != -1)
 						/* send frame */
-						osMessagePut(accelFrameReadyMsgQ, (uint32_t)ptr, 10);
+						xQueueSend(accelFrameReadyMsgQ, (void*)ptr, 10);
 				}
 				/* prepare for next sample */
 				aq.end++;	
@@ -62,7 +63,7 @@ void runAccelGest(void const * argument)
 		}
 		
 		/* send NULL pointer indicating end of aquisition */
-		osMessagePut(accelFrameReadyMsgQ, NULL, 10);
+		xQueueSend(accelFrameReadyMsgQ, (void*)ptr, 10);
 	EXIT:		
 		pause_accel();
 		sampleCount = 0;
@@ -100,8 +101,7 @@ void initAccelAq(void)
 	initBuffer1();
 	
 	/* Create semaphore */
-	osSemaphoreDef(accelDRDY);
-	drdySemaph = osSemaphoreCreate(osSemaphore(accelDRDY), AQ_SIZE);
+	drdySemaph = xSemaphoreCreateCounting(7, 0);
 	
 	/* enbale interrupt */
 	HAL_NVIC_EnableIRQ(EXTI0_IRQn);

@@ -3,33 +3,36 @@
 void gPress(void);
 void printFrame(int16_t** buff, int);
 
-osMessageQId accelFrameReadyMsgQ;
-osThreadId accelThreadId;
+QueueHandle_t accelFrameReadyMsgQ;
+TaskHandle_t accelThreadHandle;
 
-void aqManager(void const * argument)
+void aqManager(void* argument)
 {
 	volatile osEvent event;
+	BaseType_t notifRcvd = pdFALSE;
+	uint32_t notification;
 	
 	/* init aquisitors */
 	initAccelAq();
 	
-	/* accelerometer frame ready queue */
-	osMessageQDef(accelFrameReady, 7, int16_t**);
-	accelFrameReadyMsgQ = osMessageCreate(osMessageQ(accelFrameReady), NULL);
+	/* initialize accelerometer frame ready queue */
+	accelFrameReadyMsgQ = xQueueCreate(7, sizeof(int16_t**));
 	
 	/* initiate suspended thread */
-	osThreadDef(accelTask, runAccelGest, osPriorityHigh, 0, 128);	
-	accelThreadId = osThreadCreate(osThread(accelTask), NULL);
-	osThreadSuspend(accelThreadId);
-	osThreadSetPriority(accelThreadId, 2);	
+	xTaskCreate(runAccelGest, "AccelGest", 128, NULL, 0, &accelThreadHandle);
+	vTaskSuspend(accelThreadHandle);
+	vTaskPrioritySet(accelThreadHandle, 2);
 	
 	while(1)
 	{
-		event = osSignalWait(GStart | EqON, osWaitForever);
-		if(event.value.signals & GStart)
-			gPress();
-		else if(event.value.signals & EqON)
-			/* equilibrium mode */;
+		//event = osSignalWait(GStart | EqON, osWaitForever);
+		notifRcvd = xTaskNotifyWait(0, 0, &notification, portMAX_DELAY);
+		if(notifRcvd == pdTRUE){
+			if(notification & GStart)
+				gPress();
+			else if(notification & EqON)
+				/* equilibrium mode */;
+		}
 	}
 }
 
@@ -38,31 +41,39 @@ void gPress(void)
 	volatile osEvent eventAccel;
 	volatile osEvent eventUser;
 	static int nFrames = 0;
+	int16_t** buff;
+	BaseType_t msgQRcvd = pdFALSE;
+	BaseType_t notifRcvd = pdFALSE;
+	uint32_t notification;
 	
-	osThreadResume(accelThreadId);
+	vTaskResume(accelThreadHandle);
 	
 	ORANGE(1);
-	
+
 	while(1){
-		eventAccel = osMessageGet(accelFrameReadyMsgQ, osWaitForever);
-		eventUser = osSignalWait(GStop, 0);
+		/* wait for frame */
+		msgQRcvd = xQueueReceive(accelFrameReadyMsgQ, (void*)&buff, portMAX_DELAY);
+		/* check if user released button */
+		notifRcvd = xTaskNotifyWait(GStop, 0, &notification, 0);
 		
 		/* user gesture ended? discard frame */
-		if((eventUser.status == osEventSignal) && (eventUser.value.signals & GStop))
+		if(notifRcvd && (notification & GStop))
 		{
-			osSignalSet(accelThreadId, STOP);
+			/* order aquisition thread to stop */;
+			xTaskNotify(accelThreadHandle, STOP, eSetBits);
 			break;
 		}
 		/* message received */
-		if(eventAccel.status == osEventMessage){
+		if(msgQRcvd == pdTRUE){
 			/* if end of sampling */
-			if(eventAccel.value.v == NULL){
+			if(buff == NULL){
 				break;
 			}
 			/* we received a frame */
 			else{
+				/* deal with it */
 				nFrames++;
-				printFrame(eventAccel.value.p, nFrames == 0);
+				printFrame(buff, nFrames == 0);
 				//printf("Frame Received!\n");
 			}
 		}

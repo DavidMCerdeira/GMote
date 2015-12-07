@@ -31,8 +31,8 @@
   ******************************************************************************
   */
 /* Includes ------------------------------------------------------------------*/
-//#include "stm32f4xx_hal.h"
-#include "cmsis_os.h"
+#include "stm32f4xx_hal.h"
+#include "FreeRTOS.h"
 
 /* USER CODE BEGIN Includes */
 #include "sensorAq.h"
@@ -50,11 +50,9 @@ TIM_HandleTypeDef htim6;
 
 UART_HandleTypeDef huart2;
 
-osThreadId defaultTaskHandle;
-
 /* USER CODE BEGIN PV */
 /* Private variables ---------------------------------------------------------*/
-osThreadId aqManagerId;
+TaskHandle_t aqManagerHandle = NULL;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -65,7 +63,6 @@ static void MX_SPI1_Init(void);
 static void MX_SPI3_Init(void);
 static void MX_TIM6_Init(void);
 static void MX_USART2_UART_Init(void);
-void StartDefaultTask(void const * argument);
 
 /* USER CODE BEGIN PFP */
 /* Private function prototypes -----------------------------------------------*/
@@ -119,12 +116,11 @@ int main(void)
 
   /* Create the thread(s) */
   /* definition and creation of defaultTask */
-  osThreadDef(defaultTask, StartDefaultTask, osPriorityNormal, 0, 128);
-  defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
+	
+	/* changing */
 
   /* USER CODE BEGIN RTOS_THREADS */
-  osThreadDef(aquisition, aqManager, osPriorityHigh, 1, 128);
-	aqManagerId = osThreadCreate(osThread(aquisition), NULL);
+	xTaskCreate(aqManager, "AqManager", 128, NULL, 1, &aqManagerHandle);
   /* USER CODE END RTOS_THREADS */
 
   /* USER CODE BEGIN RTOS_QUEUES */
@@ -134,12 +130,13 @@ int main(void)
  
 
   /* Start scheduler */
-  osKernelStart();
+  
   
   /* We should never get here as control is now taken by the scheduler */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+	vTaskStartScheduler();
   while (1)
   {
   /* USER CODE END WHILE */
