@@ -45,7 +45,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t pin)
 		if(pin == GPIO_PIN_6){
 			mpuFIFOCount++;
 			if(MPU_Get_FIFOCount(&retVal)) ;
-			if(!(retVal < 24)){
+			if(retVal >= 24){
 				mpuFIFOCount = 0;
 				/*Function that reads sample*/
 				 runGyroGest(NULL);

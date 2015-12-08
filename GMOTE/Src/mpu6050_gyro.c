@@ -74,7 +74,7 @@ inline bool MPU_Get_FIFOCount(int *count){
 		/*If when reading both High and Low Fifo Count Registers is ok*/
 		if(MPU_Register_Read(MPU_REG_FIFOCOUNTL, &count_L) &&		
 			 MPU_Register_Read(MPU_REG_FIFOCOUNTH, &count_H)){
-					count_H &= 0x0E; //Filter unwanted bits
+					count_H &= 0x0C; //Filter unwanted bits
 				 *count = (count_H << 8) | count_L; 
 				return true;
 		}
