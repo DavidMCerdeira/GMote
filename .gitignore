@@ -4,6 +4,6 @@
 *.axf
 *.htm
 *.dep
-GMOTE/MDK-ARM/GMOTE Configuration/
+GMOTE/MDK-ARM/
 !GMOTE/MDK-ARM/GMOTE.uvprojx
 test/
