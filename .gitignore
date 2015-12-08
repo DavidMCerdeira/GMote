@@ -1,4 +1,9 @@
 *.[aod]
 *.crf
-/GMOT/MDK-ARM/GMOTE\ Configuration
 *.lst
+*.axf
+*.htm
+*.dep
+GMOTE/MDK-ARM/GMOTE Configuration/
+!GMOTE/MDK-ARM/GMOTE.uvprojx
+test/
