@@ -60,4 +60,3 @@ gmote configuration\main.o: ..\Inc\nrf24l01.h
 gmote configuration\main.o: ..\Inc\nrf24l01registers.h
 gmote configuration\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
 gmote configuration\main.o: ..\Inc\usDelay.h
-gmote configuration\main.o: ..\Inc\gyroscope.h

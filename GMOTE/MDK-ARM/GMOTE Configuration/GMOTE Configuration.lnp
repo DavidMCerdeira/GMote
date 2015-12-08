@@ -10,10 +10,11 @@
 "gmote configuration\sensoraq.o"
 "gmote configuration\error.o"
 "gmote configuration\gmoteisr.o"
-"gmote configuration\gyroscope.o"
 "gmote configuration\nrf24l01.o"
 "gmote configuration\usdelay.o"
 "gmote configuration\retarget.o"
+"gmote configuration\gyroaq.o"
+"gmote configuration\mpu6050_gyro.o"
 "gmote configuration\stm32f4xx_hal_dma_ex.o"
 "gmote configuration\stm32f4xx_hal_spi.o"
 "gmote configuration\stm32f4xx_hal.o"
@@ -41,8 +42,8 @@
 "gmote configuration\tasks.o"
 "gmote configuration\cmsis_os.o"
 "gmote configuration\list.o"
+"gmote configuration\freertos_1.o"
 --library_type=microlib --strict --scatter "GMOTE Configuration\GMOTE Configuration.sct"
-
 --diag_suppress=L6329 --summary_stderr --info summarysizes --map --xref --callgraph --symbols
 --info sizes --info totals --info unused --info veneers
 --list "GMOTE Configuration.map" -o "GMOTE Configuration\GMOTE Configuration.axf"

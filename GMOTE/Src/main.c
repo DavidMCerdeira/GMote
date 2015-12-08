@@ -36,7 +36,6 @@
 
 /* USER CODE BEGIN Includes */
 #include "sensorAq.h"
-#include "gyroscope.h"
 #include "nrf24l01.h"
 /* USER CODE END Includes */
 
