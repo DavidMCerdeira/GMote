@@ -2,9 +2,8 @@
 
 aquisitn aq;
 
-volatile int interruptEn = 0;
 SemaphoreHandle_t  drdySemaph;
-extern volatile osMessageQId accelFrameReadyMsgQ;
+extern osMessageQId accelFrameReadyMsgQ;
 int firstTime = 1;
 
 void printBuffer(void);
@@ -15,12 +14,14 @@ void runAccelGest(void* argument)
 {
 	volatile int sampleCount = 0;
 	volatile int frameCount = 0;
-	int16_t* ptr[3];
+	
 	volatile osEvent event;
 	int16_t sample[3];
+	int16_t* ptr[3];
 	uint32_t i = 0;
 	BaseType_t notifRcvd = pdFALSE;
 	uint32_t notification;
+	int nSamples = 5;
 	
 	/* infinite cycle */
 	while(1)
@@ -40,7 +41,9 @@ void runAccelGest(void* argument)
 			xSemaphoreTake(drdySemaph, portMAX_DELAY);
 			
 			/* read 24 samples */
-			for(i = 0; i < 24; i++, sampleCount++){
+			for(i = 0; i < nSamples; 
+					i++, sampleCount++)
+			{
 				read_sample((uint8_t*)(&sample));
 				/* put sample in buffer */
 				aq.samples[0][aq.end] = sample[0];
@@ -53,13 +56,15 @@ void runAccelGest(void* argument)
 					/* reset frame counter */
 					frameCount = 0;
 					/* get next frame if available */
-					if(get_nextFram1(ptr) != -1)
+					if(get_nextFram1((int16_t**)ptr) != -1){
 						/* send frame */
-						xQueueSend(accelFrameReadyMsgQ, (void*)ptr, 10);
+						xQueueSend(accelFrameReadyMsgQ, ptr, 10);
+					}
 				}
 				/* prepare for next sample */
 				aq.end++;	
 			}
+			nSamples = 24;
 		}
 		
 		/* send NULL pointer indicating end of aquisition */

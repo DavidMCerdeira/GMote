@@ -16,7 +16,7 @@ void aqManager(void* argument)
 	initAccelAq();
 	
 	/* initialize accelerometer frame ready queue */
-	accelFrameReadyMsgQ = xQueueCreate(7, sizeof(int16_t**));
+	accelFrameReadyMsgQ = xQueueCreate(10, sizeof(int16_t*[3]));
 	
 	/* initiate suspended thread */
 	xTaskCreate(runAccelGest, "AccelGest", 128, NULL, 0, &accelThreadHandle);
@@ -39,7 +39,7 @@ void aqManager(void* argument)
 void gPress(void)
 {
 	static int nFrames = 0;
-	uint16_t **buff;
+	volatile int16_t* buff[3];
 	BaseType_t msgQRcvd = pdFALSE;
 	BaseType_t notifRcvd = pdFALSE;
 	uint32_t notification;
@@ -50,7 +50,8 @@ void gPress(void)
 
 	while(1){
 		/* wait for frame */
-		msgQRcvd = xQueueReceive(accelFrameReadyMsgQ, buff, portMAX_DELAY);
+		msgQRcvd = xQueueReceive(accelFrameReadyMsgQ, (void*)buff, portMAX_DELAY);
+		
 		/* check if user released button */
 		notifRcvd = xTaskNotifyWait(GStop, 0, &notification, 0);
 		
@@ -71,7 +72,7 @@ void gPress(void)
 			else{
 				/* deal with it */
 				nFrames++;
-				printFrame((int16_t**)buff, nFrames == 0);
+				printFrame(buff, nFrames == 0);
 				//printf("Frame Received!\n");
 			}
 		}
@@ -104,7 +105,7 @@ void gPress(void)
 
 void printFrame(int16_t** buff, int firstFrame)
 {
-	int i = 0;
+	int i = 0;	
 	
 	if(firstFrame)
 	{

@@ -3,7 +3,7 @@
 <title>Static Call Graph - [GMOTE Configuration\GMOTE Configuration.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image GMOTE Configuration\GMOTE Configuration.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5050106: Last Updated: Mon Dec 07 16:48:58 2015
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5050106: Last Updated: Tue Dec 08 10:37:38 2015
 <BR><P>
 <H3>Maximum Stack Usage =        184 bytes + Unknown(Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -948,7 +948,7 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[60]"></a>aqManager</STRONG> (Thumb, 92 bytes, Stack size 24 bytes, sensoraq.o(i.aqManager))
-<BR><BR>[Stack]<UL><LI>Max Depth = 168<LI>Call Chain = aqManager &rArr; gPress &rArr; xQueueGenericReceive &rArr; xTaskResumeAll &rArr; xTaskIncrementTick
+<BR><BR>[Stack]<UL><LI>Max Depth = 176<LI>Call Chain = aqManager &rArr; gPress &rArr; xQueueGenericReceive &rArr; xTaskResumeAll &rArr; xTaskIncrementTick
 </UL>
 <BR>[Calls]<UL><LI><a href="#[a8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;xQueueGenericCreate
 <LI><a href="#[aa]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;vTaskSuspend
@@ -982,8 +982,8 @@ Global Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> printf8.o(i.__0printf$8)
 </UL>
-<P><STRONG><a name="[ad]"></a>gPress</STRONG> (Thumb, 134 bytes, Stack size 32 bytes, sensoraq.o(i.gPress))
-<BR><BR>[Stack]<UL><LI>Max Depth = 144<LI>Call Chain = gPress &rArr; xQueueGenericReceive &rArr; xTaskResumeAll &rArr; xTaskIncrementTick
+<P><STRONG><a name="[ad]"></a>gPress</STRONG> (Thumb, 130 bytes, Stack size 40 bytes, sensoraq.o(i.gPress))
+<BR><BR>[Stack]<UL><LI>Max Depth = 152<LI>Call Chain = gPress &rArr; xQueueGenericReceive &rArr; xTaskResumeAll &rArr; xTaskIncrementTick
 </UL>
 <BR>[Calls]<UL><LI><a href="#[b2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;xTaskGenericNotify
 <LI><a href="#[b0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;vTaskResume
@@ -1174,8 +1174,8 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[5f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;runAccelGest
 </UL>
 
-<P><STRONG><a name="[5f]"></a>runAccelGest</STRONG> (Thumb, 226 bytes, Stack size 40 bytes, accelerometeraq.o(i.runAccelGest))
-<BR><BR>[Stack]<UL><LI>Max Depth = 152<LI>Call Chain = runAccelGest &rArr; xQueueGenericSend &rArr; xTaskResumeAll &rArr; xTaskIncrementTick
+<P><STRONG><a name="[5f]"></a>runAccelGest</STRONG> (Thumb, 248 bytes, Stack size 32 bytes, accelerometeraq.o(i.runAccelGest))
+<BR><BR>[Stack]<UL><LI>Max Depth = 144<LI>Call Chain = runAccelGest &rArr; xQueueGenericSend &rArr; xTaskResumeAll &rArr; xTaskIncrementTick
 </UL>
 <BR>[Calls]<UL><LI><a href="#[ac]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;xTaskNotifyWait
 <LI><a href="#[d9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;xQueueGenericSend

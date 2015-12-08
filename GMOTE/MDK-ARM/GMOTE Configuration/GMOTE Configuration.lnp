@@ -41,7 +41,6 @@
 "gmote configuration\tasks.o"
 "gmote configuration\cmsis_os.o"
 "gmote configuration\list.o"
-"gmote configuration\freertos_1.o"
 --library_type=microlib --strict --scatter "GMOTE Configuration\GMOTE Configuration.sct"
 
 --diag_suppress=L6329 --summary_stderr --info summarysizes --map --xref --callgraph --symbols
