@@ -3,7 +3,7 @@
 <title>Static Call Graph - [GMOTE Configuration\GMOTE Configuration.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image GMOTE Configuration\GMOTE Configuration.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060020: Last Updated: Tue Dec 08 20:42:10 2015
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060020: Last Updated: Tue Dec 08 20:48:53 2015
 <BR><P>
 <H3>Maximum Stack Usage =        240 bytes + Unknown(Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -748,10 +748,11 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[63]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_GPIO_EXTI_Callback
 </UL>
 
-<P><STRONG><a name="[8b]"></a>MPU_Init</STRONG> (Thumb, 102 bytes, Stack size 8 bytes, mpu6050_gyro.o(i.MPU_Init))
-<BR><BR>[Stack]<UL><LI>Max Depth = 120<LI>Call Chain = MPU_Init &rArr; MPU_Register_Write &rArr; HAL_I2C_Master_Transmit &rArr; I2C_MasterRequestWrite &rArr; I2C_WaitOnFlagUntilTimeout
+<P><STRONG><a name="[8b]"></a>MPU_Init</STRONG> (Thumb, 108 bytes, Stack size 8 bytes, mpu6050_gyro.o(i.MPU_Init))
+<BR><BR>[Stack]<UL><LI>Max Depth = 160<LI>Call Chain = MPU_Init &rArr; MPU_Register_Read &rArr; HAL_I2C_Mem_Read &rArr; I2C_RequestMemoryRead &rArr; I2C_WaitOnFlagUntilTimeout
 </UL>
-<BR>[Calls]<UL><LI><a href="#[8c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MPU_Register_Write
+<BR>[Calls]<UL><LI><a href="#[8a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MPU_Register_Read
+<LI><a href="#[8c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MPU_Register_Write
 </UL>
 <BR>[Called By]<UL><LI><a href="#[5b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
@@ -762,6 +763,7 @@ Global Symbols
 <BR>[Calls]<UL><LI><a href="#[6f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_I2C_Mem_Read
 </UL>
 <BR>[Called By]<UL><LI><a href="#[64]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MPU_Get_FIFOCount
+<LI><a href="#[8b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MPU_Init
 <LI><a href="#[5b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 <LI><a href="#[89]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MPU_GetGyro_SampleFIFO
 </UL>
@@ -829,7 +831,7 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[5b]"></a>main</STRONG> (Thumb, 146 bytes, Stack size 16 bytes, main.o(i.main))
-<BR><BR>[Stack]<UL><LI>Max Depth = 168<LI>Call Chain = main &rArr; MPU_Register_Read &rArr; HAL_I2C_Mem_Read &rArr; I2C_RequestMemoryRead &rArr; I2C_WaitOnFlagUntilTimeout
+<BR><BR>[Stack]<UL><LI>Max Depth = 176<LI>Call Chain = main &rArr; MPU_Init &rArr; MPU_Register_Read &rArr; HAL_I2C_Mem_Read &rArr; I2C_RequestMemoryRead &rArr; I2C_WaitOnFlagUntilTimeout
 </UL>
 <BR>[Calls]<UL><LI><a href="#[95]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;initGyroAq
 <LI><a href="#[8a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MPU_Register_Read

@@ -220,6 +220,7 @@ Section Cross References
     mpu6050_gyro.o(i.MPU_GetGyro_Sample) refers to stm32f4xx_hal_i2c.o(i.HAL_I2C_Mem_Read) for HAL_I2C_Mem_Read
     mpu6050_gyro.o(i.MPU_GetGyro_Sample) refers to main.o(.bss) for hi2c1
     mpu6050_gyro.o(i.MPU_Init) refers to mpu6050_gyro.o(i.MPU_Register_Write) for MPU_Register_Write
+    mpu6050_gyro.o(i.MPU_Init) refers to mpu6050_gyro.o(i.MPU_Register_Read) for MPU_Register_Read
     mpu6050_gyro.o(i.MPU_Register_Read) refers to stm32f4xx_hal_i2c.o(i.HAL_I2C_Mem_Read) for HAL_I2C_Mem_Read
     mpu6050_gyro.o(i.MPU_Register_Read) refers to main.o(.bss) for hi2c1
     mpu6050_gyro.o(i.MPU_Register_Write) refers to stm32f4xx_hal_i2c.o(i.HAL_I2C_Master_Transmit) for HAL_I2C_Master_Transmit
@@ -2129,43 +2130,43 @@ Image Symbol Table
     i.MPU_GetGyro_SampleFIFO                 0x080015c4   Section        0  mpu6050_gyro.o(i.MPU_GetGyro_SampleFIFO)
     i.MPU_Get_FIFOCount                      0x08001600   Section        0  mpu6050_gyro.o(i.MPU_Get_FIFOCount)
     i.MPU_Init                               0x08001632   Section        0  mpu6050_gyro.o(i.MPU_Init)
-    i.MPU_Register_Read                      0x08001698   Section        0  mpu6050_gyro.o(i.MPU_Register_Read)
-    i.MPU_Register_Write                     0x080016bc   Section        0  mpu6050_gyro.o(i.MPU_Register_Write)
-    i.MX_GPIO_Init                           0x080016e4   Section        0  main.o(i.MX_GPIO_Init)
-    MX_GPIO_Init                             0x080016e5   Thumb Code   442  main.o(i.MX_GPIO_Init)
-    i.MX_SPI1_Init                           0x080018c0   Section        0  main.o(i.MX_SPI1_Init)
-    MX_SPI1_Init                             0x080018c1   Thumb Code    46  main.o(i.MX_SPI1_Init)
-    i.MX_SPI3_Init                           0x080018f8   Section        0  main.o(i.MX_SPI3_Init)
-    MX_SPI3_Init                             0x080018f9   Thumb Code    44  main.o(i.MX_SPI3_Init)
-    i.NVIC_SetPriority                       0x0800192c   Section        0  stm32f4xx_hal_cortex.o(i.NVIC_SetPriority)
-    NVIC_SetPriority                         0x0800192d   Thumb Code    32  stm32f4xx_hal_cortex.o(i.NVIC_SetPriority)
-    i.SysTick_Handler                        0x0800194c   Section        0  stm32f4xx_it.o(i.SysTick_Handler)
-    i.SystemClock_Config                     0x0800195c   Section        0  main.o(i.SystemClock_Config)
-    i.SystemInit                             0x080019e8   Section        0  system_stm32f4xx.o(i.SystemInit)
-    i.TIM_Base_SetConfig                     0x08001a3c   Section        0  stm32f4xx_hal_tim.o(i.TIM_Base_SetConfig)
-    i.UART_SetConfig                         0x08001afc   Section        0  stm32f4xx_hal_uart.o(i.UART_SetConfig)
-    UART_SetConfig                           0x08001afd   Thumb Code   366  stm32f4xx_hal_uart.o(i.UART_SetConfig)
-    i.__scatterload_copy                     0x08001c74   Section       14  handlers.o(i.__scatterload_copy)
-    i.__scatterload_null                     0x08001c82   Section        2  handlers.o(i.__scatterload_null)
-    i.__scatterload_zeroinit                 0x08001c84   Section       14  handlers.o(i.__scatterload_zeroinit)
-    i.gyroGetAq                              0x08001c94   Section        0  gyroaq.o(i.gyroGetAq)
-    i.initGyroAq                             0x08001cd0   Section        0  gyroaq.o(i.initGyroAq)
-    i.main                                   0x08001ce4   Section        0  main.o(i.main)
-    i.osSystickHandler                       0x08001d98   Section        0  cmsis_os.o(i.osSystickHandler)
-    i.prvResetNextTaskUnblockTime            0x08001dac   Section        0  tasks.o(i.prvResetNextTaskUnblockTime)
-    prvResetNextTaskUnblockTime              0x08001dad   Thumb Code    26  tasks.o(i.prvResetNextTaskUnblockTime)
-    i.runGyroGest                            0x08001dcc   Section        0  gyroaq.o(i.runGyroGest)
-    i.uxListRemove                           0x08001dd0   Section        0  list.o(i.uxListRemove)
-    i.vListInsertEnd                         0x08001df4   Section        0  list.o(i.vListInsertEnd)
-    i.vPortValidateInterruptPriority         0x08001e0c   Section        0  port.o(i.vPortValidateInterruptPriority)
-    i.vTaskSwitchContext                     0x08001e60   Section        0  tasks.o(i.vTaskSwitchContext)
-    i.xPortSysTickHandler                    0x08001ebc   Section        0  port.o(i.xPortSysTickHandler)
-    i.xQueueGiveFromISR                      0x08001ee8   Section        0  queue.o(i.xQueueGiveFromISR)
-    i.xTaskGetSchedulerState                 0x08001f84   Section        0  tasks.o(i.xTaskGetSchedulerState)
-    i.xTaskIncrementTick                     0x08001fa0   Section        0  tasks.o(i.xTaskIncrementTick)
-    i.xTaskNotifyFromISR                     0x0800206c   Section        0  tasks.o(i.xTaskNotifyFromISR)
-    i.xTaskRemoveFromEventList               0x0800214c   Section        0  tasks.o(i.xTaskRemoveFromEventList)
-    .constdata                               0x080021c0   Section       16  stm32f4xx_hal_rcc.o(.constdata)
+    i.MPU_Register_Read                      0x080016a0   Section        0  mpu6050_gyro.o(i.MPU_Register_Read)
+    i.MPU_Register_Write                     0x080016c4   Section        0  mpu6050_gyro.o(i.MPU_Register_Write)
+    i.MX_GPIO_Init                           0x080016ec   Section        0  main.o(i.MX_GPIO_Init)
+    MX_GPIO_Init                             0x080016ed   Thumb Code   442  main.o(i.MX_GPIO_Init)
+    i.MX_SPI1_Init                           0x080018c8   Section        0  main.o(i.MX_SPI1_Init)
+    MX_SPI1_Init                             0x080018c9   Thumb Code    46  main.o(i.MX_SPI1_Init)
+    i.MX_SPI3_Init                           0x08001900   Section        0  main.o(i.MX_SPI3_Init)
+    MX_SPI3_Init                             0x08001901   Thumb Code    44  main.o(i.MX_SPI3_Init)
+    i.NVIC_SetPriority                       0x08001934   Section        0  stm32f4xx_hal_cortex.o(i.NVIC_SetPriority)
+    NVIC_SetPriority                         0x08001935   Thumb Code    32  stm32f4xx_hal_cortex.o(i.NVIC_SetPriority)
+    i.SysTick_Handler                        0x08001954   Section        0  stm32f4xx_it.o(i.SysTick_Handler)
+    i.SystemClock_Config                     0x08001964   Section        0  main.o(i.SystemClock_Config)
+    i.SystemInit                             0x080019f0   Section        0  system_stm32f4xx.o(i.SystemInit)
+    i.TIM_Base_SetConfig                     0x08001a44   Section        0  stm32f4xx_hal_tim.o(i.TIM_Base_SetConfig)
+    i.UART_SetConfig                         0x08001b04   Section        0  stm32f4xx_hal_uart.o(i.UART_SetConfig)
+    UART_SetConfig                           0x08001b05   Thumb Code   366  stm32f4xx_hal_uart.o(i.UART_SetConfig)
+    i.__scatterload_copy                     0x08001c7c   Section       14  handlers.o(i.__scatterload_copy)
+    i.__scatterload_null                     0x08001c8a   Section        2  handlers.o(i.__scatterload_null)
+    i.__scatterload_zeroinit                 0x08001c8c   Section       14  handlers.o(i.__scatterload_zeroinit)
+    i.gyroGetAq                              0x08001c9c   Section        0  gyroaq.o(i.gyroGetAq)
+    i.initGyroAq                             0x08001cd8   Section        0  gyroaq.o(i.initGyroAq)
+    i.main                                   0x08001cec   Section        0  main.o(i.main)
+    i.osSystickHandler                       0x08001da0   Section        0  cmsis_os.o(i.osSystickHandler)
+    i.prvResetNextTaskUnblockTime            0x08001db4   Section        0  tasks.o(i.prvResetNextTaskUnblockTime)
+    prvResetNextTaskUnblockTime              0x08001db5   Thumb Code    26  tasks.o(i.prvResetNextTaskUnblockTime)
+    i.runGyroGest                            0x08001dd4   Section        0  gyroaq.o(i.runGyroGest)
+    i.uxListRemove                           0x08001dd8   Section        0  list.o(i.uxListRemove)
+    i.vListInsertEnd                         0x08001dfc   Section        0  list.o(i.vListInsertEnd)
+    i.vPortValidateInterruptPriority         0x08001e14   Section        0  port.o(i.vPortValidateInterruptPriority)
+    i.vTaskSwitchContext                     0x08001e68   Section        0  tasks.o(i.vTaskSwitchContext)
+    i.xPortSysTickHandler                    0x08001ec4   Section        0  port.o(i.xPortSysTickHandler)
+    i.xQueueGiveFromISR                      0x08001ef0   Section        0  queue.o(i.xQueueGiveFromISR)
+    i.xTaskGetSchedulerState                 0x08001f8c   Section        0  tasks.o(i.xTaskGetSchedulerState)
+    i.xTaskIncrementTick                     0x08001fa8   Section        0  tasks.o(i.xTaskIncrementTick)
+    i.xTaskNotifyFromISR                     0x08002074   Section        0  tasks.o(i.xTaskNotifyFromISR)
+    i.xTaskRemoveFromEventList               0x08002154   Section        0  tasks.o(i.xTaskRemoveFromEventList)
+    .constdata                               0x080021c8   Section       16  stm32f4xx_hal_rcc.o(.constdata)
     .data                                    0x20000000   Section        4  system_stm32f4xx.o(.data)
     .data                                    0x20000004   Section        4  main.o(.data)
     .data                                    0x20000008   Section        8  accelerometeraq.o(.data)
@@ -2398,34 +2399,34 @@ Image Symbol Table
     MPU_GetGyro_Sample                       0x08001581   Thumb Code    64  mpu6050_gyro.o(i.MPU_GetGyro_Sample)
     MPU_GetGyro_SampleFIFO                   0x080015c5   Thumb Code    60  mpu6050_gyro.o(i.MPU_GetGyro_SampleFIFO)
     MPU_Get_FIFOCount                        0x08001601   Thumb Code    50  mpu6050_gyro.o(i.MPU_Get_FIFOCount)
-    MPU_Init                                 0x08001633   Thumb Code   102  mpu6050_gyro.o(i.MPU_Init)
-    MPU_Register_Read                        0x08001699   Thumb Code    32  mpu6050_gyro.o(i.MPU_Register_Read)
-    MPU_Register_Write                       0x080016bd   Thumb Code    36  mpu6050_gyro.o(i.MPU_Register_Write)
-    SysTick_Handler                          0x0800194d   Thumb Code    14  stm32f4xx_it.o(i.SysTick_Handler)
-    SystemClock_Config                       0x0800195d   Thumb Code   130  main.o(i.SystemClock_Config)
-    SystemInit                               0x080019e9   Thumb Code    66  system_stm32f4xx.o(i.SystemInit)
-    TIM_Base_SetConfig                       0x08001a3d   Thumb Code   148  stm32f4xx_hal_tim.o(i.TIM_Base_SetConfig)
-    __scatterload_copy                       0x08001c75   Thumb Code    14  handlers.o(i.__scatterload_copy)
-    __scatterload_null                       0x08001c83   Thumb Code     2  handlers.o(i.__scatterload_null)
-    __scatterload_zeroinit                   0x08001c85   Thumb Code    14  handlers.o(i.__scatterload_zeroinit)
-    gyroGetAq                                0x08001c95   Thumb Code    54  gyroaq.o(i.gyroGetAq)
-    initGyroAq                               0x08001cd1   Thumb Code    20  gyroaq.o(i.initGyroAq)
-    main                                     0x08001ce5   Thumb Code   146  main.o(i.main)
-    osSystickHandler                         0x08001d99   Thumb Code    20  cmsis_os.o(i.osSystickHandler)
-    runGyroGest                              0x08001dcd   Thumb Code     4  gyroaq.o(i.runGyroGest)
-    uxListRemove                             0x08001dd1   Thumb Code    36  list.o(i.uxListRemove)
-    vListInsertEnd                           0x08001df5   Thumb Code    24  list.o(i.vListInsertEnd)
-    vPortValidateInterruptPriority           0x08001e0d   Thumb Code    74  port.o(i.vPortValidateInterruptPriority)
-    vTaskSwitchContext                       0x08001e61   Thumb Code    82  tasks.o(i.vTaskSwitchContext)
-    xPortSysTickHandler                      0x08001ebd   Thumb Code    38  port.o(i.xPortSysTickHandler)
-    xQueueGiveFromISR                        0x08001ee9   Thumb Code   156  queue.o(i.xQueueGiveFromISR)
-    xTaskGetSchedulerState                   0x08001f85   Thumb Code    22  tasks.o(i.xTaskGetSchedulerState)
-    xTaskIncrementTick                       0x08001fa1   Thumb Code   194  tasks.o(i.xTaskIncrementTick)
-    xTaskNotifyFromISR                       0x0800206d   Thumb Code   216  tasks.o(i.xTaskNotifyFromISR)
-    xTaskRemoveFromEventList                 0x0800214d   Thumb Code   108  tasks.o(i.xTaskRemoveFromEventList)
-    APBAHBPrescTable                         0x080021c0   Data          16  stm32f4xx_hal_rcc.o(.constdata)
-    Region$$Table$$Base                      0x080021d0   Number         0  anon$$obj.o(Region$$Table)
-    Region$$Table$$Limit                     0x080021f0   Number         0  anon$$obj.o(Region$$Table)
+    MPU_Init                                 0x08001633   Thumb Code   108  mpu6050_gyro.o(i.MPU_Init)
+    MPU_Register_Read                        0x080016a1   Thumb Code    32  mpu6050_gyro.o(i.MPU_Register_Read)
+    MPU_Register_Write                       0x080016c5   Thumb Code    36  mpu6050_gyro.o(i.MPU_Register_Write)
+    SysTick_Handler                          0x08001955   Thumb Code    14  stm32f4xx_it.o(i.SysTick_Handler)
+    SystemClock_Config                       0x08001965   Thumb Code   130  main.o(i.SystemClock_Config)
+    SystemInit                               0x080019f1   Thumb Code    66  system_stm32f4xx.o(i.SystemInit)
+    TIM_Base_SetConfig                       0x08001a45   Thumb Code   148  stm32f4xx_hal_tim.o(i.TIM_Base_SetConfig)
+    __scatterload_copy                       0x08001c7d   Thumb Code    14  handlers.o(i.__scatterload_copy)
+    __scatterload_null                       0x08001c8b   Thumb Code     2  handlers.o(i.__scatterload_null)
+    __scatterload_zeroinit                   0x08001c8d   Thumb Code    14  handlers.o(i.__scatterload_zeroinit)
+    gyroGetAq                                0x08001c9d   Thumb Code    54  gyroaq.o(i.gyroGetAq)
+    initGyroAq                               0x08001cd9   Thumb Code    20  gyroaq.o(i.initGyroAq)
+    main                                     0x08001ced   Thumb Code   146  main.o(i.main)
+    osSystickHandler                         0x08001da1   Thumb Code    20  cmsis_os.o(i.osSystickHandler)
+    runGyroGest                              0x08001dd5   Thumb Code     4  gyroaq.o(i.runGyroGest)
+    uxListRemove                             0x08001dd9   Thumb Code    36  list.o(i.uxListRemove)
+    vListInsertEnd                           0x08001dfd   Thumb Code    24  list.o(i.vListInsertEnd)
+    vPortValidateInterruptPriority           0x08001e15   Thumb Code    74  port.o(i.vPortValidateInterruptPriority)
+    vTaskSwitchContext                       0x08001e69   Thumb Code    82  tasks.o(i.vTaskSwitchContext)
+    xPortSysTickHandler                      0x08001ec5   Thumb Code    38  port.o(i.xPortSysTickHandler)
+    xQueueGiveFromISR                        0x08001ef1   Thumb Code   156  queue.o(i.xQueueGiveFromISR)
+    xTaskGetSchedulerState                   0x08001f8d   Thumb Code    22  tasks.o(i.xTaskGetSchedulerState)
+    xTaskIncrementTick                       0x08001fa9   Thumb Code   194  tasks.o(i.xTaskIncrementTick)
+    xTaskNotifyFromISR                       0x08002075   Thumb Code   216  tasks.o(i.xTaskNotifyFromISR)
+    xTaskRemoveFromEventList                 0x08002155   Thumb Code   108  tasks.o(i.xTaskRemoveFromEventList)
+    APBAHBPrescTable                         0x080021c8   Data          16  stm32f4xx_hal_rcc.o(.constdata)
+    Region$$Table$$Base                      0x080021d8   Number         0  anon$$obj.o(Region$$Table)
+    Region$$Table$$Limit                     0x080021f8   Number         0  anon$$obj.o(Region$$Table)
     SystemCoreClock                          0x20000000   Data           4  system_stm32f4xx.o(.data)
     aqManagerHandle                          0x20000004   Data           4  main.o(.data)
     firstTime                                0x20000008   Data           4  accelerometeraq.o(.data)
@@ -2447,9 +2448,9 @@ Memory Map of the image
 
   Image Entry point : 0x08000189
 
-  Load Region LR_IROM1 (Base: 0x08000000, Size: 0x00002258, Max: 0x00100000, ABSOLUTE)
+  Load Region LR_IROM1 (Base: 0x08000000, Size: 0x00002260, Max: 0x00100000, ABSOLUTE)
 
-    Execution Region ER_IROM1 (Base: 0x08000000, Size: 0x000021f0, Max: 0x00100000, ABSOLUTE)
+    Execution Region ER_IROM1 (Base: 0x08000000, Size: 0x000021f8, Max: 0x00100000, ABSOLUTE)
 
     Base Addr    Size         Type   Attr      Idx    E Section Name        Object
 
@@ -2514,41 +2515,42 @@ Memory Map of the image
     0x08001580   0x00000044   Code   RO          914    i.MPU_GetGyro_Sample  mpu6050_gyro.o
     0x080015c4   0x0000003c   Code   RO          948    i.MPU_GetGyro_SampleFIFO  mpu6050_gyro.o
     0x08001600   0x00000032   Code   RO          954    i.MPU_Get_FIFOCount  mpu6050_gyro.o
-    0x08001632   0x00000066   Code   RO          915    i.MPU_Init          mpu6050_gyro.o
-    0x08001698   0x00000024   Code   RO          916    i.MPU_Register_Read  mpu6050_gyro.o
-    0x080016bc   0x00000028   Code   RO          917    i.MPU_Register_Write  mpu6050_gyro.o
-    0x080016e4   0x000001dc   Code   RO          219    i.MX_GPIO_Init      main.o
-    0x080018c0   0x00000038   Code   RO          220    i.MX_SPI1_Init      main.o
-    0x080018f8   0x00000034   Code   RO          221    i.MX_SPI3_Init      main.o
-    0x0800192c   0x00000020   Code   RO         1950    i.NVIC_SetPriority  stm32f4xx_hal_cortex.o
-    0x0800194c   0x0000000e   Code   RO          363    i.SysTick_Handler   stm32f4xx_it.o
-    0x0800195a   0x00000002   PAD
-    0x0800195c   0x0000008c   Code   RO          223    i.SystemClock_Config  main.o
-    0x080019e8   0x00000054   Code   RO           14    i.SystemInit        system_stm32f4xx.o
-    0x08001a3c   0x000000c0   Code   RO         3058    i.TIM_Base_SetConfig  stm32f4xx_hal_tim.o
-    0x08001afc   0x00000178   Code   RO         1547    i.UART_SetConfig    stm32f4xx_hal_uart.o
-    0x08001c74   0x0000000e   Code   RO         4954    i.__scatterload_copy  mc_w.l(handlers.o)
-    0x08001c82   0x00000002   Code   RO         4955    i.__scatterload_null  mc_w.l(handlers.o)
-    0x08001c84   0x0000000e   Code   RO         4956    i.__scatterload_zeroinit  mc_w.l(handlers.o)
-    0x08001c92   0x00000002   PAD
-    0x08001c94   0x0000003c   Code   RO          872    i.gyroGetAq         gyroaq.o
-    0x08001cd0   0x00000014   Code   RO          873    i.initGyroAq        gyroaq.o
-    0x08001ce4   0x000000b4   Code   RO          224    i.main              main.o
-    0x08001d98   0x00000014   Code   RO         4306    i.osSystickHandler  cmsis_os.o
-    0x08001dac   0x00000020   Code   RO         3999    i.prvResetNextTaskUnblockTime  tasks.o
-    0x08001dcc   0x00000004   Code   RO          874    i.runGyroGest       gyroaq.o
-    0x08001dd0   0x00000024   Code   RO         4607    i.uxListRemove      list.o
-    0x08001df4   0x00000018   Code   RO         4611    i.vListInsertEnd    list.o
-    0x08001e0c   0x00000054   Code   RO         3689    i.vPortValidateInterruptPriority  port.o
-    0x08001e60   0x0000005c   Code   RO         4024    i.vTaskSwitchContext  tasks.o
-    0x08001ebc   0x0000002c   Code   RO         3691    i.xPortSysTickHandler  port.o
-    0x08001ee8   0x0000009c   Code   RO         3849    i.xQueueGiveFromISR  queue.o
-    0x08001f84   0x0000001c   Code   RO         4029    i.xTaskGetSchedulerState  tasks.o
-    0x08001fa0   0x000000cc   Code   RO         4032    i.xTaskIncrementTick  tasks.o
-    0x0800206c   0x000000e0   Code   RO         4033    i.xTaskNotifyFromISR  tasks.o
-    0x0800214c   0x00000074   Code   RO         4036    i.xTaskRemoveFromEventList  tasks.o
-    0x080021c0   0x00000010   Data   RO         2327    .constdata          stm32f4xx_hal_rcc.o
-    0x080021d0   0x00000020   Data   RO         4952    Region$$Table       anon$$obj.o
+    0x08001632   0x0000006c   Code   RO          915    i.MPU_Init          mpu6050_gyro.o
+    0x0800169e   0x00000002   PAD
+    0x080016a0   0x00000024   Code   RO          916    i.MPU_Register_Read  mpu6050_gyro.o
+    0x080016c4   0x00000028   Code   RO          917    i.MPU_Register_Write  mpu6050_gyro.o
+    0x080016ec   0x000001dc   Code   RO          219    i.MX_GPIO_Init      main.o
+    0x080018c8   0x00000038   Code   RO          220    i.MX_SPI1_Init      main.o
+    0x08001900   0x00000034   Code   RO          221    i.MX_SPI3_Init      main.o
+    0x08001934   0x00000020   Code   RO         1950    i.NVIC_SetPriority  stm32f4xx_hal_cortex.o
+    0x08001954   0x0000000e   Code   RO          363    i.SysTick_Handler   stm32f4xx_it.o
+    0x08001962   0x00000002   PAD
+    0x08001964   0x0000008c   Code   RO          223    i.SystemClock_Config  main.o
+    0x080019f0   0x00000054   Code   RO           14    i.SystemInit        system_stm32f4xx.o
+    0x08001a44   0x000000c0   Code   RO         3058    i.TIM_Base_SetConfig  stm32f4xx_hal_tim.o
+    0x08001b04   0x00000178   Code   RO         1547    i.UART_SetConfig    stm32f4xx_hal_uart.o
+    0x08001c7c   0x0000000e   Code   RO         4954    i.__scatterload_copy  mc_w.l(handlers.o)
+    0x08001c8a   0x00000002   Code   RO         4955    i.__scatterload_null  mc_w.l(handlers.o)
+    0x08001c8c   0x0000000e   Code   RO         4956    i.__scatterload_zeroinit  mc_w.l(handlers.o)
+    0x08001c9a   0x00000002   PAD
+    0x08001c9c   0x0000003c   Code   RO          872    i.gyroGetAq         gyroaq.o
+    0x08001cd8   0x00000014   Code   RO          873    i.initGyroAq        gyroaq.o
+    0x08001cec   0x000000b4   Code   RO          224    i.main              main.o
+    0x08001da0   0x00000014   Code   RO         4306    i.osSystickHandler  cmsis_os.o
+    0x08001db4   0x00000020   Code   RO         3999    i.prvResetNextTaskUnblockTime  tasks.o
+    0x08001dd4   0x00000004   Code   RO          874    i.runGyroGest       gyroaq.o
+    0x08001dd8   0x00000024   Code   RO         4607    i.uxListRemove      list.o
+    0x08001dfc   0x00000018   Code   RO         4611    i.vListInsertEnd    list.o
+    0x08001e14   0x00000054   Code   RO         3689    i.vPortValidateInterruptPriority  port.o
+    0x08001e68   0x0000005c   Code   RO         4024    i.vTaskSwitchContext  tasks.o
+    0x08001ec4   0x0000002c   Code   RO         3691    i.xPortSysTickHandler  port.o
+    0x08001ef0   0x0000009c   Code   RO         3849    i.xQueueGiveFromISR  queue.o
+    0x08001f8c   0x0000001c   Code   RO         4029    i.xTaskGetSchedulerState  tasks.o
+    0x08001fa8   0x000000cc   Code   RO         4032    i.xTaskIncrementTick  tasks.o
+    0x08002074   0x000000e0   Code   RO         4033    i.xTaskNotifyFromISR  tasks.o
+    0x08002154   0x00000074   Code   RO         4036    i.xTaskRemoveFromEventList  tasks.o
+    0x080021c8   0x00000010   Data   RO         2327    .constdata          stm32f4xx_hal_rcc.o
+    0x080021d8   0x00000020   Data   RO         4952    Region$$Table       anon$$obj.o
 
 
     Execution Region RW_IRAM1 (Base: 0x20000000, Size: 0x00000750, Max: 0x00020000, ABSOLUTE)
@@ -2581,7 +2583,7 @@ Image component sizes
         84          6          0          0        144       2189   gyroaq.o
         60          0          0          0          0       1696   list.o
        904         96          0          4        360      26991   main.o
-       356         12          0          0          0       4198   mpu6050_gyro.o
+       362         12          0          0          0       4206   mpu6050_gyro.o
        314         32          0         12          0      10559   port.o
        156          0          0          0          0       3248   queue.o
         36          8        392          0       1024        956   startup_stm32f407xx.o
@@ -2600,9 +2602,9 @@ Image component sizes
        696         54          0         56        240       9845   tasks.o
 
     ----------------------------------------------------------------------
-      8160        554        440        104       1768     498300   Object Totals
+      8168        554        440        104       1768     498308   Object Totals
          0          0         32          0          0          0   (incl. Generated)
-        16          0          0          0          0          0   (incl. Padding)
+        18          0          0          0          0          0   (incl. Padding)
 
     ----------------------------------------------------------------------
 
@@ -2639,15 +2641,15 @@ Image component sizes
 
       Code (inc. data)   RO Data    RW Data    ZI Data      Debug   
 
-      8248        570        440        104       1768     492172   Grand Totals
-      8248        570        440        104       1768     492172   ELF Image Totals
-      8248        570        440        104          0          0   ROM Totals
+      8256        570        440        104       1768     492180   Grand Totals
+      8256        570        440        104       1768     492180   ELF Image Totals
+      8256        570        440        104          0          0   ROM Totals
 
 ==============================================================================
 
-    Total RO  Size (Code + RO Data)                 8688 (   8.48kB)
+    Total RO  Size (Code + RO Data)                 8696 (   8.49kB)
     Total RW  Size (RW Data + ZI Data)              1872 (   1.83kB)
-    Total ROM Size (Code + RO Data + RW Data)       8792 (   8.59kB)
+    Total ROM Size (Code + RO Data + RW Data)       8800 (   8.59kB)
 
 ==============================================================================
 

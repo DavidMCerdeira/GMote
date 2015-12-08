@@ -3,6 +3,7 @@
 extern I2C_HandleTypeDef hi2c1;
 
 void MPU_Init(){
+	uint8_t retVal;
 	//I2C_INIT();
 	MPU_WAKEUP();
 	
@@ -22,6 +23,7 @@ void MPU_Init(){
 	
 	/*Wich Outputs pass to Fifo*/
 	MPU_Register_Write(MPU_REG_FIFOEN, MPU_REG_FIFOEN_VAL);
+	MPU_Register_Read(MPU_REG_FIFOEN_VAL, &retVal);
 	
 	/*Configures Int Pin behavior*/
 	MPU_Register_Write(MPU_REG_INTPINCFG, MPU_REG_INTPINCFG_VAL);
