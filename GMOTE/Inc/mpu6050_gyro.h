@@ -48,7 +48,8 @@
 	#define MPU_REG_INTPINCFG_VAL				0x40	
 	#define MPU_REG_INTENABLE_VAL				0x11		
 	#define MPU_REG_SIGNALPATHRESET_VAL	0x04	
-	#define MPU_REG_USERCTRL_VAL				0x45						
+	#define MPU_REG_USERCTRL_VAL_FIFOENABLE				0x40
+	#define MPU_REG_USERCTRL_VAL_FIFORESET				0x05
 #elif _MODE == _DATA_READY
 	#define MPU_REG_SMPLRTDIV_VAL				((GYROOUTPUTRATE/SAMPLERATE)-1)
 	#define MPU_REG_CONFIG_VAL					0x00		
@@ -60,12 +61,11 @@
 	#define MPU_REG_USERCTRL_VAL				0x00				
 #endif
 
-
 #define MPU_REG_INTSTATUS					0x3A // 
 #define MPU_REG_FIFOCOUNTH				0x72 // 
 #define MPU_REG_FIFOCOUNTL				0x73 // READ ONLY REGISTERSS
-#define MPU_REG_WHOAMI						0x75 // 
 #define MPU_REG_FIFORW						0x74 // (FIFO ACCESS)
+#define MPU_REG_WHOAMI						0x75 // 
 
 #define MPU_REG_GYROXOUTH					0x43 //
 #define MPU_REG_GYROXOUTL					0x44 //
@@ -99,5 +99,5 @@ HAL_StatusTypeDef MPU_Register_Read(const uint8_t regAdd, uint8_t* retValue);
 /*Gyro output accessors*/
 bool MPU_GetGyro_Sample(MPU_Gyro_OutputSample* sample);
 bool MPU_GetGyro_SampleFIFO(MPU_Gyro_OutputSample* sample);
-bool MPU_Get_FIFOCount(int count);
+bool MPU_Get_FIFOCount(int* count);
 #endif

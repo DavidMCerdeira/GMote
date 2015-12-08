@@ -2,7 +2,7 @@
 
 aquisitn aq;
 
-SemaphoreHandle_t  drdySemaph;
+SemaphoreHandle_t  accelDrdySemaph;
 extern osMessageQId accelFrameReadyMsgQ;
 int firstTime = 1;
 
@@ -38,7 +38,7 @@ void runAccelGest(void* argument)
 				goto EXIT;
 			
 			/* wait for accelerometer data */
-			xSemaphoreTake(drdySemaph, portMAX_DELAY);
+			xSemaphoreTake(accelDrdySemaph, portMAX_DELAY);
 			
 			/* read 24 samples */
 			for(i = 0; i < nSamples; 
@@ -106,7 +106,7 @@ void initAccelAq(void)
 	initBuffer1();
 	
 	/* Create semaphore */
-	drdySemaph = xSemaphoreCreateCounting(7, 0);
+	accelDrdySemaph = xSemaphoreCreateCounting(7, 0);
 	
 	/* enbale interrupt */
 	HAL_NVIC_EnableIRQ(EXTI0_IRQn);

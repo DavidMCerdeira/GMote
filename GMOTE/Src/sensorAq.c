@@ -39,7 +39,7 @@ void aqManager(void* argument)
 void gPress(void)
 {
 	static int nFrames = 0;
-	volatile int16_t* buff[3];
+	int16_t* buff[3];
 	BaseType_t msgQRcvd = pdFALSE;
 	BaseType_t notifRcvd = pdFALSE;
 	uint32_t notification;

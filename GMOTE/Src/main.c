@@ -32,7 +32,7 @@
   */
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f4xx_hal.h"
-#include "FreeRTOS.h"
+#include "cmsis_os.h"
 
 /* USER CODE BEGIN Includes */
 #include "sensorAq.h"
@@ -49,6 +49,8 @@ TIM_HandleTypeDef htim6;
 
 UART_HandleTypeDef huart2;
 
+osThreadId defaultTaskHandle;
+
 /* USER CODE BEGIN PV */
 /* Private variables ---------------------------------------------------------*/
 TaskHandle_t aqManagerHandle = NULL;
@@ -62,6 +64,7 @@ static void MX_SPI1_Init(void);
 static void MX_SPI3_Init(void);
 static void MX_TIM6_Init(void);
 static void MX_USART2_UART_Init(void);
+void StartDefaultTask(void const * argument);
 
 /* USER CODE BEGIN PFP */
 /* Private function prototypes -----------------------------------------------*/
@@ -74,7 +77,9 @@ static void MX_USART2_UART_Init(void);
 
 int main(void)
 {
+
   /* USER CODE BEGIN 1 */
+		uint8_t retVal;
 	// don't forget to turn off external interrupt 0 at first
   /* USER CODE END 1 */
 
@@ -97,7 +102,9 @@ int main(void)
   /* USER CODE BEGIN 2 */
 	ORANGE(1);
 	//nrf24l01_Init();
-
+	MPU_Register_Read(MPU_REG_WHOAMI, &retVal);
+	MPU_Init();
+	
 	//gyroTest();
   /* USER CODE END 2 */
 
@@ -115,11 +122,11 @@ int main(void)
 
   /* Create the thread(s) */
   /* definition and creation of defaultTask */
-	
-	/* changing */
 
   /* USER CODE BEGIN RTOS_THREADS */
-	xTaskCreate(aqManager, "AqManager", 512, NULL, 1, &aqManagerHandle);
+	//xTaskCreate(aqManager, "AqManager", 512, NULL, 1, &aqManagerHandle);
+  initGyroAq();
+	while(1){}
   /* USER CODE END RTOS_THREADS */
 
   /* USER CODE BEGIN RTOS_QUEUES */
@@ -210,7 +217,7 @@ void MX_SPI1_Init(void)
   hspi1.Init.CLKPolarity = SPI_POLARITY_LOW;
   hspi1.Init.CLKPhase = SPI_PHASE_1EDGE;
   hspi1.Init.NSS = SPI_NSS_SOFT;
-  hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_8;
+  hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_256;
   hspi1.Init.FirstBit = SPI_FIRSTBIT_MSB;
   hspi1.Init.TIMode = SPI_TIMODE_DISABLED;
   hspi1.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLED;
@@ -236,11 +243,13 @@ void MX_SPI3_Init(void)
   hspi3.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLED;
   hspi3.Init.CRCPolynomial = 10;
   HAL_SPI_Init(&hspi3);
+
 }
 
 /* TIM6 init function */
 void MX_TIM6_Init(void)
 {
+
   TIM_MasterConfigTypeDef sMasterConfig;
 
   htim6.Instance = TIM6;
@@ -252,6 +261,7 @@ void MX_TIM6_Init(void)
   sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
   sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
   HAL_TIMEx_MasterConfigSynchronization(&htim6, &sMasterConfig);
+
 }
 
 /* USART2 init function */
@@ -346,10 +356,10 @@ void MX_GPIO_Init(void)
 
   /*Configure GPIO pins : PB0 PB1 PB10 PB11 
                            PB12 PB13 PB14 PB15 
-                           PB6 PB7 */
+                           PB7 */
   GPIO_InitStruct.Pin = GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_10|GPIO_PIN_11 
                           |GPIO_PIN_12|GPIO_PIN_13|GPIO_PIN_14|GPIO_PIN_15 
-                          |GPIO_PIN_6|GPIO_PIN_7;
+                          |GPIO_PIN_7;
   GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
@@ -405,6 +415,12 @@ void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_LOW;
   HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
 
+  /*Configure GPIO pin : PB6 */
+  GPIO_InitStruct.Pin = GPIO_PIN_6;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
   /*Configure GPIO pin : PE0 */
   GPIO_InitStruct.Pin = GPIO_PIN_0;
   GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
@@ -416,7 +432,10 @@ void MX_GPIO_Init(void)
   //HAL_NVIC_EnableIRQ(EXTI0_IRQn);
 
   HAL_NVIC_SetPriority(EXTI1_IRQn, 5, 0);
-  HAL_NVIC_EnableIRQ(EXTI1_IRQn);
+  //HAL_NVIC_EnableIRQ(EXTI1_IRQn);
+
+  HAL_NVIC_SetPriority(EXTI9_5_IRQn, 5, 0);
+  //HAL_NVIC_EnableIRQ(EXTI9_5_IRQn);
 
 }
 

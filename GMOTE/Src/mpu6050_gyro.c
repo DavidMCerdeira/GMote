@@ -3,9 +3,10 @@
 extern I2C_HandleTypeDef hi2c1;
 
 void MPU_Init(){
-	uint8_t returnVal;
 	//I2C_INIT();
 	MPU_WAKEUP();
+	
+	//MPU_Register_Read(MPU_REG_WHOAMI, &retVal);
 	
 	/*Reset Signal paths for Gyro*/
 	MPU_Register_Write(MPU_REG_SIGNALPATHRESET, MPU_REG_SIGNALPATHRESET_VAL);
@@ -29,7 +30,8 @@ void MPU_Init(){
 	MPU_Register_Write(MPU_REG_INTENABLE, MPU_REG_INTENABLE_VAL);
 	
 	/*Enables I2C */
-	MPU_Register_Write(MPU_REG_USERCTRL, MPU_REG_USERCTRL_VAL);
+	MPU_Register_Write(MPU_REG_USERCTRL, 0x05);
+	MPU_Register_Write(MPU_REG_USERCTRL, 0x40);
 	
 	/*Configure Interruption*/
 	MPU_Register_Write(MPU_REG_INTENABLE, MPU_REG_INTENABLE_VAL);
@@ -52,8 +54,9 @@ bool MPU_GetGyro_Sample(MPU_Gyro_OutputSample* sample){
 	return true;
 }
 
-inline bool MPU_Get_SampleFIFO(MPU_Gyro_OutputSample* sample){
-	uint8_t temp[6], i;
+inline bool MPU_GetGyro_SampleFIFO(MPU_Gyro_OutputSample* sample){
+	uint8_t temp[6];
+	volatile uint32_t	i;
 	
 	for(i=0; i<6; i++){
 		if(!MPU_Register_Read(MPU_REG_FIFORW, &temp[i]))
@@ -66,12 +69,13 @@ inline bool MPU_Get_SampleFIFO(MPU_Gyro_OutputSample* sample){
 	return true;
 }
 
-inline bool MPU_Get_FIFOCount(int count){
+inline bool MPU_Get_FIFOCount(int *count){
 		uint8_t count_H, count_L;
 		/*If when reading both High and Low Fifo Count Registers is ok*/
 		if(MPU_Register_Read(MPU_REG_FIFOCOUNTL, &count_L) &&		
 			 MPU_Register_Read(MPU_REG_FIFOCOUNTH, &count_H)){
-				count = (count_H << 8) | count_L; 
+					count_H &= 0x0E; //Filter unwanted bits
+				 *count = (count_H << 8) | count_L; 
 				return true;
 		}
 		return false;
@@ -79,9 +83,9 @@ inline bool MPU_Get_FIFOCount(int count){
 
 HAL_StatusTypeDef MPU_Register_Write(const uint8_t regAdd, const uint8_t regVal){
 	uint8_t d[]={regAdd, regVal};
-	return HAL_I2C_Master_Transmit(&_HI2C,  MPU_CUR_ADDRESS, d, 2, 100);
+	return (HAL_I2C_Master_Transmit(&_HI2C,  MPU_CUR_ADDRESS, d, 2, 100) == HAL_OK);
 }
  
 HAL_StatusTypeDef MPU_Register_Read(const uint8_t regAdd, uint8_t* retValue){
-	return HAL_I2C_Mem_Read(&_HI2C, MPU_CUR_ADDRESS, regAdd, 1, retValue, 1, 100) ;		
+	return (HAL_I2C_Mem_Read(&_HI2C, MPU_CUR_ADDRESS, regAdd, 1, retValue, 1, 100) == HAL_OK);		
 }

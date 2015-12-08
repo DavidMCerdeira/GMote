@@ -50,3 +50,7 @@ gmote configuration\gmoteisr.o: ..\Middlewares\Third_Party\FreeRTOS\Source\inclu
 gmote configuration\gmoteisr.o: ..\Middlewares\Third_Party\FreeRTOS\Source\include\event_groups.h
 gmote configuration\gmoteisr.o: ..\Inc\discoLeds.h
 gmote configuration\gmoteisr.o: ..\Inc\sensors.h
+gmote configuration\gmoteisr.o: ..\Inc\GyroAq.h
+gmote configuration\gmoteisr.o: ..\Inc\mpu6050_gyro.h
+gmote configuration\gmoteisr.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h
+gmote configuration\gmoteisr.o: ..\Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS\cmsis_os.h

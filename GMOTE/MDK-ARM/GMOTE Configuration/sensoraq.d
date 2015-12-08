@@ -56,6 +56,10 @@ gmote configuration\sensoraq.o: ..\Inc\error.h
 gmote configuration\sensoraq.o: ..\Inc\discoLeds.h
 gmote configuration\sensoraq.o: ..\Inc\sensors.h
 gmote configuration\sensoraq.o: ..\Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS\cmsis_os.h
+gmote configuration\sensoraq.o: ..\Inc\GyroAq.h
+gmote configuration\sensoraq.o: ..\Inc\mpu6050_gyro.h
+gmote configuration\sensoraq.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h
+gmote configuration\sensoraq.o: ..\Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS\cmsis_os.h
 gmote configuration\sensoraq.o: ..\Inc\nrf24l01.h
 gmote configuration\sensoraq.o: ..\Inc\nrf24l01registers.h
 gmote configuration\sensoraq.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
