@@ -1,2 +1,4 @@
-*.[ao]
+*.[aod]
 *.crf
+/GMOT/MDK-ARM/GMOTE Configuration
+*.lst
