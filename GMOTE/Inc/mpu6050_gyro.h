@@ -39,7 +39,7 @@
 /*Configures the MPU according to what difined as _MODE*/
 #define _FIFO_MODE 1
 #define _DATA_READY 0
-#define _MODE _FIFO_MODE //Change here if you want to
+#define _MODE _DATA_READY //Change here if you want to
 
 #if _MODE == _FIFO_MODE
 	#define MPU_REG_SMPLRTDIV_VAL	 			((GYROOUTPUTRATE/SAMPLERATE)-1)
@@ -60,6 +60,7 @@
 	#define MPU_REG_INTENABLE_VAL				0x01		
 	#define MPU_REG_SIGNALPATHRESET_VAL	0x04	
 	#define MPU_REG_USERCTRL_VAL				0x00				
+
 #endif
 
 #define MPU_REG_INTSTATUS					0x3A // 
@@ -78,7 +79,9 @@
 #define MPU_WAKEUP() MPU_Register_Write(MPU_REG_PWRMGMT1, 0x00)
 #define MPU_SLEEP()	 MPU_Register_Write(MPU_REG_PWRMGMT1, (0x01 << 6))
 
-#define MPU_RESET() MPU_Register_Write(MPU_REG_USERCTRL, MPU_REG_USERCTRL_VAL)
+#define MPU_FIFORESET() MPU_Register_Write(MPU_REG_USERCTRL, MPU_REG_USERCTRL_VAL)
+
+#define MPU_REGSRESET() MPU_Register_Write(MPU_REG_PWRMGMT1, 0x80)
 
 #define I2C_INIT() MX_I2C3_Init()
 

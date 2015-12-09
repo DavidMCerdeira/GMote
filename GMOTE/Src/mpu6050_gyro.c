@@ -7,6 +7,8 @@ void MPU_Init()
 	uint8_t retVal;
 	//I2C_INIT();
 	MPU_WAKEUP();
+	/*Registers to default value*/
+	MPU_REGSRESET();
 	
 	MPU_Register_Read(MPU_REG_WHOAMI, &retVal);
 	if(retVal != 0x68){
