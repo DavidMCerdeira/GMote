@@ -94,7 +94,7 @@ typedef struct{
 }MPU_Gyro_OutputSample; 
 
 /*Initialization*/
-void MPU_Init(void);
+void MPU_Initialize(void);
 
 /*Registers basic accessors*/
 HAL_StatusTypeDef MPU_Register_Write(const uint8_t regAdd, const uint8_t regValue);

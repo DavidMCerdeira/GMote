@@ -73,6 +73,7 @@ void gPress(void)
 		{
 			/* order aquisition thread to stop */;
 			xTaskNotify(accelThreadHandle, STOP, eSetBits);
+			xTaskNotify(gyroThreadHandle, STOP, eSetBits);
 			break;
 		}
 		/* message received */

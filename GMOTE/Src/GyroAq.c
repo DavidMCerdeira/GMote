@@ -74,7 +74,7 @@ void  runGyroGest(void * argument){
 
 void initGyroAq(void)
 {
-	MPU_Init();
+	MPU_Initialize();
 	/* Create semaphore */
 	gyroDrdySemaph = xSemaphoreCreateCounting(7, 0);
 	/* prepare buffer */

@@ -77,7 +77,6 @@ void StartDefaultTask(void const * argument);
 
 int main(void)
 {
-
   /* USER CODE BEGIN 1 */
 		uint8_t retVal;
 	// don't forget to turn off external interrupt 0 at first
