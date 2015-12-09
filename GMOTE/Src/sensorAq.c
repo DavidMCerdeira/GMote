@@ -54,11 +54,15 @@ void gPress(void)
 	BaseType_t notifRcvd = pdFALSE;
 	uint32_t notification;
 	
+	/* wait for thread to be actualy suspended */
+	while(eTaskGetState(accelThreadHandle) != eSuspended){}
+	while(eTaskGetState(accelThreadHandle) != eSuspended){}
+	
+	/* wake up tasks */
 	vTaskResume(accelThreadHandle);
 	vTaskResume(gyroThreadHandle);
 	
 	ORANGE(1);
-
 	while(1){
 		/* wait for frame */
 		
@@ -73,7 +77,7 @@ void gPress(void)
 		{
 			/* order aquisition thread to stop */;
 			xTaskNotify(accelThreadHandle, STOP, eSetBits);
-			xTaskNotify(gyroThreadHandle, STOP, eSetBits);
+			xTaskNotify(gyroThreadHandle,  STOP, eSetBits);
 			break;
 		}
 		/* message received */
