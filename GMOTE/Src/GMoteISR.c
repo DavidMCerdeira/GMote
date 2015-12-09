@@ -1,13 +1,11 @@
 #include "stm32f4xx_hal.h"
 #include "cmsis_os.h"
 #include "discoLeds.h"
-#include "sensors.h"
-
-/*TESTING PURPOSE*/
-#include "GyroAq.h"
-
+#include "sensor.h"
+#include "mpu6050_gyro.h"
 
 extern SemaphoreHandle_t accelDrdySemaph;
+extern SemaphoreHandle_t gyroDrdySemaph;
 extern TaskHandle_t aqManagerHandle;
 
 void HAL_GPIO_EXTI_Callback(uint16_t pin)
@@ -35,21 +33,23 @@ void HAL_GPIO_EXTI_Callback(uint16_t pin)
 		}
 	}
 	if(pin == GPIO_PIN_0){
-		/* increment semaphore */ //osSemaphoreRelease(drdySemaph);
+		/* increment semaphore */
 		semophoreWoke = pdFALSE;
-
 		xSemaphoreGiveFromISR(accelDrdySemaph, &semophoreWoke);
 		portYIELD_FROM_ISR(semophoreWoke);
 	}
 	/*MPU ISR*/
 		if(pin == GPIO_PIN_6){
 			mpuFIFOCount++;
-			if(MPU_Get_FIFOCount(&retVal)) ;
+			if(MPU_Get_FIFOCount(&retVal)) 
+				return;
 			if(retVal >= 24){
 				mpuFIFOCount = 0;
-				/*Function that reads sample*/
-				 runGyroGest(NULL);
-				/*Reset MPU*/
+				
+				semophoreWoke = pdFALSE;
+				xSemaphoreGiveFromISR(gyroDrdySemaph, &semophoreWoke);
+				portYIELD_FROM_ISR(semophoreWoke);
+				
 				//MPU_RESET();
 		}	
 	}	

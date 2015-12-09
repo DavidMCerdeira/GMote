@@ -103,7 +103,13 @@ int main(void)
 	ORANGE(1);
 	//nrf24l01_Init();
 	MPU_Register_Read(MPU_REG_WHOAMI, &retVal);
+	if(retVal != 0x68){
+		error("Gyro problems", 3);
+	}
 	MPU_Init();
+	
+	mpuTest();
+	while(1){}
 	
 	//gyroTest();
   /* USER CODE END 2 */
@@ -124,8 +130,8 @@ int main(void)
   /* definition and creation of defaultTask */
 
   /* USER CODE BEGIN RTOS_THREADS */
-	//xTaskCreate(aqManager, "AqManager", 512, NULL, 1, &aqManagerHandle);
-  initGyroAq();
+	xTaskCreate(aqManager, "AqManager", 512, NULL, 1, &aqManagerHandle);
+
 	while(1){}
   /* USER CODE END RTOS_THREADS */
 
@@ -432,7 +438,7 @@ void MX_GPIO_Init(void)
   //HAL_NVIC_EnableIRQ(EXTI0_IRQn);
 
   HAL_NVIC_SetPriority(EXTI1_IRQn, 5, 0);
-  //HAL_NVIC_EnableIRQ(EXTI1_IRQn);
+  HAL_NVIC_EnableIRQ(EXTI1_IRQn);
 
   HAL_NVIC_SetPriority(EXTI9_5_IRQn, 5, 0);
   //HAL_NVIC_EnableIRQ(EXTI9_5_IRQn);

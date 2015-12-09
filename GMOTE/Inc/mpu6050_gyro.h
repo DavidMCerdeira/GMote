@@ -32,13 +32,13 @@
 //#define MPU_REG_PWRMGMT2					0x6C //
 
 /*SAMPLE FREQ DEFS*/
-#define GYROOUTPUTRATE 1000
+#define GYROOUTPUTRATE 8000
 #define SAMPLERATE 100
 
 /*Configures the MPU according to what difined as _MODE*/
 #define _FIFO_MODE 1
 #define _DATA_READY 0
-#define _MODE FIFO_MODE //Change here if you want to
+#define _MODE _FIFO_MODE //Change here if you want to
 
 #if _MODE == _FIFO_MODE
 	#define MPU_REG_SMPLRTDIV_VAL	 			((GYROOUTPUTRATE/SAMPLERATE)-1)
@@ -97,7 +97,7 @@ HAL_StatusTypeDef MPU_Register_Write(const uint8_t regAdd, const uint8_t regValu
 HAL_StatusTypeDef MPU_Register_Read(const uint8_t regAdd, uint8_t* retValue);
 
 /*Gyro output accessors*/
-bool MPU_GetGyro_Sample(MPU_Gyro_OutputSample* sample);
-bool MPU_GetGyro_SampleFIFO(MPU_Gyro_OutputSample* sample);
+bool MPU_GetGyro_Sample(int16_t* sample);
+bool MPU_GetGyro_SampleFIFO(int16_t* sample);
 bool MPU_Get_FIFOCount(int* count);
 #endif

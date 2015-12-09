@@ -3,16 +3,11 @@
 
 #include "mpu6050_gyro.h"
 #include "cmsis_os.h"
+#include "sensor.h"
 
-//typedef
-//struct aquisitn
-//{
-//	uint32_t start;
-//	uint32_t end;
-//	int16_t samples[3][200];
-//}aquisitn;
-
-void runGyroGest(void const * argument);
+void runGyroGest(void * argument);
 void initGyroAq(void);
+
+void mpuTest(void);
 
 #endif

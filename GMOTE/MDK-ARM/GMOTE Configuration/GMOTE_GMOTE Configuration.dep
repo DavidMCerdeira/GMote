@@ -66,7 +66,7 @@ I (..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_spi.h)(0x56664384)
 I (..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_tim.h)(0x56664384)
 I (..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_tim_ex.h)(0x564315DF)
 I (..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_uart.h)(0x56664384)
-F (..\Src\main.c)(0x56670655)(-c --cpu Cortex-M4.fp -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I..\Inc -I..\Drivers\STM32F4xx_HAL_Driver\Inc -I..\Drivers\STM32F4xx_HAL_Driver\Inc\Legacy -I..\Drivers\CMSIS\Include -I..\Drivers\CMSIS\Device\ST\STM32F4xx\Include -I..\Middlewares\Third_Party\FreeRTOS\Source\portable\RVDS\ARM_CM4F -I..\Middlewares\Third_Party\FreeRTOS\Source\include -I..\Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS --C99-I C:\Users\Utilizador\Documents\GitHub\GMote\GMOTE\MDK-ARM\RTE-I C:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.5.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-I C:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="516" -DSTM32F407xx -DUSE_HAL_DRIVER -DSTM32F407xx-o "gmote configuration\main.o" --omf_browse "gmote configuration\main.crf" --depend "gmote configuration\main.d")
+F (..\Src\main.c)(0x566774B6)(-c --cpu Cortex-M4.fp -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I..\Inc -I..\Drivers\STM32F4xx_HAL_Driver\Inc -I..\Drivers\STM32F4xx_HAL_Driver\Inc\Legacy -I..\Drivers\CMSIS\Include -I..\Drivers\CMSIS\Device\ST\STM32F4xx\Include -I..\Middlewares\Third_Party\FreeRTOS\Source\portable\RVDS\ARM_CM4F -I..\Middlewares\Third_Party\FreeRTOS\Source\include -I..\Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS --C99-I C:\Users\Utilizador\Documents\GitHub\GMote\GMOTE\MDK-ARM\RTE-I C:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.5.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-I C:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="516" -DSTM32F407xx -DUSE_HAL_DRIVER -DSTM32F407xx-o "gmote configuration\main.o" --omf_browse "gmote configuration\main.crf" --depend "gmote configuration\main.d")
 I (..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal.h)(0x564315DF)
 I (..\Inc\stm32f4xx_hal_conf.h)(0x56664384)
 I (..\Inc\mxconstants.h)(0x56670139)
@@ -114,14 +114,15 @@ I (..\Middlewares\Third_Party\FreeRTOS\Source\include\timers.h)(0x56664384)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\queue.h)(0x56664384)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\semphr.h)(0x56664384)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\event_groups.h)(0x56664384)
-I (..\Inc\sensorAq.h)(0x5666FB2E)
-I (..\Inc\AccelerometerAq.h)(0x56664384)
+I (..\Inc\sensorAq.h)(0x5667530F)
+I (..\Inc\AccelerometerAq.h)(0x56674CA8)
 I (..\Inc\Accelerometer.h)(0x56664384)
 I (..\Inc\error.h)(0x56664384)
 I (..\Inc\discoLeds.h)(0x56664384)
 I (..\Inc\sensors.h)(0x56664384)
-I (..\Inc\GyroAq.h)(0x5666EDD6)
-I (..\Inc\mpu6050_gyro.h)(0x56672693)
+I (..\Inc\sensor.h)(0x5667530F)
+I (..\Inc\GyroAq.h)(0x56676024)
+I (..\Inc\mpu6050_gyro.h)(0x56676CB5)
 I (C:\Keil_v5\ARM\ARMCC\include\stdbool.h)(0x55AF4A52)
 I (..\Inc\nrf24l01.h)(0x56664384)
 I (..\Inc\nrf24l01registers.h)(0x56664384)
@@ -241,8 +242,8 @@ I (..\Middlewares\Third_Party\FreeRTOS\Source\portable\RVDS\ARM_CM4F\portmacro.h
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\mpu_wrappers.h)(0x564315F8)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\task.h)(0x56664384)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\list.h)(0x56664384)
-F (..\Src\AccelerometerAq.c)(0x5666FD8D)(-c --cpu Cortex-M4.fp -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I..\Inc -I..\Drivers\STM32F4xx_HAL_Driver\Inc -I..\Drivers\STM32F4xx_HAL_Driver\Inc\Legacy -I..\Drivers\CMSIS\Include -I..\Drivers\CMSIS\Device\ST\STM32F4xx\Include -I..\Middlewares\Third_Party\FreeRTOS\Source\portable\RVDS\ARM_CM4F -I..\Middlewares\Third_Party\FreeRTOS\Source\include -I..\Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS --C99-I C:\Users\Utilizador\Documents\GitHub\GMote\GMOTE\MDK-ARM\RTE-I C:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.5.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-I C:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="516" -DSTM32F407xx -DUSE_HAL_DRIVER -DSTM32F407xx-o "gmote configuration\accelerometeraq.o" --omf_browse "gmote configuration\accelerometeraq.crf" --depend "gmote configuration\accelerometeraq.d")
-I (..\Inc\AccelerometerAq.h)(0x56664384)
+F (..\Src\AccelerometerAq.c)(0x56675F8D)(-c --cpu Cortex-M4.fp -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I..\Inc -I..\Drivers\STM32F4xx_HAL_Driver\Inc -I..\Drivers\STM32F4xx_HAL_Driver\Inc\Legacy -I..\Drivers\CMSIS\Include -I..\Drivers\CMSIS\Device\ST\STM32F4xx\Include -I..\Middlewares\Third_Party\FreeRTOS\Source\portable\RVDS\ARM_CM4F -I..\Middlewares\Third_Party\FreeRTOS\Source\include -I..\Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS --C99-I C:\Users\Utilizador\Documents\GitHub\GMote\GMOTE\MDK-ARM\RTE-I C:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.5.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-I C:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="516" -DSTM32F407xx -DUSE_HAL_DRIVER -DSTM32F407xx-o "gmote configuration\accelerometeraq.o" --omf_browse "gmote configuration\accelerometeraq.crf" --depend "gmote configuration\accelerometeraq.d")
+I (..\Inc\AccelerometerAq.h)(0x56674CA8)
 I (..\Inc\Accelerometer.h)(0x56664384)
 I (..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal.h)(0x564315DF)
 I (..\Inc\stm32f4xx_hal_conf.h)(0x56664384)
@@ -294,8 +295,9 @@ I (..\Middlewares\Third_Party\FreeRTOS\Source\include\event_groups.h)(0x56664384
 I (..\Inc\error.h)(0x56664384)
 I (..\Inc\discoLeds.h)(0x56664384)
 I (..\Inc\sensors.h)(0x56664384)
-F (..\Src\sensorAq.c)(0x5666F83F)(-c --cpu Cortex-M4.fp -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I..\Inc -I..\Drivers\STM32F4xx_HAL_Driver\Inc -I..\Drivers\STM32F4xx_HAL_Driver\Inc\Legacy -I..\Drivers\CMSIS\Include -I..\Drivers\CMSIS\Device\ST\STM32F4xx\Include -I..\Middlewares\Third_Party\FreeRTOS\Source\portable\RVDS\ARM_CM4F -I..\Middlewares\Third_Party\FreeRTOS\Source\include -I..\Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS --C99-I C:\Users\Utilizador\Documents\GitHub\GMote\GMOTE\MDK-ARM\RTE-I C:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.5.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-I C:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="516" -DSTM32F407xx -DUSE_HAL_DRIVER -DSTM32F407xx-o "gmote configuration\sensoraq.o" --omf_browse "gmote configuration\sensoraq.crf" --depend "gmote configuration\sensoraq.d")
-I (..\Inc\sensorAq.h)(0x5666FB2E)
+I (..\Inc\sensor.h)(0x5667530F)
+F (..\Src\sensorAq.c)(0x56675F8D)(-c --cpu Cortex-M4.fp -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I..\Inc -I..\Drivers\STM32F4xx_HAL_Driver\Inc -I..\Drivers\STM32F4xx_HAL_Driver\Inc\Legacy -I..\Drivers\CMSIS\Include -I..\Drivers\CMSIS\Device\ST\STM32F4xx\Include -I..\Middlewares\Third_Party\FreeRTOS\Source\portable\RVDS\ARM_CM4F -I..\Middlewares\Third_Party\FreeRTOS\Source\include -I..\Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS --C99-I C:\Users\Utilizador\Documents\GitHub\GMote\GMOTE\MDK-ARM\RTE-I C:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.5.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-I C:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="516" -DSTM32F407xx -DUSE_HAL_DRIVER -DSTM32F407xx-o "gmote configuration\sensoraq.o" --omf_browse "gmote configuration\sensoraq.crf" --depend "gmote configuration\sensoraq.d")
+I (..\Inc\sensorAq.h)(0x5667530F)
 I (..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal.h)(0x564315DF)
 I (..\Inc\stm32f4xx_hal_conf.h)(0x56664384)
 I (..\Inc\mxconstants.h)(0x56670139)
@@ -343,13 +345,14 @@ I (..\Middlewares\Third_Party\FreeRTOS\Source\include\timers.h)(0x56664384)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\queue.h)(0x56664384)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\semphr.h)(0x56664384)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\event_groups.h)(0x56664384)
-I (..\Inc\AccelerometerAq.h)(0x56664384)
+I (..\Inc\AccelerometerAq.h)(0x56674CA8)
 I (..\Inc\Accelerometer.h)(0x56664384)
 I (..\Inc\error.h)(0x56664384)
 I (..\Inc\discoLeds.h)(0x56664384)
 I (..\Inc\sensors.h)(0x56664384)
-I (..\Inc\GyroAq.h)(0x5666EDD6)
-I (..\Inc\mpu6050_gyro.h)(0x56672693)
+I (..\Inc\sensor.h)(0x5667530F)
+I (..\Inc\GyroAq.h)(0x56676024)
+I (..\Inc\mpu6050_gyro.h)(0x56676CB5)
 I (C:\Keil_v5\ARM\ARMCC\include\stdbool.h)(0x55AF4A52)
 I (..\Inc\nrf24l01.h)(0x56664384)
 I (..\Inc\nrf24l01registers.h)(0x56664384)
@@ -390,7 +393,7 @@ I (..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_spi.h)(0x56664384)
 I (..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_tim.h)(0x56664384)
 I (..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_tim_ex.h)(0x564315DF)
 I (..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_uart.h)(0x56664384)
-F (..\Src\GMoteISR.c)(0x5667402F)(-c --cpu Cortex-M4.fp -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I..\Inc -I..\Drivers\STM32F4xx_HAL_Driver\Inc -I..\Drivers\STM32F4xx_HAL_Driver\Inc\Legacy -I..\Drivers\CMSIS\Include -I..\Drivers\CMSIS\Device\ST\STM32F4xx\Include -I..\Middlewares\Third_Party\FreeRTOS\Source\portable\RVDS\ARM_CM4F -I..\Middlewares\Third_Party\FreeRTOS\Source\include -I..\Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS --C99-I C:\Users\Utilizador\Documents\GitHub\GMote\GMOTE\MDK-ARM\RTE-I C:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.5.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-I C:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="516" -DSTM32F407xx -DUSE_HAL_DRIVER -DSTM32F407xx-o "gmote configuration\gmoteisr.o" --omf_browse "gmote configuration\gmoteisr.crf" --depend "gmote configuration\gmoteisr.d")
+F (..\Src\GMoteISR.c)(0x56675912)(-c --cpu Cortex-M4.fp -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I..\Inc -I..\Drivers\STM32F4xx_HAL_Driver\Inc -I..\Drivers\STM32F4xx_HAL_Driver\Inc\Legacy -I..\Drivers\CMSIS\Include -I..\Drivers\CMSIS\Device\ST\STM32F4xx\Include -I..\Middlewares\Third_Party\FreeRTOS\Source\portable\RVDS\ARM_CM4F -I..\Middlewares\Third_Party\FreeRTOS\Source\include -I..\Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS --C99-I C:\Users\Utilizador\Documents\GitHub\GMote\GMOTE\MDK-ARM\RTE-I C:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.5.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-I C:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="516" -DSTM32F407xx -DUSE_HAL_DRIVER -DSTM32F407xx-o "gmote configuration\gmoteisr.o" --omf_browse "gmote configuration\gmoteisr.crf" --depend "gmote configuration\gmoteisr.d")
 I (..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal.h)(0x564315DF)
 I (..\Inc\stm32f4xx_hal_conf.h)(0x56664384)
 I (..\Inc\mxconstants.h)(0x56670139)
@@ -439,9 +442,8 @@ I (..\Middlewares\Third_Party\FreeRTOS\Source\include\queue.h)(0x56664384)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\semphr.h)(0x56664384)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\event_groups.h)(0x56664384)
 I (..\Inc\discoLeds.h)(0x56664384)
-I (..\Inc\sensors.h)(0x56664384)
-I (..\Inc\GyroAq.h)(0x5666EDD6)
-I (..\Inc\mpu6050_gyro.h)(0x56672693)
+I (..\Inc\sensor.h)(0x5667530F)
+I (..\Inc\mpu6050_gyro.h)(0x56676CB5)
 I (C:\Keil_v5\ARM\ARMCC\include\stdbool.h)(0x55AF4A52)
 F (..\Src\nrf24l01.c)(0x56664384)(-c --cpu Cortex-M4.fp -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I..\Inc -I..\Drivers\STM32F4xx_HAL_Driver\Inc -I..\Drivers\STM32F4xx_HAL_Driver\Inc\Legacy -I..\Drivers\CMSIS\Include -I..\Drivers\CMSIS\Device\ST\STM32F4xx\Include -I..\Middlewares\Third_Party\FreeRTOS\Source\portable\RVDS\ARM_CM4F -I..\Middlewares\Third_Party\FreeRTOS\Source\include -I..\Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS --C99-I C:\Users\Utilizador\Documents\GitHub\GMote\GMOTE\MDK-ARM\RTE-I C:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.5.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-I C:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="516" -DSTM32F407xx -DUSE_HAL_DRIVER -DSTM32F407xx-o "gmote configuration\nrf24l01.o" --omf_browse "gmote configuration\nrf24l01.crf" --depend "gmote configuration\nrf24l01.d")
 I (..\Inc\nrf24l01.h)(0x56664384)
@@ -551,9 +553,9 @@ I (..\Inc\nrf24l01.h)(0x56664384)
 I (..\Inc\nrf24l01registers.h)(0x56664384)
 I (C:\Keil_v5\ARM\ARMCC\include\string.h)(0x55AF4A52)
 I (..\Inc\usDelay.h)(0x56664384)
-F (..\Src\GyroAq.c)(0x56672234)(-c --cpu Cortex-M4.fp -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I..\Inc -I..\Drivers\STM32F4xx_HAL_Driver\Inc -I..\Drivers\STM32F4xx_HAL_Driver\Inc\Legacy -I..\Drivers\CMSIS\Include -I..\Drivers\CMSIS\Device\ST\STM32F4xx\Include -I..\Middlewares\Third_Party\FreeRTOS\Source\portable\RVDS\ARM_CM4F -I..\Middlewares\Third_Party\FreeRTOS\Source\include -I..\Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS --C99-I C:\Users\Utilizador\Documents\GitHub\GMote\GMOTE\MDK-ARM\RTE-I C:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.5.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-I C:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="516" -DSTM32F407xx -DUSE_HAL_DRIVER -DSTM32F407xx-o "gmote configuration\gyroaq.o" --omf_browse "gmote configuration\gyroaq.crf" --depend "gmote configuration\gyroaq.d")
-I (..\Inc\GyroAq.h)(0x5666EDD6)
-I (..\Inc\mpu6050_gyro.h)(0x56672693)
+F (..\Src\GyroAq.c)(0x5667743A)(-c --cpu Cortex-M4.fp -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I..\Inc -I..\Drivers\STM32F4xx_HAL_Driver\Inc -I..\Drivers\STM32F4xx_HAL_Driver\Inc\Legacy -I..\Drivers\CMSIS\Include -I..\Drivers\CMSIS\Device\ST\STM32F4xx\Include -I..\Middlewares\Third_Party\FreeRTOS\Source\portable\RVDS\ARM_CM4F -I..\Middlewares\Third_Party\FreeRTOS\Source\include -I..\Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS --C99-I C:\Users\Utilizador\Documents\GitHub\GMote\GMOTE\MDK-ARM\RTE-I C:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.5.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-I C:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="516" -DSTM32F407xx -DUSE_HAL_DRIVER -DSTM32F407xx-o "gmote configuration\gyroaq.o" --omf_browse "gmote configuration\gyroaq.crf" --depend "gmote configuration\gyroaq.d")
+I (..\Inc\GyroAq.h)(0x56676024)
+I (..\Inc\mpu6050_gyro.h)(0x56676CB5)
 I (..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal.h)(0x564315DF)
 I (..\Inc\stm32f4xx_hal_conf.h)(0x56664384)
 I (..\Inc\mxconstants.h)(0x56670139)
@@ -602,8 +604,10 @@ I (..\Middlewares\Third_Party\FreeRTOS\Source\include\timers.h)(0x56664384)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\queue.h)(0x56664384)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\semphr.h)(0x56664384)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\event_groups.h)(0x56664384)
-F (..\Src\mpu6050_gyro.c)(0x56674232)(-c --cpu Cortex-M4.fp -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I..\Inc -I..\Drivers\STM32F4xx_HAL_Driver\Inc -I..\Drivers\STM32F4xx_HAL_Driver\Inc\Legacy -I..\Drivers\CMSIS\Include -I..\Drivers\CMSIS\Device\ST\STM32F4xx\Include -I..\Middlewares\Third_Party\FreeRTOS\Source\portable\RVDS\ARM_CM4F -I..\Middlewares\Third_Party\FreeRTOS\Source\include -I..\Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS --C99-I C:\Users\Utilizador\Documents\GitHub\GMote\GMOTE\MDK-ARM\RTE-I C:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.5.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-I C:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="516" -DSTM32F407xx -DUSE_HAL_DRIVER -DSTM32F407xx-o "gmote configuration\mpu6050_gyro.o" --omf_browse "gmote configuration\mpu6050_gyro.crf" --depend "gmote configuration\mpu6050_gyro.d")
-I (..\Inc\mpu6050_gyro.h)(0x56672693)
+I (..\Inc\sensor.h)(0x5667530F)
+I (..\Inc\discoLeds.h)(0x56664384)
+F (..\Src\mpu6050_gyro.c)(0x56676AE5)(-c --cpu Cortex-M4.fp -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I..\Inc -I..\Drivers\STM32F4xx_HAL_Driver\Inc -I..\Drivers\STM32F4xx_HAL_Driver\Inc\Legacy -I..\Drivers\CMSIS\Include -I..\Drivers\CMSIS\Device\ST\STM32F4xx\Include -I..\Middlewares\Third_Party\FreeRTOS\Source\portable\RVDS\ARM_CM4F -I..\Middlewares\Third_Party\FreeRTOS\Source\include -I..\Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS --C99-I C:\Users\Utilizador\Documents\GitHub\GMote\GMOTE\MDK-ARM\RTE-I C:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.5.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-I C:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="516" -DSTM32F407xx -DUSE_HAL_DRIVER -DSTM32F407xx-o "gmote configuration\mpu6050_gyro.o" --omf_browse "gmote configuration\mpu6050_gyro.crf" --depend "gmote configuration\mpu6050_gyro.d")
+I (..\Inc\mpu6050_gyro.h)(0x56676CB5)
 I (..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal.h)(0x564315DF)
 I (..\Inc\stm32f4xx_hal_conf.h)(0x56664384)
 I (..\Inc\mxconstants.h)(0x56670139)
@@ -637,6 +641,40 @@ I (..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_tim.h)(0x56664384)
 I (..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_tim_ex.h)(0x564315DF)
 I (..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_uart.h)(0x56664384)
 I (C:\Keil_v5\ARM\ARMCC\include\stdbool.h)(0x55AF4A52)
+F (.\sensor.c)(0x56674DC6)(-c --cpu Cortex-M4.fp -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I..\Inc -I..\Drivers\STM32F4xx_HAL_Driver\Inc -I..\Drivers\STM32F4xx_HAL_Driver\Inc\Legacy -I..\Drivers\CMSIS\Include -I..\Drivers\CMSIS\Device\ST\STM32F4xx\Include -I..\Middlewares\Third_Party\FreeRTOS\Source\portable\RVDS\ARM_CM4F -I..\Middlewares\Third_Party\FreeRTOS\Source\include -I..\Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS --C99-I C:\Users\Utilizador\Documents\GitHub\GMote\GMOTE\MDK-ARM\RTE-I C:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.5.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-I C:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="516" -DSTM32F407xx -DUSE_HAL_DRIVER -DSTM32F407xx-o "gmote configuration\sensor.o" --omf_browse "gmote configuration\sensor.crf" --depend "gmote configuration\sensor.d")
+I (..\Inc\sensor.h)(0x5667530F)
+I (..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal.h)(0x564315DF)
+I (..\Inc\stm32f4xx_hal_conf.h)(0x56664384)
+I (..\Inc\mxconstants.h)(0x56670139)
+I (..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_rcc.h)(0x56664384)
+I (..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_def.h)(0x564315DF)
+I (..\Drivers\CMSIS\Device\ST\STM32F4xx\Include\stm32f4xx.h)(0x564315CF)
+I (..\Drivers\CMSIS\Device\ST\STM32F4xx\Include\stm32f407xx.h)(0x56664384)
+I (..\Drivers\CMSIS\Include\core_cm4.h)(0x56664384)
+I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x55AF4A52)
+I (..\Drivers\CMSIS\Include\core_cmInstr.h)(0x56664384)
+I (..\Drivers\CMSIS\Include\core_cmFunc.h)(0x56664384)
+I (..\Drivers\CMSIS\Include\core_cmSimd.h)(0x56664384)
+I (..\Drivers\CMSIS\Device\ST\STM32F4xx\Include\system_stm32f4xx.h)(0x564315CF)
+I (..\Drivers\STM32F4xx_HAL_Driver\Inc\Legacy/stm32_hal_legacy.h)(0x56664384)
+I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x55AF4A52)
+I (..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_rcc_ex.h)(0x56664384)
+I (..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_gpio.h)(0x564315DF)
+I (..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_gpio_ex.h)(0x56664384)
+I (..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_dma.h)(0x56664384)
+I (..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_dma_ex.h)(0x564315DF)
+I (..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_cortex.h)(0x56664384)
+I (..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_flash.h)(0x564315DF)
+I (..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_flash_ex.h)(0x56664384)
+I (..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_flash_ramfunc.h)(0x564315DF)
+I (..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_i2c.h)(0x56664384)
+I (..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_i2c_ex.h)(0x564315DF)
+I (..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_pwr.h)(0x564315DF)
+I (..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_pwr_ex.h)(0x56664384)
+I (..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_spi.h)(0x56664384)
+I (..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_tim.h)(0x56664384)
+I (..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_tim_ex.h)(0x564315DF)
+I (..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_uart.h)(0x56664384)
 F (..\Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_dma_ex.c)(0x564315DF)(-c --cpu Cortex-M4.fp -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I..\Inc -I..\Drivers\STM32F4xx_HAL_Driver\Inc -I..\Drivers\STM32F4xx_HAL_Driver\Inc\Legacy -I..\Drivers\CMSIS\Include -I..\Drivers\CMSIS\Device\ST\STM32F4xx\Include -I..\Middlewares\Third_Party\FreeRTOS\Source\portable\RVDS\ARM_CM4F -I..\Middlewares\Third_Party\FreeRTOS\Source\include -I..\Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS --C99-I C:\Users\Utilizador\Documents\GitHub\GMote\GMOTE\MDK-ARM\RTE-I C:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.5.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-I C:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="516" -DSTM32F407xx -DUSE_HAL_DRIVER -DSTM32F407xx-o "gmote configuration\stm32f4xx_hal_dma_ex.o" --omf_browse "gmote configuration\stm32f4xx_hal_dma_ex.crf" --depend "gmote configuration\stm32f4xx_hal_dma_ex.d")
 I (..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal.h)(0x564315DF)
 I (..\Inc\stm32f4xx_hal_conf.h)(0x56664384)

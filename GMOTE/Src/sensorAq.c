@@ -4,7 +4,9 @@ void gPress(void);
 void printFrame(int16_t** buff, int);
 
 QueueHandle_t accelFrameReadyMsgQ;
+QueueHandle_t gyroFrameReadyMsgQ;
 TaskHandle_t accelThreadHandle;
+TaskHandle_t gyroThreadHandle;
 
 void aqManager(void* argument)
 {
@@ -14,18 +16,24 @@ void aqManager(void* argument)
 	
 	/* init aquisitors */
 	initAccelAq();
+	initGyroAq();
 	
 	/* initialize accelerometer frame ready queue */
 	accelFrameReadyMsgQ = xQueueCreate(10, sizeof(int16_t*[3]));
+	gyroFrameReadyMsgQ = xQueueCreate(10, sizeof(int16_t*[3]));
 	
 	/* initiate suspended thread */
 	xTaskCreate(runAccelGest, "AccelGest", 128, NULL, 0, &accelThreadHandle);
+	xTaskCreate(runGyroGest, "GyroGest", 128, NULL, 0, &gyroThreadHandle);
+	
 	vTaskSuspend(accelThreadHandle);
+	vTaskSuspend(gyroThreadHandle);
+	
 	vTaskPrioritySet(accelThreadHandle, 2);
+	vTaskPrioritySet(gyroThreadHandle, 2);
 	
 	while(1)
 	{
-		//event = osSignalWait(GStart | EqON, osWaitForever);
 		notifRcvd = xTaskNotifyWait(0, 0, &notification, portMAX_DELAY);
 		if(notifRcvd == pdTRUE){
 			if(notification & GStart)
@@ -40,18 +48,22 @@ void gPress(void)
 {
 	static int nFrames = 0;
 	int16_t* buff[3];
-	BaseType_t msgQRcvd = pdFALSE;
+	BaseType_t accelMsgQRcvd = pdFALSE;
+	BaseType_t gyroMsgQRcvd = pdFALSE;
 	BaseType_t notifRcvd = pdFALSE;
 	uint32_t notification;
 	
 	vTaskResume(accelThreadHandle);
+	vTaskResume(gyroThreadHandle);
 	
 	ORANGE(1);
 
 	while(1){
 		/* wait for frame */
-		msgQRcvd = xQueueReceive(accelFrameReadyMsgQ, (void*)buff, portMAX_DELAY);
 		
+		/*Verificar que a sequência das duas linhas que se seguem não dão problemas*/
+		accelMsgQRcvd = xQueueReceive(accelFrameReadyMsgQ, (void*)buff, portMAX_DELAY);
+		gyroMsgQRcvd = xQueueReceive(accelFrameReadyMsgQ, (void*)buff, portMAX_DELAY);
 		/* check if user released button */
 		notifRcvd = xTaskNotifyWait(GStop, 0, &notification, 0);
 		
@@ -63,7 +75,7 @@ void gPress(void)
 			break;
 		}
 		/* message received */
-		if(msgQRcvd == pdTRUE){
+		if(accelMsgQRcvd == pdTRUE && gyroMsgQRcvd == pdTRUE){
 			/* if end of sampling */
 			if(buff == NULL){
 				break;

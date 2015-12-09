@@ -1,13 +1,11 @@
 #include "AccelerometerAq.h"
 
-aquisitn aq;
+aquisitn accelAq;
 
 SemaphoreHandle_t  accelDrdySemaph;
 extern osMessageQId accelFrameReadyMsgQ;
 int firstTime = 1;
 
-void printBuffer(void);
-void initBuffer1(void);
 int get_nextFram1(int16_t** buff);
 
 void runAccelGest(void* argument)
@@ -15,9 +13,8 @@ void runAccelGest(void* argument)
 	volatile int sampleCount = 0;
 	volatile int frameCount = 0;
 	
-	volatile osEvent event;
-	int16_t sample[3];
-	int16_t* ptr[3];
+	int16_t sample[NR_OF_AXES];
+	int16_t* ptr[NR_OF_AXES];
 	uint32_t i = 0;
 	BaseType_t notifRcvd = pdFALSE;
 	uint32_t notification;
@@ -46,9 +43,9 @@ void runAccelGest(void* argument)
 			{
 				read_sample((uint8_t*)(&sample));
 				/* put sample in buffer */
-				aq.samples[0][aq.end] = sample[0];
-				aq.samples[1][aq.end] = sample[1];
-				aq.samples[2][aq.end] = sample[2];
+				accelAq.samples[0][accelAq.end] = sample[0];
+				accelAq.samples[1][accelAq.end] = sample[1];
+				accelAq.samples[2][accelAq.end] = sample[2];
 					
 				/* reached end of frame? */
 				if((++frameCount) >= FRAME_SIZE)
@@ -62,7 +59,7 @@ void runAccelGest(void* argument)
 					}
 				}
 				/* prepare for next sample */
-				aq.end++;	
+				accelAq.end++;	
 			}
 			nSamples = 24;
 		}
@@ -73,37 +70,21 @@ void runAccelGest(void* argument)
 		pause_accel();
 		sampleCount = 0;
 		frameCount = 0;		
-		initBuffer1();
+		initBuffer(&accelAq);
+		firstTime = 1;
 		BLUE(0);
-		osThreadSuspend(NULL);
+		vTaskSuspend(NULL);
 	}
-}
-
-void printBuffer(void)
-{
-	int j = 0;
-
-	for(j = 0; j < AQ_SIZE; j++){
-		printf("%+06hd\t%+06hd\t%+06hd\n", aq.samples[0][j], 
-																			 aq.samples[1][j], 
-																			 aq.samples[2][j]);
-	}
-}
-
-void initBuffer1(void)
-{	
-	aq.end = aq.start = 0;
-	firstTime = 1;
 }
 
 void initAccelAq(void)
 {
 	/* configure registers */
 	accelInit();
-	/* garantee it's not sampling */
+	/* guarantee it's not sampling */
 	pause_accel();
 	/* prepare buffer */
-	initBuffer1();
+	initBuffer(&accelAq);
 	
 	/* Create semaphore */
 	accelDrdySemaph = xSemaphoreCreateCounting(7, 0);
@@ -121,23 +102,23 @@ void initAccelAq(void)
 int get_nextFram1(int16_t** buff)
 {		
 	// are there previous samples 
-	if(aq.start >= (FRAME_OVERLAP - 1)){
+	if(accelAq.start >= (FRAME_OVERLAP - 1)){
 		// if there are enough samples to make a frame
-		if((aq.end - aq.start) >= (FRAME_SIZE-1)){
-			buff[0] = &aq.samples[0][aq.start - FRAME_OVERLAP];
-			buff[1] = &aq.samples[1][aq.start - FRAME_OVERLAP];
-			buff[2] = &aq.samples[2][aq.start - FRAME_OVERLAP];
-			aq.start += FRAME_SIZE;
+		if((accelAq.end - accelAq.start) >= (FRAME_SIZE-1)){
+			buff[0] = &accelAq.samples[0][accelAq.start - FRAME_OVERLAP];
+			buff[1] = &accelAq.samples[1][accelAq.start - FRAME_OVERLAP];
+			buff[2] = &accelAq.samples[2][accelAq.start - FRAME_OVERLAP];
+			accelAq.start += FRAME_SIZE;
 			goto OK;
 		}
 	}
 	// if it's the first time and there are enough samples to make a frame 
-	else if(firstTime && (aq.end - aq.start) >= ((FRAME_SIZE-1) + FRAME_OVERLAP)){
-		buff[0] = &aq.samples[0][aq.start];
-		buff[1] = &aq.samples[1][aq.start];
-		buff[2] = &aq.samples[2][aq.start];
+	else if(firstTime && (accelAq.end - accelAq.start) >= ((FRAME_SIZE-1) + FRAME_OVERLAP)){
+		buff[0] = &accelAq.samples[0][accelAq.start];
+		buff[1] = &accelAq.samples[1][accelAq.start];
+		buff[2] = &accelAq.samples[2][accelAq.start];
 		
-		aq.start += FRAME_SIZE + FRAME_OVERLAP;
+		accelAq.start += FRAME_SIZE + FRAME_OVERLAP;
 		firstTime = 0;
 		goto OK;
 	}

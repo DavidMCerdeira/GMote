@@ -15,6 +15,7 @@
 "gmote configuration\retarget.o"
 "gmote configuration\gyroaq.o"
 "gmote configuration\mpu6050_gyro.o"
+"gmote configuration\sensor.o"
 "gmote configuration\stm32f4xx_hal_dma_ex.o"
 "gmote configuration\stm32f4xx_hal_spi.o"
 "gmote configuration\stm32f4xx_hal.o"

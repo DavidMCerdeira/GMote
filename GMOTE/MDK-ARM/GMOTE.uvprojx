@@ -506,6 +506,11 @@
               <FileType>1</FileType>
               <FilePath>..\Src\mpu6050_gyro.c</FilePath>
             </File>
+            <File>
+              <FileName>sensor.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\sensor.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

@@ -23,7 +23,7 @@ void MPU_Init(){
 	
 	/*Wich Outputs pass to Fifo*/
 	MPU_Register_Write(MPU_REG_FIFOEN, MPU_REG_FIFOEN_VAL);
-	MPU_Register_Read(MPU_REG_FIFOEN_VAL, &retVal);
+	MPU_Register_Read(MPU_REG_FIFOEN, &retVal);
 	
 	/*Configures Int Pin behavior*/
 	MPU_Register_Write(MPU_REG_INTPINCFG, MPU_REG_INTPINCFG_VAL);
@@ -41,7 +41,7 @@ void MPU_Init(){
 	MPU_SLEEP();
 }
 
-bool MPU_GetGyro_Sample(MPU_Gyro_OutputSample* sample){
+bool MPU_GetGyro_Sample(int16_t* sample){
 	uint8_t temp[6];
 	
 	/*Read Gyro Output registers*/
@@ -49,14 +49,14 @@ bool MPU_GetGyro_Sample(MPU_Gyro_OutputSample* sample){
 		return false;
 	
 	/*Put in the sample struct*/
-	sample->x = (temp[0] << 8) | temp[1];
-	sample->y = (temp[2] << 8) | temp[3];
-	sample->z = (temp[4] << 8) | temp[5];
+	sample[0] = (temp[0] << 8) | temp[1];
+	sample[1] = (temp[2] << 8) | temp[3];
+	sample[2] = (temp[4] << 8) | temp[5];
 	
 	return true;
 }
 
-inline bool MPU_GetGyro_SampleFIFO(MPU_Gyro_OutputSample* sample){
+inline bool MPU_GetGyro_SampleFIFO(int16_t* sample){
 	uint8_t temp[6];
 	volatile uint32_t	i;
 	
@@ -65,17 +65,17 @@ inline bool MPU_GetGyro_SampleFIFO(MPU_Gyro_OutputSample* sample){
 				return false;
 	}
 	/*Put in the sample struct*/
-	sample->x = (temp[0] << 8) | temp[1];
-	sample->y = (temp[2] << 8) | temp[3];
-	sample->z = (temp[4] << 8) | temp[5];
+	sample[0] = (temp[0] << 8) | temp[1];
+	sample[1] = (temp[2] << 8) | temp[3];
+	sample[2] = (temp[4] << 8) | temp[5];
 	return true;
 }
 
 inline bool MPU_Get_FIFOCount(int *count){
 		uint8_t count_H, count_L;
 		/*If when reading both High and Low Fifo Count Registers is ok*/
-		if(MPU_Register_Read(MPU_REG_FIFOCOUNTL, &count_L) &&		
-			 MPU_Register_Read(MPU_REG_FIFOCOUNTH, &count_H)){
+		if((MPU_Register_Read(MPU_REG_FIFOCOUNTL, &count_L) == HAL_OK) &&		
+			 (MPU_Register_Read(MPU_REG_FIFOCOUNTH, &count_H) == HAL_OK)){
 					count_H &= 0x0C; //Filter unwanted bits
 				 *count = (count_H << 8) | count_L; 
 				return true;
@@ -89,5 +89,5 @@ HAL_StatusTypeDef MPU_Register_Write(const uint8_t regAdd, const uint8_t regVal)
 }
  
 HAL_StatusTypeDef MPU_Register_Read(const uint8_t regAdd, uint8_t* retValue){
-	return (HAL_I2C_Mem_Read(&_HI2C, MPU_CUR_ADDRESS, regAdd, 1, retValue, 1, 100) == HAL_OK);		
+	return HAL_I2C_Mem_Read(&_HI2C, MPU_CUR_ADDRESS, regAdd, 1, retValue, 1, 100);		
 }
