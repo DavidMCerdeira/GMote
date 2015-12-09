@@ -30,4 +30,5 @@ void printBuffer(aquisitn aq);
 
 void initBuffer(aquisitn *aq);
 
+int get_nextFrame(int16_t** buff, aquisitn *m_aq, int *firstTime);
 #endif

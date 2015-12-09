@@ -4,6 +4,7 @@
 /*includes*/
 #include "stm32f4xx_hal.h"
 #include "stdbool.h"
+#include "error.h"
 
 /*defines*/
 //PB8     ------> I2C1_SCL

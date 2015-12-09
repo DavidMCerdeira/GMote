@@ -13,9 +13,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t pin)
 	static int state = 0;
 	static BaseType_t semophoreWoke;
 	static BaseType_t notificationWoke;
-	static int 	mpuFIFOCount;
-	int retVal;
-	
+
 	if(pin == GPIO_PIN_1)
 	{
 		/* toggle aquisition */
@@ -39,18 +37,9 @@ void HAL_GPIO_EXTI_Callback(uint16_t pin)
 		portYIELD_FROM_ISR(semophoreWoke);
 	}
 	/*MPU ISR*/
-		if(pin == GPIO_PIN_6){
-			mpuFIFOCount++;
-			if(MPU_Get_FIFOCount(&retVal)) 
-				return;
-			if(retVal >= 24){
-				mpuFIFOCount = 0;
-				
-				semophoreWoke = pdFALSE;
-				xSemaphoreGiveFromISR(gyroDrdySemaph, &semophoreWoke);
-				portYIELD_FROM_ISR(semophoreWoke);
-				
-				//MPU_RESET();
-		}	
+	if(pin == GPIO_PIN_6){			
+		semophoreWoke = pdFALSE;
+		xSemaphoreGiveFromISR(gyroDrdySemaph, &semophoreWoke);
+		portYIELD_FROM_ISR(semophoreWoke);
 	}	
-}
+}	

@@ -2,12 +2,16 @@
 
 extern I2C_HandleTypeDef hi2c1;
 
-void MPU_Init(){
+void MPU_Init()
+{
 	uint8_t retVal;
 	//I2C_INIT();
 	MPU_WAKEUP();
 	
-	//MPU_Register_Read(MPU_REG_WHOAMI, &retVal);
+	MPU_Register_Read(MPU_REG_WHOAMI, &retVal);
+	if(retVal != 0x68){
+		error("Gyro problems", 3);
+	}
 	
 	/*Reset Signal paths for Gyro*/
 	MPU_Register_Write(MPU_REG_SIGNALPATHRESET, MPU_REG_SIGNALPATHRESET_VAL);
@@ -41,7 +45,8 @@ void MPU_Init(){
 	MPU_SLEEP();
 }
 
-bool MPU_GetGyro_Sample(int16_t* sample){
+bool MPU_GetGyro_Sample(int16_t* sample)
+{
 	uint8_t temp[6];
 	
 	/*Read Gyro Output registers*/
@@ -56,7 +61,8 @@ bool MPU_GetGyro_Sample(int16_t* sample){
 	return true;
 }
 
-inline bool MPU_GetGyro_SampleFIFO(int16_t* sample){
+inline bool MPU_GetGyro_SampleFIFO(int16_t* sample)
+{
 	uint8_t temp[6];
 	volatile uint32_t	i;
 	
@@ -71,7 +77,8 @@ inline bool MPU_GetGyro_SampleFIFO(int16_t* sample){
 	return true;
 }
 
-inline bool MPU_Get_FIFOCount(int *count){
+inline bool MPU_Get_FIFOCount(int *count)
+{
 		uint8_t count_H, count_L;
 		/*If when reading both High and Low Fifo Count Registers is ok*/
 		if((MPU_Register_Read(MPU_REG_FIFOCOUNTL, &count_L) == HAL_OK) &&		
@@ -83,11 +90,13 @@ inline bool MPU_Get_FIFOCount(int *count){
 		return false;
 }
 
-HAL_StatusTypeDef MPU_Register_Write(const uint8_t regAdd, const uint8_t regVal){
+HAL_StatusTypeDef MPU_Register_Write(const uint8_t regAdd, const uint8_t regVal)
+{
 	uint8_t d[]={regAdd, regVal};
 	return (HAL_I2C_Master_Transmit(&_HI2C,  MPU_CUR_ADDRESS, d, 2, 100) == HAL_OK);
 }
  
-HAL_StatusTypeDef MPU_Register_Read(const uint8_t regAdd, uint8_t* retValue){
+HAL_StatusTypeDef MPU_Register_Read(const uint8_t regAdd, uint8_t* retValue)
+{
 	return HAL_I2C_Mem_Read(&_HI2C, MPU_CUR_ADDRESS, regAdd, 1, retValue, 1, 100);		
 }

@@ -1,7 +1,7 @@
 #include "sensorAq.h"
 
 void gPress(void);
-void printFrame(int16_t** buff, int);
+void printFrame(int16_t** buff1, int16_t** buff2, int firstFrame);
 
 QueueHandle_t accelFrameReadyMsgQ;
 QueueHandle_t gyroFrameReadyMsgQ;
@@ -47,7 +47,8 @@ void aqManager(void* argument)
 void gPress(void)
 {
 	static int nFrames = 0;
-	int16_t* buff[3];
+	int16_t* accelBuff[3];
+	int16_t* gyroBuff[3];
 	BaseType_t accelMsgQRcvd = pdFALSE;
 	BaseType_t gyroMsgQRcvd = pdFALSE;
 	BaseType_t notifRcvd = pdFALSE;
@@ -62,8 +63,8 @@ void gPress(void)
 		/* wait for frame */
 		
 		/*Verificar que a sequência das duas linhas que se seguem não dão problemas*/
-		accelMsgQRcvd = xQueueReceive(accelFrameReadyMsgQ, (void*)buff, portMAX_DELAY);
-		gyroMsgQRcvd = xQueueReceive(accelFrameReadyMsgQ, (void*)buff, portMAX_DELAY);
+		accelMsgQRcvd = xQueueReceive(accelFrameReadyMsgQ, (void*)accelBuff, portMAX_DELAY);
+		gyroMsgQRcvd =  xQueueReceive(gyroFrameReadyMsgQ,  (void*)gyroBuff,  portMAX_DELAY);
 		/* check if user released button */
 		notifRcvd = xTaskNotifyWait(GStop, 0, &notification, 0);
 		
@@ -77,14 +78,17 @@ void gPress(void)
 		/* message received */
 		if(accelMsgQRcvd == pdTRUE && gyroMsgQRcvd == pdTRUE){
 			/* if end of sampling */
-			if(buff == NULL){
+			if(gyroBuff == NULL){
+				break;
+			}
+			if(accelBuff == NULL){
 				break;
 			}
 			/* we received a frame */
 			else{
 				/* deal with it */
 				nFrames++;
-				printFrame(buff, nFrames == 0);
+				printFrame(accelBuff, gyroBuff, nFrames == 0);
 				//printf("Frame Received!\n");
 			}
 		}
@@ -115,7 +119,7 @@ void gPress(void)
 //	}
 //}
 
-void printFrame(int16_t** buff, int firstFrame)
+void printFrame(int16_t** buff1, int16_t** buff2, int firstFrame)
 {
 	int i = 0;	
 	
@@ -129,8 +133,12 @@ void printFrame(int16_t** buff, int firstFrame)
 	
 	for(; i < (FRAME_SIZE + FRAME_OVERLAP); i++)
 	{
-		printf("%+06hd, %+06hd, %+06hd;\n", buff[0][i], 
-																			  buff[1][i], 
-																			  buff[2][i]);
+		printf("%+06hd, %+06hd, %+06hd; %+06hd, %+06hd, %+06hd;\n", 
+					buff1[0][i], 
+					buff1[1][i], 
+					buff1[2][i],
+					buff2[0][i], 
+					buff2[1][i], 
+					buff2[2][i]);
 	}
 }

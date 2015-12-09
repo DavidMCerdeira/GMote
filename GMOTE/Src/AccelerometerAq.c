@@ -4,7 +4,6 @@ aquisitn accelAq;
 
 SemaphoreHandle_t  accelDrdySemaph;
 extern osMessageQId accelFrameReadyMsgQ;
-int firstTime = 1;
 
 int get_nextFram1(int16_t** buff);
 
@@ -12,13 +11,14 @@ void runAccelGest(void* argument)
 {
 	volatile int sampleCount = 0;
 	volatile int frameCount = 0;
+	int firstTime = 1;
 	
 	int16_t sample[NR_OF_AXES];
 	int16_t* ptr[NR_OF_AXES];
 	uint32_t i = 0;
 	BaseType_t notifRcvd = pdFALSE;
 	uint32_t notification;
-	int nSamples = 5;
+	int nSamples = 6;
 	
 	/* infinite cycle */
 	while(1)
@@ -46,21 +46,20 @@ void runAccelGest(void* argument)
 				accelAq.samples[0][accelAq.end] = sample[0];
 				accelAq.samples[1][accelAq.end] = sample[1];
 				accelAq.samples[2][accelAq.end] = sample[2];
-					
-				/* reached end of frame? */
-				if((++frameCount) >= FRAME_SIZE)
-				{
-					/* reset frame counter */
-					frameCount = 0;
-					/* get next frame if available */
-					if(get_nextFram1((int16_t**)ptr) != -1){
+				/* prepare for next sample */
+				accelAq.end++;
+			}
+			
+			if(sampleCount > (AQ_SIZE - FRAME_SIZE)){
+				break;
+			}
+			/* reached end of frame? */
+				if(nSamples == FRAME_OVERLAP)
+						nSamples = 24;
+			  else if(get_nextFrame((int16_t**)ptr, &accelAq, &firstTime) != -1){
 						/* send frame */
 						xQueueSend(accelFrameReadyMsgQ, ptr, 10);
-					}
 				}
-				/* prepare for next sample */
-				accelAq.end++;	
-			}
 			nSamples = 24;
 		}
 		
@@ -93,38 +92,3 @@ void initAccelAq(void)
 	HAL_NVIC_EnableIRQ(EXTI0_IRQn);
 }
 
-// each frame contains FRAME_OVERLAP + FRAME_SIZE elements
-// the first samples from the previous frame
-// and the rest from the current
-// return  0 if ok
-// return -1 if not enough samples
-// note: a conditional variable should be used in order to avoid polling
-int get_nextFram1(int16_t** buff)
-{		
-	// are there previous samples 
-	if(accelAq.start >= (FRAME_OVERLAP - 1)){
-		// if there are enough samples to make a frame
-		if((accelAq.end - accelAq.start) >= (FRAME_SIZE-1)){
-			buff[0] = &accelAq.samples[0][accelAq.start - FRAME_OVERLAP];
-			buff[1] = &accelAq.samples[1][accelAq.start - FRAME_OVERLAP];
-			buff[2] = &accelAq.samples[2][accelAq.start - FRAME_OVERLAP];
-			accelAq.start += FRAME_SIZE;
-			goto OK;
-		}
-	}
-	// if it's the first time and there are enough samples to make a frame 
-	else if(firstTime && (accelAq.end - accelAq.start) >= ((FRAME_SIZE-1) + FRAME_OVERLAP)){
-		buff[0] = &accelAq.samples[0][accelAq.start];
-		buff[1] = &accelAq.samples[1][accelAq.start];
-		buff[2] = &accelAq.samples[2][accelAq.start];
-		
-		accelAq.start += FRAME_SIZE + FRAME_OVERLAP;
-		firstTime = 0;
-		goto OK;
-	}
-	
-	return -1;
-	
-OK:
-	return 0;
-}

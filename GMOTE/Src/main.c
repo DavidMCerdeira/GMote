@@ -102,16 +102,7 @@ int main(void)
   /* USER CODE BEGIN 2 */
 	ORANGE(1);
 	//nrf24l01_Init();
-	MPU_Register_Read(MPU_REG_WHOAMI, &retVal);
-	if(retVal != 0x68){
-		error("Gyro problems", 3);
-	}
-	MPU_Init();
 	
-	mpuTest();
-	while(1){}
-	
-	//gyroTest();
   /* USER CODE END 2 */
 
   /* USER CODE BEGIN RTOS_MUTEX */
@@ -132,7 +123,6 @@ int main(void)
   /* USER CODE BEGIN RTOS_THREADS */
 	xTaskCreate(aqManager, "AqManager", 512, NULL, 1, &aqManagerHandle);
 
-	while(1){}
   /* USER CODE END RTOS_THREADS */
 
   /* USER CODE BEGIN RTOS_QUEUES */
