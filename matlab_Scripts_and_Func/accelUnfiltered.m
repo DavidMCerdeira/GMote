@@ -1,4 +1,3 @@
-
 figure
 plot(dn(:, 1))
 [frames, N] = getFrames(dn(:,1), 6, 30);
