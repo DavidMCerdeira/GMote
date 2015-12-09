@@ -5,7 +5,6 @@ for ax = 1 : 3
     [frames, N] = getFilteredFrames(dn(:,ax), 6, 30, 8, 0.1);
     
     %figure;
-
     for i = 1 : N
         %subplot(4, 2, i); 
         %plot(frames(i,:));
