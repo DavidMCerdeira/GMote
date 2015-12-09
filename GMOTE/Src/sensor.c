@@ -14,7 +14,6 @@ void printBuffer(aquisitn aq)
 void initBuffer(aquisitn *aq)
 {	
 	aq->end = aq->start = 0;
-
 }
 
 // each frame contains FRAME_OVERLAP + FRAME_SIZE elements
