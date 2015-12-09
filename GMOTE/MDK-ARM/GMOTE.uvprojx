@@ -457,11 +457,6 @@
               <FilePath>..\Src\Accelerometer.c</FilePath>
             </File>
             <File>
-              <FileName>freertos.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Src\freertos.c</FilePath>
-            </File>
-            <File>
               <FileName>AccelerometerAq.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\AccelerometerAq.c</FilePath>
@@ -509,7 +504,7 @@
             <File>
               <FileName>sensor.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\sensor.c</FilePath>
+              <FilePath>..\Src\sensor.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -655,11 +650,6 @@
               <FileName>list.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Middlewares\Third_Party\FreeRTOS\Source\list.c</FilePath>
-            </File>
-            <File>
-              <FileName>freertos.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Src\freertos.c</FilePath>
             </File>
           </Files>
         </Group>
