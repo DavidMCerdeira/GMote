@@ -8,9 +8,10 @@
 % B(m, n): observation probability distribution
 
 %https://gist.github.com/aaronj1335/9650261
-function [OS] = myViterbi(T, S, A, B)
+function [OS] = myViterbi(T, S, A, B, PI)
   
-    t = lenght(T);
+    t = length(T);
+    d = length(T(1,:));
     m = length(S);
 
     V = zeros(t, m);
@@ -19,13 +20,17 @@ function [OS] = myViterbi(T, S, A, B)
     P = zeros(t, m); 
     
     % get array of  probabilities of having been in each previous step,
-    X = zeros(m);
-
-    %SP Start probability = pi(s)
-    SP = zeros(m);
+    X = zeros(m,1);
+    
     for s = 1 : m
-        V(0, s) = SP(s) * B(s, T(0));
-        P(0, s) = 0;
+        
+        b = 1;
+        for j = 1 : d
+            b = b * B(s, T(1, j));
+        end
+        
+        V(1, s) = PI(s) * b/;
+        P(1, s) = 0;
     end
     
     % iterate through each time step
@@ -36,17 +41,25 @@ function [OS] = myViterbi(T, S, A, B)
             for x = 1 : m
                 X(x) = V(i-1, x) * A(x, s);
             end
-            V(i, s) = max(X) * B(s, T(i));
-            P(i, s) = argmax(X);
+            
+            b = 1;
+            for j = 1 : d
+                b = b * B(s, T(i, j));
+            end
+            
+            V(i, s) = max(X) * b;
+            [~, P(i, s)] = max(X);
         end
     end
 
     % build the output sequence by tracing the backpointers of the highest
     % probabilities at each step
-    OS = zeros(t);
-    OS(t) = P(t, argmax(V(t)));
+    OS = zeros(t,1);
+    [~, i_max] = max(V(t));
+    OS(t) = P(t, i_max);
     for i = t-1 : 1
-        prepend(OS, P(i, argmax(V(i))))
+       [~, i_max] = max(V(i));
+        prepend(OS, P(i, i_max))
     end
 end
 
