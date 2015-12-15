@@ -138,7 +138,7 @@ void printFrame(int16_t** buff1, int16_t** buff2, int firstFrame)
 	
 	for(; i < (FRAME_SIZE + FRAME_OVERLAP); i++)
 	{
-		printf("%+06hd, %+06hd, %+06hd; %+06hd, %+06hd, %+06hd;\n", 
+		printf("%+06hd, %+06hd, %+06hd, %+06hd, %+06hd, %+06hd;\n", 
 					buff1[0][i], 
 					buff1[1][i], 
 					buff1[2][i],

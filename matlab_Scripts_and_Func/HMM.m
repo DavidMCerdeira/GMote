@@ -2,20 +2,20 @@ classdef HMM < handle
     properties
         name  = 'undefined';
         %Main properties
-        N     =  8; % number of states
-        M     =  65535; % number of features
+        N     = 3;  % number of states
+        M     = 65535; % number of features
         A     = []; % NxN transition probability matrix
         pi    = []; % Nx1 initial state distribution vector
-        b     = []; % MxN mean vector (D = number of features)
-        MaxIters = 100;
+        b     = []; % NxM mean vector (D = number of features)
+        maxIters = 1000;
         
         % Auxialiry
         fw    = []; % DxN
         bw    = []; % DxN
-        c     = []; % scale factor            
+        c     = []; % scale factor
     end
     
-    methods        
+    methods
         function self = HMM(name)
             self.name = char(name);
         end
@@ -27,17 +27,60 @@ classdef HMM < handle
         function initialization(self)
             n = self.N;
             m = self.M;
+            
+            
             self.A = ones(n,n)/n;
+            for i = 1 : n
+                sum = 0;
+                for j = 1 : n-1
+                    self.A(i, j) = self.A(i, j) + 1 / ((rand(1)) * 200);
+                    sum = sum + self.A(i,j);
+                end
+                
+                if(sum > 1)
+                    sum = sum - self.A(i,j);
+                    self.A(i,j) = 1 - 1/200 * n;
+                    sum = sum + self.A(i,j);
+                end
+                
+                self.A(i,n) = 1 - sum;
+                    
+                sum = sum + self.A(i,n);
+                
+            end
+            
             self.b = ones(n, m)/m;
-            self.pi = ones(n)/m;
+            for i = 1 : n
+                sum = 0;
+                for j = 1 : self.M
+                    self.b(i, j) = self.b(i, j) + 1 / ((rand(1)) * 30000);
+                    sum = sum + self.b(i,j);
+                end
+                self.b(i, self.M) = 1 - sum;
+            
+                if(sum > 1)
+                    sum = sum - self.b(i,j);
+                    self.b(i,j) = 1 - 1/30000 * n;
+                    sum = sum + self.b(i,j);
+                end
+                
+                self.b(i,n) = 1 - sum;
+                    
+                sum = sum + self.b(i,n);
+
+            end
+            
+            self.pi = ones(n,1)/n;
         end
         
         function forward(self, O)
             
+            T = length(O);
+            
             % compute fw(1, i)
             self.c(1) = 0;
             for i = 1 : self.N
-                self.fw(1, i) = self.pi(i) * self.B(self, i, O(0));
+                self.fw(1, i) = self.pi(i) * self.B(i, O(1));
                 self.c(1) = self.c(1) + self.fw(1, i);
             end
             
@@ -68,6 +111,7 @@ classdef HMM < handle
         end
         
         function backward(self, O)
+            T  = length(O);
             %Let bw(T, 1) = 1, scaled by c(T)
             for i = 1 : self.N
                 self.bw(T, i) = self.c(T);
@@ -76,8 +120,8 @@ classdef HMM < handle
             for t = T - 1 : -1 : 1
                 for i = 1 : self.N
                     self.bw(t, i) = 0;
-                    for j = 0 : self.N
-                        self.bw(t, i) = self.bw(t, i) + self.A(i,j)*B(j, O(t+1))*self.bw(t+1, j);
+                    for j = 1 : self.N
+                        self.bw(t, i) = self.bw(t, i) + self.A(i,j) * self.B(j, O(t+1)) * self.bw(t+1, j);
                     end
                     self.bw(t, i) = self.c(t) * self.bw(t, i);
                 end
@@ -90,8 +134,10 @@ classdef HMM < handle
             oldLogProb = -Inf;
             T = length(O);
             
+            self.initialization();
+            
             %7-To interate or not to iterate...
-            while(iters < maxIters)
+            while(iters < self.maxIters)
                 %2-The alpha-pass
                 self.forward(O);
                 %3-The beta-pass
@@ -104,14 +150,14 @@ classdef HMM < handle
                     denom = 0;
                     for i = 1 : self.N
                         for j = 1: self.N
-                            denom = denom + self.fw(t, i) * self.A(i,j) * B(j, O(t+1)) * self.bw(t+1,j);
+                            denom = denom + self.fw(t, i) * self.A(i,j) * self.B(j, O(t+1)) * self.bw(t+1,j);
                         end
                     end
                     
                     for i = 1 : self.N
                         gm(t, j) = 0;
-                        for j = 0 : self.N
-                            gm(t, i, j) = (self.fw(t, i) * self.A(i, j) * B(j, O(t+1))) / denom;
+                        for j = 1 : self.N
+                            gm(t, i, j) = (self.fw(t, i) * self.A(i, j) * self.B(j, O(t+1))) / denom;
                             gms(t,i) = gms(t,i) + gm(t, i, j);
                         end
                     end
@@ -122,7 +168,7 @@ classdef HMM < handle
                 for i = 1 : self.N
                     denom = denom + self.fw(T, i);
                 end
-                for i = 0 : self.N
+                for i = 1 : self.N
                     gms(T, i) = self.fw(T, i) / denom;
                 end
                 
@@ -164,7 +210,7 @@ classdef HMM < handle
                 %6-compute log[P(O|model)]
                 logProb = 0;
                 for i = 1 : T
-                    logProb = logProb + log10(c(i), 10);
+                    logProb = logProb + log10(self.c(i));
                 end
                 
                 
@@ -178,11 +224,11 @@ classdef HMM < handle
             end
         end
         
-        function P = problem1(self, O)           
+        function P = problem1(self, O)
             P = 0;
             T = length(O);
             
-            self.forward(O);                                   
+            self.forward(O);
             for i = 1 : self.N
                 P = P + self.fw(T, i);
             end
