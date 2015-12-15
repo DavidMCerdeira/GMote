@@ -44,7 +44,7 @@ classdef HMM < handle
                 end
                 
                 self.A(i,n) = 1 - sum;
-                    
+                
                 sum = sum + self.A(i,n);
                 
             end
@@ -57,7 +57,7 @@ classdef HMM < handle
                     sum = sum + self.b(i,j);
                 end
                 self.b(i, self.M) = 1 - sum;
-            
+                
                 if(sum > 1)
                     sum = sum - self.b(i,j);
                     self.b(i,j) = 1 - 1/30000 * n;
@@ -65,9 +65,9 @@ classdef HMM < handle
                 end
                 
                 self.b(i,n) = 1 - sum;
-                    
+                
                 sum = sum + self.b(i,n);
-
+                
             end
             
             self.pi = ones(n,1)/n;
@@ -144,7 +144,7 @@ classdef HMM < handle
                 %3-The beta-pass
                 self.backward(O);
                 
-                %4-Compute gamma(t, i, j) and gamma(t,i)
+                %4-Compute gm(t, i, j) and gms(t,i)
                 gm  = zeros(T, self.N, self.N);
                 gms = zeros(T, self.N);
                 for t = 1 : T - 1
@@ -156,9 +156,9 @@ classdef HMM < handle
                     end
                     
                     for i = 1 : self.N
-                        gm(t, j) = 0;
+                        gm(t, i) = 0;
                         for j = 1 : self.N
-                            gm(t, i, j) = (self.fw(t, i) * self.A(i, j) * self.B(j, O(t+1))) / denom;
+                            gm(t, i, j) = (self.fw(t, i) * self.A(i, j) * self.B(j, O(t+1)) * self.bw(t+1, j)) / denom;
                             gms(t,i) = gms(t,i) + gm(t, i, j);
                         end
                     end
@@ -181,11 +181,11 @@ classdef HMM < handle
                 end
                 
                 %Re-estimate A
-                for i = 1 :self.N
+                for i = 1 : self.N
                     for j = 1 : self.N
                         numer = 0;
                         denom = 0;
-                        for t = 1 : T -1
+                        for t = 1 : T - 1
                             numer = numer + gm(t, i, j);
                             denom = denom + gms(t, i);
                         end
@@ -205,7 +205,7 @@ classdef HMM < handle
                             denom = denom + gm(t, i);
                         end
                         self.b(i, j) = numer / denom;
-                    end                    
+                    end
                 end
                 
                 %6-compute log[P(O|model)]
@@ -215,24 +215,33 @@ classdef HMM < handle
                 end
                 logProb = -logProb;
                 
-                iters = iters + 1;
+                fprintf('LogProb = %f\n', logProb);
                 
+                iters = iters + 1;
                 if(logProb > oldLogProb)
-                    break;
-                else
                     oldLogProb = logProb;
+                else
+                    return;
                 end
             end
         end
         
         function P = problem1(self, O)
-            P = 0;
+            
             T = length(O);
             
             self.forward(O);
+            P = 0;
             for i = 1 : self.N
                 P = P + self.fw(T, i);
             end
+            
+            P = 0;
+            for t = 1 : T
+                P = P + log10(self.c(t));
+            end
+            
+            P=-P;
         end
     end
 end
