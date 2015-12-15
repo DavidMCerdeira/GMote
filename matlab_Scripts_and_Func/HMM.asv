@@ -1,24 +1,28 @@
 classdef HMM < handle
     properties
         N     =  8; % number of states
-        M     =  65535; % Observation vector number of possible different values
+        M     =  65535; % number of features
         A     = []; % NxN transition probability matrix
         pi    = []; % Nx1 initial state distribution vector
-        b     = []; % DxN mean vector (D = number of features)
-        %Sigma = []; % DxDxN covariance matrix
-        %name  = '';
+        b     = []; % MxN mean vector (D = number of features)
+        %Sigma = []; % MxMxN covariance matrix
+        name  = 'undefined';
         
-        fw   = [];
-        bw   = [];
+        fw    = []; % DxN
+        bw    = []; % DxN
         
-        c = zeros(lentgh(O));
+        c     = []; %
         
         MaxIters = 100;
     end
     
-    methods
-        function B(self, i, o)
-            
+    methods        
+        function self = HMM(name)
+            self.name = char(name);
+        end
+        
+        function ret = B(self, i, o)
+            ret = self.b(i, o);
         end
         
         function initialization(self)
@@ -81,16 +85,16 @@ classdef HMM < handle
             end
         end
         
-        function problem3(self, O)
+        function train(self, O)
             %1-Initialization
             iters = 0;
             oldLogProb = -Inf;
             T = length(O);
             
             %7-To interate or not to iterate...
-            while(iters < maxIters)               
+            while(iters < maxIters)
                 %2-The alpha-pass
-                self.forward(O);                
+                self.forward(O);
                 %3-The beta-pass
                 self.backward(O);
                 
@@ -170,6 +174,18 @@ classdef HMM < handle
                 else
                     oldLogProb = logProb;
                 end
+            end
+        end
+        
+        function P = problem1(self, O)
+            
+            self.forward(O);
+            
+            sum = 0;
+            T = length(O);
+            
+            for i = 1 : N
+                sum = fw
             end
         end
     end
