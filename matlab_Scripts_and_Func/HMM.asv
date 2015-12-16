@@ -52,18 +52,15 @@ classdef HMM < handle
             for i = 1 : n
                 sum = 0;
                 for j = 1 : self.M
-                    self.b(i, j) = self.b(i, j) + (-1)^j * 1 / ((rand(1) * 1000000) + 1000000);
+                    self.b(i, j) = self.b(i, j) + (-1)^j * 1 / ((rand(1) * 100) + 100);
                     sum = sum + self.b(i,j);
                 end               
                 if(sum > 1)
-                    save = self.b(i,j);
-                    self.b(i,j) = self.b(i,j) - (sum - 1);
-                    sum = (sum - save) + self.b(i,j);
-                elseif (sum < 1)
-                    save = self.b(i,j);
-                    self.b(i,j) = self.b(i,j) + (1 - sum);
-                    sum = (sum - save) + self.b(i,j);
-                end            
+                    sum = sum - self.b(i,j);
+                    self.b(i,j) = 1 - 1/30000 * n;
+                end                
+                self.b(i,j) = 1 - sum;                
+                sum = sum + self.b(i,n);               
             end
             
             self.pi = ones(n,1)/n;
