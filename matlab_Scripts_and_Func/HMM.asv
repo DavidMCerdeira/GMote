@@ -18,17 +18,17 @@ classdef HMM < handle
     methods
         function self = HMM(name)
             self.name = char(name);
+            self.initialization();
         end
         
         function ret = B(self, i, o)
-            ret = self.b(i, o);
+            ret = self.b(i, o);            
         end
         
         function initialization(self)
             n = self.N;
             m = self.M;
-            
-            
+                     
             self.A = ones(n,n)/n;
             for i = 1 : n
                 sum = 0;
@@ -52,15 +52,18 @@ classdef HMM < handle
             for i = 1 : n
                 sum = 0;
                 for j = 1 : self.M
-                    self.b(i, j) = self.b(i, j) + (-1)^j * 1 / ((rand(1) * 100) + 100);
+                    self.b(i, j) = self.b(i, j) + (-1)^j * 1 / ((rand(1) * 1000000) + 1000000);
                     sum = sum + self.b(i,j);
-                end               
+                end
                 if(sum > 1)
-                    sum = sum - self.b(i,j);
-                    self.b(i,j) = 1 - 1/30000 * n;
-                end                
-                self.b(i,j) = 1 - sum;                
-                sum = sum + self.b(i,n);               
+                    save = self.b(i,j);
+                    self.b(i,j) = self.b(i,j) - (sum - 1);
+                    sum = (sum - save) + self.b(i,j);
+                elseif (sum < 1)
+                    save = self.b(i,j);
+                    self.b(i,j) = self.b(i,j) + (1 - sum);
+                    sum = (sum - save) + self.b(i,j);
+                end
             end
             
             self.pi = ones(n,1)/n;
@@ -127,9 +130,7 @@ classdef HMM < handle
             iters = 0;
             oldLogProb = -Inf;
             T = length(O);
-            
-            self.initialization();
-            
+         
             %7-To interate or not to iterate...
             while(iters < self.maxIters)
                 %2-The alpha-pass
@@ -193,9 +194,9 @@ classdef HMM < handle
                         denom = 0;
                         for t = 1 : T
                             if O(t) == j
-                                numer = numer + gm(t, i);
+                                numer = numer + gms(t, i);
                             end
-                            denom = denom + gm(t, i);
+                            denom = denom + gms(t, i);
                         end
                         self.b(i, j) = numer / denom;
                     end
@@ -229,10 +230,10 @@ classdef HMM < handle
                 P = P + self.fw(T, i);
             end
             
-            P = 0;
-            for t = 1 : T
-                P = P + log10(self.c(t));
-            end
+            %             P = 0;
+            %             for t = 1 : T
+            %                 P = P + log10(self.c(t));
+            %             end
             
             P=-P;
         end

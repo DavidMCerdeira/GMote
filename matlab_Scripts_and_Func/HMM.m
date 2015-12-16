@@ -2,8 +2,8 @@ classdef HMM < handle
     properties
         name  = 'undefined';
         %Main properties
-        N     = 4;  % number of states
-        M     = 65535; % number of features
+        N     = 8;  % number of states
+        M     = 255; % number of features
         A     = []; % NxN transition probability matrix
         pi    = []; % Nx1 initial state distribution vector
         b     = []; % NxM mean vector (D = number of features)
@@ -18,6 +18,7 @@ classdef HMM < handle
     methods
         function self = HMM(name)
             self.name = char(name);
+            self.initialization();
         end
         
         function ret = B(self, i, o)
@@ -27,7 +28,6 @@ classdef HMM < handle
         function initialization(self)
             n = self.N;
             m = self.M;
-            
             
             self.A = ones(n,n)/n;
             for i = 1 : n
@@ -54,7 +54,7 @@ classdef HMM < handle
                 for j = 1 : self.M
                     self.b(i, j) = self.b(i, j) + (-1)^j * 1 / ((rand(1) * 1000000) + 1000000);
                     sum = sum + self.b(i,j);
-                end               
+                end
                 if(sum > 1)
                     save = self.b(i,j);
                     self.b(i,j) = self.b(i,j) - (sum - 1);
@@ -63,7 +63,7 @@ classdef HMM < handle
                     save = self.b(i,j);
                     self.b(i,j) = self.b(i,j) + (1 - sum);
                     sum = (sum - save) + self.b(i,j);
-                end            
+                end
             end
             
             self.pi = ones(n,1)/n;
@@ -131,8 +131,6 @@ classdef HMM < handle
             oldLogProb = -Inf;
             T = length(O);
             
-            self.initialization();
-            
             %7-To interate or not to iterate...
             while(iters < self.maxIters)
                 %2-The alpha-pass
@@ -196,9 +194,9 @@ classdef HMM < handle
                         denom = 0;
                         for t = 1 : T
                             if O(t) == j
-                                numer = numer + gm(t, i);
+                                numer = numer + gms(t, i);
                             end
-                            denom = denom + gm(t, i);
+                            denom = denom + gms(t, i);
                         end
                         self.b(i, j) = numer / denom;
                     end
@@ -227,10 +225,10 @@ classdef HMM < handle
             T = length(O);
             
             self.forward(O);
-            P = 0;
-            for i = 1 : self.N
-                P = P + self.fw(T, i);
-            end
+            %             P = 0;
+            %             for i = 1 : self.N
+            %                 P = P + self.fw(T, i);
+            %             end
             
             P = 0;
             for t = 1 : T
