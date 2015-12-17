@@ -7,7 +7,7 @@ classdef HMM < handle
         A     = []; % NxN transition probability matrix
         pi    = []; % Nx1 initial state distribution vector
         b     = []; % NxM mean vector (D = number of features)
-        maxIters = 100;
+        maxIters = 2;
         
         % Auxialiry
         fw    = []; % DxN
@@ -16,8 +16,9 @@ classdef HMM < handle
     end
     
     methods
-        function self = HMM(name)
+        function self = HMM(name, numOfStates)
             self.name = char(name);
+            self.N = numOfStates;
             self.initialization();
         end
         
@@ -215,9 +216,11 @@ classdef HMM < handle
                 if(logProb > oldLogProb)
                     oldLogProb = logProb;
                 else
-                    return;
+                    break;
                 end
             end
+            
+            fprintf('Iterated %d times\n', iters);
         end
         
         function P = problem1(self, O)
