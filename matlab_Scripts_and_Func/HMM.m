@@ -7,7 +7,7 @@ classdef HMM < handle
         A     = []; % NxN transition probability matrix
         pi    = []; % Nx1 initial state distribution vector
         b     = []; % NxM mean vector (D = number of features)
-        maxIters = 2;
+        maxIters = 100;
         
         % Auxialiry
         fw    = []; % DxN
@@ -16,9 +16,10 @@ classdef HMM < handle
     end
     
     methods
-        function self = HMM(name, numOfStates)
+        function self = HMM(name, numOfStates, codebookSize)
             self.name = char(name);
             self.N = numOfStates;
+            self.M = codebookSize;
             self.initialization();
         end
         
