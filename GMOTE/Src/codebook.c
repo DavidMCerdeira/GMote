@@ -24,7 +24,7 @@ void codeBookTest()
 {
 	void *kd;
 	struct kdres *res;
-	int i = 0;
+	volatile int i = 0;
 
 	kd = kd_create(6);
 	
