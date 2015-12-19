@@ -37,6 +37,7 @@
 /* USER CODE BEGIN Includes */
 #include "sensorAq.h"
 #include "nrf24l01.h"
+#include "codebook.h"
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
@@ -100,7 +101,8 @@ int main(void)
 
   /* USER CODE BEGIN 2 */
 	ORANGE(1);
-	//nrf24l01_Init();
+//	codeBookTest();
+//	while(1);
 	
   /* USER CODE END 2 */
 
