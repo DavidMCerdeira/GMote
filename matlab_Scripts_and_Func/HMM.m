@@ -78,6 +78,7 @@ classdef HMM < handle
         
         function forward(self, O)
             T = length(O);
+            self.fw = [];
             
             % compute fw(1, i)
             self.c(1) = 0;
@@ -104,7 +105,7 @@ classdef HMM < handle
                     for j = 1 : self.N
                         self.fw(t, i) = self.fw(t, i) + self.fw(t-1, j) * self.A(j, i);
                     end
-                    self.fw(t, i) = self.fw(t, 1)*self.B(i, O(t));
+                    self.fw(t, i) = self.fw(t, i)*self.B(i, O(t));
                     if(self.scaling)
                         self.c(t) = self.c(t) + self.fw(t, i);
                     end
@@ -269,7 +270,6 @@ classdef HMM < handle
                 P = P + log10(self.c(t));
             end
             
-            P=-P;
             P=-P;
         end
     end

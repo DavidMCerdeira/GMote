@@ -1,4 +1,4 @@
-gesture = 'video';
+gesture = 'circle';
 
 cd E:\Universidade\MESTRADO_EEIC\ProjectoI\GMote
 

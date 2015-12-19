@@ -5,14 +5,14 @@
 % h.train(idx);
 % count = count + 1;
 
-prob = gest1;
+prob = gest6;
 
 figure
 plot(prob);
 title('Problem1');
 
 idx = knnsearch(md1, prob); 
-fprintf('Problem 1(should succeed): '); 
+fprintf('Problem 1: '); 
 P = h.problem1(idx); 
 fprintf('%f\n', P);
 
