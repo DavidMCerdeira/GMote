@@ -1,3 +1,4 @@
+% %{
 clear h;
 codebookSize = 2^4;
 
@@ -7,29 +8,40 @@ count = 1;
 [m, p, distor] = vqsplit([gest1]', codebookSize); %one training set
 
 md1 = KDTreeSearcher(m'); % grow a kd-tree 
-
-%training
+%}
+% training
+%%{
+idx = knnsearch(md1, gest3); % match points with index
+fprintf('Train %d:\n', count);
+h.train_multiple(idx);
+count = count + 1;
+%%{
+idx = knnsearch(md1, gest4); % match points with index
+fprintf('Train %d:\n', count);
+h.train_multiple(idx);
+count = count + 1;
+%%{
+idx = knnsearch(md1, gest5); % match points with index
+fprintf('Train %d:\n', count);
+h.train_multiple(idx);
+count = count + 1;
+%%{
+idx = knnsearch(md1, gest6); % match points with index
+fprintf('Train %d:\n', count);
+h.train_multiple(idx);
+count = count + 1;
+%%{
 idx = knnsearch(md1, gest1); % match points with index
 fprintf('Train %d:\n', count);
-h.train(idx);
-% count = count + 1;
-% idx = knnsearch(md1, gest2); % match points with index
-% fprintf('Train %d:\n', count);
-% h.train(idx);
-% count = count + 1;
-% idx = knnsearch(md1, gest3); % match points with index
-% fprintf('Train %d:\n', count);
-% h.train(idx);
-% count = count + 1;
-% idx = knnsearch(md1, gest4); % match points with index
-% fprintf('Train %d:\n', count);
-% h.train(idx);
-% count = count + 1;
-% idx = knnsearch(md1, gest5); % match points with index
-% fprintf('Train %d:\n', count);
-% h.train(idx);
-% count = count + 1;idx = knnsearch(md1, gest6); % match points with index
-% fprintf('Train %d:\n', count);
-% h.train(idx);
-% count = count + 1;
+h.train_multiple(idx);
+count = count + 1;
+%%{
+idx = knnsearch(md1, gest2); % match points with index
+fprintf('Train %d:\n', count);
+h.train_multiple(idx);
+count = count + 1;
+%}
 
+h.commit_mutiple();
+
+fprintf('Done!\n');

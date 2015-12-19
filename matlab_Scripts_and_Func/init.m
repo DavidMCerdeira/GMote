@@ -1,5 +1,5 @@
 
-gesture = 'video';
+gesture = 'circle';
 
 
 cd E:\Universidade\MESTRADO_EEIC\ProjectoI\GMote
@@ -14,6 +14,3 @@ gest7 = getDataFromFile(gesture, 7);
 gest8 = getDataFromFile(gesture, 8);
 gest9 = getDataFromFile(gesture, 9);
 %gest10 = getDataFromFile(gesture, 10);
-
-
-
