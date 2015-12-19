@@ -101,8 +101,8 @@ int main(void)
 
   /* USER CODE BEGIN 2 */
 	ORANGE(1);
-//	codeBookTest();
-//	while(1);
+	codeBookTest();
+	while(1);
 	
   /* USER CODE END 2 */
 
