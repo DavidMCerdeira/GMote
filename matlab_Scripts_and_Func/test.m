@@ -1,18 +1,12 @@
-
 % %{
 % idx = knnsearch(md1, dado1); % match points with index
 % fprintf('Train %d:\n', count);
 % h.train(idx);
 % count = count + 1;
 
-prob = gest6;
+idx = knnsearch(md1, gest1); 
+fprintf('Problem 1(should succeed): '); 
 
-figure
-plot(prob);
-title('Problem1');
-
-idx = knnsearch(md1, prob); 
-fprintf('Problem 1: '); 
 P = h.problem1(idx); 
 fprintf('%f\n', P);
 
