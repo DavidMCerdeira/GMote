@@ -1,5 +1,5 @@
 
-gesture = 'circle';
+gesture = 'video';
 
 
 cd E:\Universidade\MESTRADO_EEIC\ProjectoI\GMote
@@ -15,13 +15,5 @@ gest8 = getDataFromFile(gesture, 8);
 gest9 = getDataFromFile(gesture, 9);
 %gest10 = getDataFromFile(gesture, 10);
 
-
-clear h;
-codebookSize = 2^4;
-h = HMM(gesture, 4, codebookSize);
-count = 1;
-
-[m, p, distor] = vqsplit([gest1]', codebookSize); %one training set
-md1 = KDTreeSearcher(m'); % grow a kd-tree 
 
 

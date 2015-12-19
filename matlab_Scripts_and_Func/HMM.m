@@ -73,12 +73,11 @@ classdef HMM < handle
                 end
             end
             
-            self.pi = ones(n,1)/n;
+            
         end
         
         function forward(self, O)
             T = length(O);
-            self.fw = [];
             
             % compute fw(1, i)
             self.c(1) = 0;
@@ -184,6 +183,8 @@ classdef HMM < handle
             iters = 0;
             oldLogProb = -Inf;
             T = length(O);
+            
+            self.pi = ones(self.N,1)/self.N;
             
             %7-To interate or not to iterate...
             while(iters < self.maxIters)
