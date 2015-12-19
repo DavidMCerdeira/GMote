@@ -309,6 +309,7 @@ classdef HMM < handle
                      
                      self.bNum = self.bNum / P;
                      self.bDen = self.bDen / P;
+
                 end
             end
             
