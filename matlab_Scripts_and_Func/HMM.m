@@ -16,8 +16,10 @@ classdef HMM < handle
     end
     
     methods
-        function self = HMM(name)
+        function self = HMM(name, numOfStates, codebookSize)
             self.name = char(name);
+            self.N = numOfStates;
+            self.M = codebookSize;
             self.initialization();
         end
         
@@ -215,9 +217,11 @@ classdef HMM < handle
                 if(logProb > oldLogProb)
                     oldLogProb = logProb;
                 else
-                    return;
+                    break;
                 end
             end
+            
+            fprintf('Iterated %d times\n', iters);
         end
         
         function P = problem1(self, O)
