@@ -83,12 +83,28 @@ float kd_priority(
 					old_off = 0;
 					
 				new_rd = rd - old_off*old_off // distance to further child
-				+ new_off*new_off;
+						 + new_off*new_off;
 				Q.Insert(u->hi_child, new_rd); // enqueue hi_child for later
 				u = u->lo_child; // visit lo_child next
 			}
 			else { // q is above cutting plane
-			...analogous with lo_child and hi_child interchanged...
+				old_off = q[cd] - u->low_val; // compute offset
+				
+				if (old_off > 0) // overlaps interval
+					old_off = 0;
+					
+				new_rd = rd - old_off*old_off // distance to further child
+				+ new_off*new_off;
+				Q.Insert(u->hi_child, new_rd); // enqueue hi_child for later
+				u = u->lo_child; // visit lo_child nextold_off = q[cd] - u->low_val; // compute offset
+				
+				if (old_off > 0) // overlaps interval
+					old_off = 0;
+					
+				new_rd = rd - old_off*old_off // distance to further child
+				+ new_off*new_off;
+				Q.Insert(u->hi_child, new_rd); // enqueue hi_child for later
+				u = u->lo_child; // visit lo_child next
 			}
 		}
 		nn_dist = min(nn_dist, // leaf - use point if closer

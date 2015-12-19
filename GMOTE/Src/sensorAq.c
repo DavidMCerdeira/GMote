@@ -12,15 +12,16 @@ void aqManager(void* argument)
 {
 	volatile osEvent event;
 	BaseType_t notifRcvd = pdFALSE;
-	uint32_t notification;
+	uint32_t notification;	
+	
+	/* initialize accelerometer frame ready queue */
+	accelFrameReadyMsgQ = xQueueCreate(10, sizeof(int16_t*[3]));
+	gyroFrameReadyMsgQ  = xQueueCreate(10, sizeof(int16_t*[3]));
 	
 	/* init aquisitors */
 	initAccelAq();
 	initGyroAq();
 	
-	/* initialize accelerometer frame ready queue */
-	accelFrameReadyMsgQ = xQueueCreate(10, sizeof(int16_t*[3]));
-	gyroFrameReadyMsgQ = xQueueCreate(10, sizeof(int16_t*[3]));
 	
 	/* initiate suspended thread */
 	xTaskCreate(runAccelGest, "AccelGest", 128, NULL, 0, &accelThreadHandle);
@@ -84,9 +85,11 @@ void gPress(void)
 		if(accelMsgQRcvd == pdTRUE && gyroMsgQRcvd == pdTRUE){
 			/* if end of sampling */
 			if(gyroBuff == NULL){
+				xTaskNotify(accelThreadHandle, STOP, eSetBits);
 				break;
 			}
 			if(accelBuff == NULL){
+				xTaskNotify(gyroThreadHandle,  STOP, eSetBits);
 				break;
 			}
 			/* we received a frame */
@@ -138,7 +141,7 @@ void printFrame(int16_t** buff1, int16_t** buff2, int firstFrame)
 	
 	for(; i < (FRAME_SIZE + FRAME_OVERLAP); i++)
 	{
-		printf(",%+06hd, %+06hd, %+06hd, %+06hd, %+06hd, %+06hd;\n", 
+		printf("%+06hd, %+06hd, %+06hd, %+06hd, %+06hd, %+06hd;\n", 
 					buff1[0][i], 
 					buff1[1][i], 
 					buff1[2][i],

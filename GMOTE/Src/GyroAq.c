@@ -55,8 +55,7 @@ void  runGyroGest(void * argument){
 				nSamples = 24;
 			else if(get_nextFrame((int16_t**)ptr, &gyroAq, &firstTime) != -1)
 					/* send frame */
-					xQueueSend(gyroFrameReadyMsgQ, ptr, 10);
-			
+					xQueueSend(gyroFrameReadyMsgQ, ptr, 10);			
 		}
 		
 		/* send NULL pointer indicating end of aquisition */
@@ -65,6 +64,7 @@ void  runGyroGest(void * argument){
 		MPU_SLEEP();
 		sampleCount = 0;
 		frameCount = 0;		
+		nSamples = FRAME_OVERLAP;
 		initBuffer(&gyroAq);
 		firstTime = 1;
 		//BLUE(0);
@@ -74,9 +74,11 @@ void  runGyroGest(void * argument){
 
 void initGyroAq(void)
 {
-	MPU_Initialize();
+	
 	/* Create semaphore */
 	gyroDrdySemaph = xSemaphoreCreateCounting(7, 0);
+	
+	MPU_Initialize();
 	/* prepare buffer */
 	initBuffer(&gyroAq);
 	/* enbale interrupt */
