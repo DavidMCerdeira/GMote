@@ -5,9 +5,18 @@ classdef HMM < handle
         N     = 8;  % number of states
         M     = 255; % number of features
         A     = []; % NxN transition probability matrix
-        pi    = []; % Nx1 initial state distribution vector
         b     = []; % NxM mean vector (D = number of features)
-        maxIters = 100;
+        pi    = []; % Nx1 initial state distribution vector
+  
+        %aproximate
+        ADen     = []; 
+        ANum     = [];        
+        bDen     = [];
+        bNum     = [];
+        %multiple sample counter
+        mCount = 0;
+        
+        maxIters = 200;
         
         %functionality
         scaling = 1;
@@ -73,7 +82,7 @@ classdef HMM < handle
                 end
             end
             
-            
+            self.pi = ones(self.N,1)/self.N;
         end
         
         function forward(self, O)
@@ -110,7 +119,7 @@ classdef HMM < handle
                     end
                 end
                 
-                if(self.scaling)                    
+                if(self.scaling)
                     %scale fw(t, i)
                     self.c(t) = 1 / self.c(t);
                     for i = 1 : self.N
@@ -122,13 +131,13 @@ classdef HMM < handle
         
         function backward(self, O)
             T  = length(O);
-            if(self.scaling)              
+            if(self.scaling)
                 %Let bw(T, 1) = 1, scaled by c(T)
                 for i = 1 : self.N
                     self.bw(T, i) = self.c(T);
                 end
             else
-                 for i = 1 : self.N
+                for i = 1 : self.N
                     self.bw(T, i) = 1;
                 end
             end
@@ -178,13 +187,11 @@ classdef HMM < handle
             end
         end
         
-        function train(self, O)
+        function train_one(self, O)
             %1-Initialization
             iters = 0;
             oldLogProb = -Inf;
             T = length(O);
-            
-            self.pi = ones(self.N,1)/self.N;
             
             %7-To interate or not to iterate...
             while(iters < self.maxIters)
@@ -232,7 +239,7 @@ classdef HMM < handle
                 
                 %6-compute log[P(O|model)]
                 logProb = 0;
-                if(self.scaling)                   
+                if(self.scaling)
                     for i = 1 : T
                         logProb = logProb + log10(self.c(i));
                     end
@@ -257,16 +264,90 @@ classdef HMM < handle
             fprintf('Iterated %d times\n', iters);
         end
         
+        function train_multiple(self, O)
+          
+            self.forward(O);
+            self.backward(O);
+            
+            self.ADen = zeros(self.N, self.N);
+            self.ANum = zeros(self.N, self.N); 
+            
+            self.bDen = zeros(self.N, self.M);
+            self.bNum = zeros(self.N, self.M); 
+            
+            %102
+            P = 1;
+            for t = 1 : length(O)
+                P = P * 1/self.c(t);
+            end
+            
+            %109 % but already scaled
+            for i = 1 : self.N
+                for j = 1 : self.N
+                    for t = 1 : length(O)-1
+                        self.ANum(i,j) = self.ANum(i,j) + self.fw(t,i) * self.A(i,j) * self.B(j, O(t+1)) * self.bw( t+1, j);
+                        self.ADen(i,j) = self.ANum(i,j) + self.fw(t,i) * self.bw(t,i);  
+                    end
+                    
+                    self.ADen(i,j) = self.ADen(i,j) / P;
+                    self.ANum(i,j) = self.ANum(i,j) / P;
+                end
+            end
+            
+            %110 
+            for i = 1 : self.N
+                for l = 1 : self.M
+                     for t = 1 : length(O)
+                        if O(t) == l
+                            self.bNum(i,l) = self.fw(t, i) * self.bw(t, i);
+                        else
+                            self.bNum(i,l) = 0;
+                        end
+                        
+                        self.bDen(i,l) = self.fw(t, i) * self.bw(t, i);
+                     end
+                end
+            end
+            
+            self.mCount = self.mCount + 1;
+        end
+        
+        function commit_mutiple(self) 
+            
+            self.A = zeros(self.N, self.N);
+            self.b = zeros(self.N, self.M);
+            
+            for i = 1 : self.N
+                for j = 1 : self.N
+                    for k = 0 : self.mCount
+                        %109
+                        self.A(i,j) = self.A(i,j) + self.ANum(i,j)/self.ADen(i,j);
+                    end
+                end
+            end
+            
+            for i = 1 : self.N
+                for l = 1 : self.M
+                    for k = 0 : self.mCount                        
+                        %110
+                        self.b(i,l) = self.b(i,l) + self.bNum(i,l)/self.bDen(i,l);
+                    end
+                end
+            end
+            
+            self.mCount = 0;
+        end
+        
         function P = problem1(self, O)
             
             T = length(O);
             
             self.forward(O);
-%             P = 0;
-%             for i = 1 : self.N
-%                 P = P + self.fw(T, i);
-%             end
-             P = 0;
+            %             P = 0;
+            %             for i = 1 : self.N
+            %                 P = P + self.fw(T, i);
+            %             end
+            P = 0;
             for t = 1 : T
                 P = P + log10(self.c(t));
             end
