@@ -15,7 +15,7 @@ idx = knnsearch(md1, gest3); % match points with index
 fprintf('Train %d:\n', count);
 h.train_multiple(idx);
 count = count + 1;
-%%{
+%{
 idx = knnsearch(md1, gest4); % match points with index
 fprintf('Train %d:\n', count);
 h.train_multiple(idx);

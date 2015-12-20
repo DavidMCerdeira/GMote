@@ -299,12 +299,12 @@ classdef HMM < handle
                 for l = 1 : self.M
                      for t = 1 : length(O)
                         if O(t) == l
-                            self.bNum(i,l) = self.fw(t, i) * self.bw(t, i);
+                            self.bNum(i,l) = self.bNum(i,l) + self.fw(t, i) * self.bw(t, i);
                         else
-                            self.bNum(i,l) = 0;
+                            self.bNum(i,l) = self.bNum(i,l) + 0;
                         end
                         
-                        self.bDen(i,l) = self.fw(t, i) * self.bw(t, i);
+                        self.bDen(i,l) = self.bDen(i,l) + self.fw(t, i) * self.bw(t, i);
                      end
                      
                      self.bNum = self.bNum / P;
@@ -323,7 +323,7 @@ classdef HMM < handle
             
             for i = 1 : self.N
                 for j = 1 : self.N
-                    for k = 0 : self.mCount
+                    for k = 1 : self.mCount
                         %109
                         self.A(i,j) = self.A(i,j) + self.ANum(i,j)/self.ADen(i,j);
                     end
