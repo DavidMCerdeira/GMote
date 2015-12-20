@@ -7,10 +7,10 @@ classdef HMM < handle
         A     = []; % NxN transition probability matrix
         b     = []; % NxM mean vector (D = number of features)
         pi    = []; % Nx1 initial state distribution vector
-  
+        
         %aproximate
-        ADen     = []; 
-        ANum     = [];        
+        ADen     = [];
+        ANum     = [];
         bDen     = [];
         bNum     = [];
         %multiple sample counter
@@ -24,8 +24,8 @@ classdef HMM < handle
         % Auxialiry
         fw    = []; % DxN
         bw    = []; % DxN
-        gm    = [];
-        gms   = [];
+        zet    = [];
+        gm   = [];
         c     = []; % scale factor
     end
     
@@ -83,12 +83,19 @@ classdef HMM < handle
             end
             
             self.pi = ones(self.N,1)/self.N;
+            
+            self.ADen = zeros(self.N, self.N);
+            self.ANum = zeros(self.N, self.N);
+            
+            self.bDen = zeros(self.N, self.M);
+            self.bNum = zeros(self.N, self.M);
         end
         
         function forward(self, O)
             T = length(O);
             
             % compute fw(1, i)
+            % 19
             self.c(1) = 0;
             for i = 1 : self.N
                 self.fw(1, i) = self.pi(i) * self.B(i, O(1));
@@ -105,17 +112,18 @@ classdef HMM < handle
                 end
             end
             
-            %compute fw(t, i)
+            % compute fw(t, i)
+            % 20!
             for t = 2 : T
                 self.c(t) = 0;
-                for i = 1 : self.N
-                    self.fw(t, i) = 0;
-                    for j = 1 : self.N
-                        self.fw(t, i) = self.fw(t, i) + self.fw(t-1, j) * self.A(j, i);
+                for j = 1 : self.N
+                    self.fw(t, j) = 0;
+                    for i = 1 : self.N
+                        self.fw(t, j) = self.fw(t, j) + self.fw(t-1, i) * self.A(i, j);
                     end
-                    self.fw(t, i) = self.fw(t, i)*self.B(i, O(t));
+                    self.fw(t, j) = self.fw(t, j)*self.B(j, O(t));
                     if(self.scaling)
-                        self.c(t) = self.c(t) + self.fw(t, i);
+                        self.c(t) = self.c(t) + self.fw(t, j);
                     end
                 end
                 
@@ -142,6 +150,7 @@ classdef HMM < handle
                 end
             end
             
+            %25
             for t = T - 1 : -1 : 1
                 for i = 1 : self.N
                     self.bw(t, i) = 0;
@@ -158,8 +167,10 @@ classdef HMM < handle
         
         function gamma(self, O)
             T = length(O);
-            self.gm  = zeros(T, self.N, self.N);
-            self.gms = zeros(T, self.N);
+            self.zet  = zeros(T, self.N, self.N);
+            self.gm = zeros(T, self.N);
+            
+            %37
             for t = 1 : T - 1
                 denom = 0;
                 for i = 1 : self.N
@@ -169,21 +180,21 @@ classdef HMM < handle
                 end
                 
                 for i = 1 : self.N
-                    self.gm(t, i) = 0;
+                    self.zet(t, i) = 0;
                     for j = 1 : self.N
-                        self.gm(t, i, j) = (self.fw(t, i) * self.A(i, j) * self.B(j, O(t+1)) * self.bw(t+1, j)) / denom;
-                        self.gms(t,i) = self.gms(t,i) + self.gm(t, i, j);
+                        self.zet(t, i, j) = (self.fw(t, i) * self.A(i, j) * self.B(j, O(t+1)) * self.bw(t+1, j)) / denom;
+                        self.gm(t,i) = self.gm(t,i) + self.zet(t, i, j);
                     end
                 end
             end
             
-            %Special case for gm(T, i)
+            %Special case for zet(T, i)
             denom = 0;
             for i = 1 : self.N
                 denom = denom + self.fw(T, i);
             end
             for i = 1 : self.N
-                self.gms(T, i) = self.fw(T, i) / denom;
+                self.gm(T, i) = self.fw(T, i) / denom;
             end
         end
         
@@ -199,41 +210,44 @@ classdef HMM < handle
                 self.forward(O);
                 %3-The beta-pass
                 self.backward(O);
-                %4-Compute gm(t, i, j) and gms(t,i)
+                %4-Compute zet(t, i, j) and gm(t,i)
                 self.gamma(O)
                 
                 %5-Re-estimate A, B, pi
                 
                 %Re-estimate pi
+                % 40a
                 for i = 1 : self.N
-                    self.pi(i) = self.gms(1, i);
+                    self.pi(i) = self.gm(1, i);
                 end
                 
                 %Re-estimate A
+                % 40b
                 for i = 1 : self.N
                     for j = 1 : self.N
                         numer = 0;
                         denom = 0;
                         for t = 1 : T - 1
-                            numer = numer + self.gm(t, i, j);
-                            denom = denom + self.gms(t, i);
+                            numer = numer + self.zet(t, i, j);
+                            denom = denom + self.gm(t, i);
                         end
                         self.A(i,j) = numer / denom;
                     end
                 end
                 
                 %Re-estimate B
-                for i = 1 : self.N
-                    for j = 1 : self.M
+                % 40c
+                for j = 1 : self.N
+                    for k = 1 : self.M
                         numer = 0;
                         denom = 0;
                         for t = 1 : T
-                            if O(t) == j
-                                numer = numer + self.gms(t, i);
+                            if O(t) == k
+                                numer = numer + self.gm(t, j);
                             end
-                            denom = denom + self.gms(t, i);
+                            denom = denom + self.gm(t, j);
                         end
-                        self.b(i, j) = numer / denom;
+                        self.b(j, k) = numer / denom;
                     end
                 end
                 
@@ -265,15 +279,9 @@ classdef HMM < handle
         end
         
         function train_multiple(self, O)
-          
+            
             self.forward(O);
             self.backward(O);
-            
-            self.ADen = zeros(self.N, self.N);
-            self.ANum = zeros(self.N, self.N); 
-            
-            self.bDen = zeros(self.N, self.M);
-            self.bNum = zeros(self.N, self.M); 
             
             %102
             P = 1;
@@ -285,19 +293,19 @@ classdef HMM < handle
             for i = 1 : self.N
                 for j = 1 : self.N
                     for t = 1 : length(O)-1
-                        self.ANum(i,j) = self.ANum(i,j) + self.fw(t,i) * self.A(i,j) * self.B(j, O(t+1)) * self.bw( t+1, j);
-                        self.ADen(i,j) = self.ANum(i,j) + self.fw(t,i) * self.bw(t,i);  
+                        self.ANum(i,j) = self.ANum(i,j) + self.fw(t,i) * self.A(i,j) * self.B(j, O(t+1)) * self.bw(t+1, j);
+                        self.ADen(i,j) = self.ADen(i,j) + self.fw(t,i) * self.bw(t,i);
                     end
                     
-                    self.ADen(i,j) = self.ADen(i,j) / P;
                     self.ANum(i,j) = self.ANum(i,j) / P;
+                    self.ADen(i,j) = self.ADen(i,j) / P;
                 end
             end
             
-            %110 
+            %110
             for i = 1 : self.N
                 for l = 1 : self.M
-                     for t = 1 : length(O)
+                    for t = 1 : length(O)
                         if O(t) == l
                             self.bNum(i,l) = self.bNum(i,l) + self.fw(t, i) * self.bw(t, i);
                         else
@@ -305,41 +313,35 @@ classdef HMM < handle
                         end
                         
                         self.bDen(i,l) = self.bDen(i,l) + self.fw(t, i) * self.bw(t, i);
-                     end
-                     
-                     self.bNum = self.bNum / P;
-                     self.bDen = self.bDen / P;
-
+                    end
+                    
+                    self.bNum(i,l) = self.bNum(i,l) / P;
+                    self.bDen(i,l) = self.bDen(i,l) / P;                   
                 end
             end
-            
-            self.mCount = self.mCount + 1;
         end
         
-        function commit_mutiple(self) 
-            
-            self.A = zeros(self.N, self.N);
-            self.b = zeros(self.N, self.M);
-            
+        function commit_mutiple(self)           
             for i = 1 : self.N
                 for j = 1 : self.N
-                    for k = 1 : self.mCount
-                        %109
-                        self.A(i,j) = self.A(i,j) + self.ANum(i,j)/self.ADen(i,j);
-                    end
+                    %109
+                    self.A(i,j) = self.ANum(i,j)/self.ADen(i,j);
                 end
             end
             
             for i = 1 : self.N
                 for l = 1 : self.M
-                    for k = 0 : self.mCount                        
-                        %110
-                        self.b(i,l) = self.b(i,l) + self.bNum(i,l)/self.bDen(i,l);
-                    end
+                    %110
+                    self.b(i,l) = self.bNum(i,l)/self.bDen(i,l);
+                    
                 end
             end
             
-            self.mCount = 0;
+            self.ADen = zeros(self.N, self.N);
+            self.ANum = zeros(self.N, self.N);
+            
+            self.bDen = zeros(self.N, self.M);
+            self.bNum = zeros(self.N, self.M);
         end
         
         function P = problem1(self, O)

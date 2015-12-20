@@ -26,34 +26,24 @@ OF SUCH DAMAGE.
 */
 /* single nearest neighbor search written by Tamas Nepusz <tamas@cs.rhul.ac.uk> */
 
-#undef HAVE_CONFIG_H
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
 #include "kdtree.h"
+#include "freeRTOS.h"
 
-#if defined(WIN32) || defined(__WIN32__)
-#include <malloc.h>
-#endif
+#define myalloc(__SIZE__) pvPortMalloc(__SIZE__)
+#define myfree(__SIZE__)  vPortFree(__SIZE__)
 
 #undef USE_LIST_NODE_ALLOCATOR
 #ifdef USE_LIST_NODE_ALLOCATOR
 
-#define NO_PTHREAD
-#ifndef NO_PTHREADS
-#include <pthread.h>
-#else
 
 #ifndef I_WANT_THREAD_BUGS
 #error "You are compiling with the fast list node allocator, with pthreads disabled! This WILL break if used from multiple threads."
 #endif	/* I want thread bugs */
 
-#endif	/* pthread support */
 #endif	/* use list node allocator */
 
 struct kdhyperrect {
@@ -106,8 +96,8 @@ static double hyperrect_dist_sq(struct kdhyperrect *rect, const double *pos);
 static struct res_node *alloc_resnode(void);
 static void free_resnode(struct res_node*);
 #else
-#define alloc_resnode()		malloc(sizeof(struct res_node))
-#define free_resnode(n)		free(n)
+#define alloc_resnode()		myalloc(sizeof(struct res_node))
+#define free_resnode(n)		myfree(n)
 #endif
 
 
@@ -116,7 +106,7 @@ struct kdtree *kd_create(int k)
 {
 	struct kdtree *tree;
 
-	if(!(tree = malloc(sizeof *tree))) {
+	if(!(tree = myalloc(sizeof *tree))) {
 		return 0;
 	}
 
@@ -132,7 +122,7 @@ void kd_free(struct kdtree *tree)
 {
 	if(tree) {
 		kd_clear(tree);
-		free(tree);
+		myfree(tree);
 	}
 }
 
@@ -146,8 +136,8 @@ static void clear_rec(struct kdnode *node, void (*destr)(void*))
 	if(destr) {
 		destr(node->data);
 	}
-	free(node->pos);
-	free(node);
+	myfree(node->pos);
+	myfree(node);
 }
 
 void kd_clear(struct kdtree *tree)
@@ -173,11 +163,11 @@ static int insert_rec(struct kdnode **nptr, const double *pos, void *data, int d
 	struct kdnode *node;
 
 	if(!*nptr) {
-		if(!(node = malloc(sizeof *node))) {
+		if(!(node = myalloc(sizeof *node))) {
 			return -1;
 		}
-		if(!(node->pos = malloc(dim * sizeof *node->pos))) {
-			free(node);
+		if(!(node->pos = myalloc(dim * sizeof *node->pos))) {
+			myfree(node);
 			return -1;
 		}
 		memcpy(node->pos, pos, dim * sizeof *node->pos);
@@ -224,7 +214,7 @@ int kd_insertf(struct kdtree *tree, const float *pos, void *data)
 			bptr = buf = alloca(dim * sizeof *bptr);
 		else
 #endif
-			if(!(bptr = buf = malloc(dim * sizeof *bptr))) {
+			if(!(bptr = buf = myalloc(dim * sizeof *bptr))) {
 				return -1;
 			}
 	} else {
@@ -241,7 +231,7 @@ int kd_insertf(struct kdtree *tree, const float *pos, void *data)
 #else
 	if(tree->dim > 16)
 #endif
-		free(buf);
+		myfree(buf);
 	return res;
 }
 
@@ -417,11 +407,11 @@ struct kdres *kd_nearest(struct kdtree *kd, const double *pos)
 	if (!kd->rect) return 0;
 
 	/* Allocate result set */
-	if(!(rset = malloc(sizeof *rset))) {
+	if(!(rset = myalloc(sizeof *rset))) {
 		return 0;
 	}
 	if(!(rset->rlist = alloc_resnode())) {
-		free(rset);
+		myfree(rset);
 		return 0;
 	}
 	rset->rlist->next = 0;
@@ -473,7 +463,7 @@ struct kdres *kd_nearestf(struct kdtree *tree, const float *pos)
 			bptr = buf = alloca(dim * sizeof *bptr);
 		else
 #endif
-			if(!(bptr = buf = malloc(dim * sizeof *bptr))) {
+			if(!(bptr = buf = myalloc(dim * sizeof *bptr))) {
 				return 0;
 			}
 	} else {
@@ -490,7 +480,7 @@ struct kdres *kd_nearestf(struct kdtree *tree, const float *pos)
 #else
 	if(tree->dim > 16)
 #endif
-		free(buf);
+		myfree(buf);
 	return res;
 }
 
@@ -519,11 +509,11 @@ static kdres *kd_nearest_n(struct kdtree *kd, const double *pos, int num)
 	int ret;
 	struct kdres *rset;
 
-	if(!(rset = malloc(sizeof *rset))) {
+	if(!(rset = myalloc(sizeof *rset))) {
 		return 0;
 	}
 	if(!(rset->rlist = alloc_resnode())) {
-		free(rset);
+		myfree(rset);
 		return 0;
 	}
 	rset->rlist->next = 0;
@@ -543,11 +533,11 @@ struct kdres *kd_nearest_range(struct kdtree *kd, const double *pos, double rang
 	int ret;
 	struct kdres *rset;
 
-	if(!(rset = malloc(sizeof *rset))) {
+	if(!(rset = myalloc(sizeof *rset))) {
 		return 0;
 	}
 	if(!(rset->rlist = alloc_resnode())) {
-		free(rset);
+		myfree(rset);
 		return 0;
 	}
 	rset->rlist->next = 0;
@@ -575,7 +565,7 @@ struct kdres *kd_nearest_rangef(struct kdtree *kd, const float *pos, float range
 			bptr = buf = alloca(dim * sizeof *bptr);
 		else
 #endif
-			if(!(bptr = buf = malloc(dim * sizeof *bptr))) {
+			if(!(bptr = buf = myalloc(dim * sizeof *bptr))) {
 				return 0;
 			}
 	} else {
@@ -592,7 +582,7 @@ struct kdres *kd_nearest_rangef(struct kdtree *kd, const float *pos, float range
 #else
 	if(kd->dim > 16)
 #endif
-		free(buf);
+		myfree(buf);
 	return res;
 }
 
@@ -618,7 +608,7 @@ void kd_res_free(struct kdres *rset)
 {
 	clear_results(rset);
 	free_resnode(rset->rlist);
-	free(rset);
+	myfree(rset);
 }
 
 int kd_res_size(struct kdres *set)
@@ -698,18 +688,18 @@ static struct kdhyperrect* hyperrect_create(int dim, const double *min, const do
 	size_t size = dim * sizeof(double);
 	struct kdhyperrect* rect = 0;
 
-	if (!(rect = malloc(sizeof(struct kdhyperrect)))) {
+	if (!(rect = myalloc(sizeof(struct kdhyperrect)))) {
 		return 0;
 	}
 
 	rect->dim = dim;
-	if (!(rect->min = malloc(size))) {
-		free(rect);
+	if (!(rect->min = myalloc(size))) {
+		myfree(rect);
 		return 0;
 	}
-	if (!(rect->max = malloc(size))) {
-		free(rect->min);
-		free(rect);
+	if (!(rect->max = myalloc(size))) {
+		myfree(rect->min);
+		myfree(rect);
 		return 0;
 	}
 	memcpy(rect->min, min, size);
@@ -720,9 +710,9 @@ static struct kdhyperrect* hyperrect_create(int dim, const double *min, const do
 
 static void hyperrect_free(struct kdhyperrect *rect)
 {
-	free(rect->min);
-	free(rect->max);
-	free(rect);
+	myfree(rect->min);
+	myfree(rect->max);
+	myfree(rect);
 }
 
 static struct kdhyperrect* hyperrect_duplicate(const struct kdhyperrect *rect)
@@ -779,7 +769,7 @@ static struct res_node *alloc_resnode(void)
 #endif
 
 	if(!free_nodes) {
-		node = malloc(sizeof *node);
+		node = myalloc(sizeof *node);
 	} else {
 		node = free_nodes;
 		free_nodes = free_nodes->next;
