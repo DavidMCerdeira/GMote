@@ -135,7 +135,7 @@ while 1
             EachSizeIterCounter=0;
             if LC>=L %Enough Codewords?
                 if L==LC %Exact number of codewords
-                    disp(TotalDist)
+                    %disp(TotalDist)
                     break
                 else % Kill one codeword at a time
                     [temp, Ind]=min(Population); % Eliminate low population codewords
@@ -153,7 +153,7 @@ while 1
                 isFirstRound=1;
                 Split=Split+1;
                 IsThereABestCB=0; % As we just split this codebook, there is no best codebook at this size yet
-                disp(LC)
+                %disp(LC)
             end
         end
     end    
@@ -174,7 +174,7 @@ while 1
         IsThereABestCB=0;
         if LC>=L %Enough Codewords?
             if L==LC %Exact number of codewords
-                disp(TotalDist)
+                %disp(TotalDist)
                 break
             else % Kill one codeword at a time
                 [temp, Ind]=min(Population);
@@ -192,10 +192,10 @@ while 1
             isFirstRound=1;
             Split=Split+1;
             IsThereABestCB=0;
-            disp(LC)
+            %disp(LC)
         end
     end        
-    disp(TotalDist)
+    %disp(TotalDist)
     p=Population/N;
     save CBTemp CB p DistHist
 end
@@ -203,8 +203,8 @@ m=CB;
 
 p=Population/N;
 
-disp(['Iterations = ' num2str(Iter)])
-disp(['Split = ' num2str(Split)])
+%disp(['Iterations = ' num2str(Iter)])
+%disp(['Split = ' num2str(Split)])
 
 function [v, i]=maxn(x,n)
 % [V, I]=MAXN(X,N)

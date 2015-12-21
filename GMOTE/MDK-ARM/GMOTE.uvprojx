@@ -444,16 +444,6 @@
               <FilePath>..\Src\stm32f4xx_it.c</FilePath>
             </File>
             <File>
-              <FileName>Accelerometer.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Src\Accelerometer.c</FilePath>
-            </File>
-            <File>
-              <FileName>AccelerometerAq.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Src\AccelerometerAq.c</FilePath>
-            </File>
-            <File>
               <FileName>sensorAq.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\sensorAq.c</FilePath>
@@ -474,39 +464,9 @@
               <FilePath>..\Src\nrf24l01.c</FilePath>
             </File>
             <File>
-              <FileName>usDelay.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Src\usDelay.c</FilePath>
-            </File>
-            <File>
               <FileName>retarget.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\retarget.c</FilePath>
-            </File>
-            <File>
-              <FileName>GyroAq.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Src\GyroAq.c</FilePath>
-            </File>
-            <File>
-              <FileName>mpu6050_gyro.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Src\mpu6050_gyro.c</FilePath>
-            </File>
-            <File>
-              <FileName>sensor.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Src\sensor.c</FilePath>
-            </File>
-            <File>
-              <FileName>kdtree.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Src\kdtree.c</FilePath>
-            </File>
-            <File>
-              <FileName>codebook.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Src\codebook.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -652,6 +612,71 @@
               <FileName>list.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Middlewares\Third_Party\FreeRTOS\Source\list.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Sensors</GroupName>
+          <Files>
+            <File>
+              <FileName>mpu6050_gyro.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\mpu6050_gyro.c</FilePath>
+            </File>
+            <File>
+              <FileName>AccelerometerAq.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\AccelerometerAq.c</FilePath>
+            </File>
+            <File>
+              <FileName>Accelerometer.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\Accelerometer.c</FilePath>
+            </File>
+            <File>
+              <FileName>sensor.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\sensor.c</FilePath>
+            </File>
+            <File>
+              <FileName>GyroAq.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\GyroAq.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Tools</GroupName>
+          <Files>
+            <File>
+              <FileName>usDelay.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\usDelay.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>GestProcessing</GroupName>
+          <Files>
+            <File>
+              <FileName>codebook.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\codebook.c</FilePath>
+            </File>
+            <File>
+              <FileName>kdtree.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\kdtree.c</FilePath>
+            </File>
+            <File>
+              <FileName>HMM.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\HMM.c</FilePath>
+            </File>
+            <File>
+              <FileName>pre_processing.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\pre_processing.c</FilePath>
             </File>
           </Files>
         </Group>
