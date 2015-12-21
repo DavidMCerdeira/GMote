@@ -80,7 +80,7 @@ classdef HMM < handle
             self.ADen = zeros(self.N, 1);
             self.ANum = zeros(self.N, self.N);
             
-            self.bDen = zeros(self.N, self.M);
+            self.bDen = zeros(self.N, 1);
             self.bNum = zeros(self.N, self.M);
             
             self.P = 1;
@@ -225,11 +225,21 @@ classdef HMM < handle
                 for i = 1 : self.N
                     for j = 1 : self.N
                         numer = 0;
-                        denom = 0;
                         for t = 1 : T - 1
-                            numer = numer + zet(t, i, j);
-                            denom = denom + gm(t, i);
+                            numer = numer + zet(t, i, j);   
                         end
+                    end
+                end
+                
+                for i = 1 : self.N
+                    denom = 0;
+                    for t = 1 : T - 1
+                        denom = denom + gm(t, i);
+                    end
+                end
+                
+                for i = 1 : self.N
+                    for j = 1 : self.N
                         self.A(i,j) = numer / denom;
                     end
                 end
@@ -238,18 +248,27 @@ classdef HMM < handle
                 % 40c
                 for j = 1 : self.N
                     for k = 1 : self.M
-                        numer = 0;
-                        denom = 0;
+                        numer = 0;                        
                         for t = 1 : T
                             if O(t) == k
                                 numer = numer + gm(t, j);
-                            end
-                            denom = denom + gm(t, j);
+                            end                         
                         end
-                        self.b(j, k) = numer / denom;
                     end
                 end
                 
+                for j = 1 : self.N
+                    denom = 0;
+                    for t = 1 : T
+                         denom = denom + gm(t, j);
+                    end
+                end
+                 
+                for j = 1 : self.N
+                    for k = 1 : self.M
+                        self.b(j, k) = numer / denom;
+                    end
+                end
                 %6-compute log[P(O|model)]
                 logProb = 0;
                 if(self.scaling)
@@ -323,13 +342,18 @@ classdef HMM < handle
                     for t = 1 : T
                         if O(t) == l
                             self.bNum(i,l) = self.bNum(i,l) + fw(t, i) * bw(t, i);
-                        end
-                        self.bDen(i,l) = self.bDen(i,l) + fw(t, i) * bw(t, i);
-                    end
-                    
-                    self.bNum(i,l) = self.bNum(i,l) / Pk;
-                    self.bDen(i,l) = self.bDen(i,l) / Pk;                   
+                        end  
+                    end     
+                    self.bNum(i,l) = self.bNum(i,l) / Pk;                  
+                end 
+            end
+            
+            for i = 1 : self.N
+                den(i) = 0;
+                for t = 1 : T
+                    den(i) = den(i) + fw(t, i) * bw(t, i);
                 end
+                self.bDen(i) = self.bDen(i) + den(i) / Pk; 
             end
         end
         
@@ -350,7 +374,7 @@ classdef HMM < handle
                 sum = 0;
                 for l = 1 : self.M
                     %110
-                    self.b(i,l) = self.bNum(i,l)/self.bDen(i,l);
+                    self.b(i,l) = self.bNum(i,l)/self.bDen(i);
                     sum = sum + self.b(i,l);
                 end
                 fprintf('Sum of b(%d,:) = %f\n', i, sum);
@@ -361,7 +385,7 @@ classdef HMM < handle
             self.ADen = zeros(self.N, 1);
             self.ANum = zeros(self.N, self.N);
             
-            self.bDen = zeros(self.N, self.M);
+            self.bDen = zeros(self.N, 1);
             self.bNum = zeros(self.N, self.M);
         end
         

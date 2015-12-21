@@ -1,6 +1,6 @@
 gesture = 'circle';
 
-cd E:\Universidade\MESTRADO_EEIC\ProjectoI\GMote
+%cd E:\Universidade\MESTRADO_EEIC\ProjectoI\GMote
 
 gest1 = getDataFromFile(gesture, 1);
 gest2 = getDataFromFile(gesture, 2);
