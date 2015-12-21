@@ -13,20 +13,12 @@ classdef HMM < handle
         ANum     = [];
         bDen     = [];
         bNum     = [];
-        %multiple sample counter
-        mCount = 0;
         
         maxIters = 200;
         
         %functionality
         scaling = 1;
         
-        % Auxialiry
-        fw    = []; % DxN
-        bw    = []; % DxN
-        zet    = [];
-        gm   = [];
-        c     = []; % scale factor
     end
     
     methods
@@ -49,7 +41,7 @@ classdef HMM < handle
             for i = 1 : n
                 sum = 0;
                 for j = 1 : n
-                    self.A(i, j) = self.A(i, j) + (-1)^j * 1 / ((rand(1)*100) + 100);
+                    self.A(i, j) = self.A(i, j) + (-1)^(rand(1)*2-1) * 1 / ((rand(1)*100) + 100);
                     sum = sum + self.A(i,j);
                 end
                 
@@ -68,7 +60,7 @@ classdef HMM < handle
             for i = 1 : n
                 sum = 0;
                 for j = 1 : self.M
-                    self.b(i, j) = self.b(i, j) + (-1)^j * 1 / ((rand(1) * 1000000) + 1000000);
+                    self.b(i, j) = self.b(i, j) + (-1)^(rand(1)*2-1) * 1 / ((rand(1) * 1000000) + 1000000);
                     sum = sum + self.b(i,j);
                 end
                 if(sum > 1)
@@ -91,99 +83,103 @@ classdef HMM < handle
             self.bNum = zeros(self.N, self.M);
         end
         
-        function forward(self, O)
+        function [fw, c] = forward(self, O)
             T = length(O);
+            fw = zeros(T, self.N);
+            c = zeros(T,1);
             
             % compute fw(1, i)
             % 19
-            self.c(1) = 0;
+            c(1) = 0;
             for i = 1 : self.N
-                self.fw(1, i) = self.pi(i) * self.B(i, O(1));
+                fw(1, i) = self.pi(i) * self.B(i, O(1));
                 if(self.scaling)
-                    self.c(1) = self.c(1) + self.fw(1, i);
+                    c(1) = c(1) + fw(1, i);
                 end
             end
             
             % scale the fw(1, i)
             if(self.scaling)
-                self.c(1) = 1 / self.c(1);
+                c(1) = 1 / c(1);
                 for i = 1 : self.N
-                    self.fw(1, i) = self.c(1) * self.fw(1, i);
+                    fw(1, i) = c(1) * fw(1, i);
                 end
             end
             
             % compute fw(t, i)
             % 20!
             for t = 2 : T
-                self.c(t) = 0;
+                c(t) = 0;
                 for j = 1 : self.N
-                    self.fw(t, j) = 0;
+                    fw(t, j) = 0;
                     for i = 1 : self.N
-                        self.fw(t, j) = self.fw(t, j) + self.fw(t-1, i) * self.A(i, j);
+                        fw(t, j) = fw(t, j) + fw(t-1, i) * self.A(i, j);
                     end
-                    self.fw(t, j) = self.fw(t, j)*self.B(j, O(t));
+                    fw(t, j) = fw(t, j)*self.B(j, O(t));
                     if(self.scaling)
-                        self.c(t) = self.c(t) + self.fw(t, j);
+                        c(t) = c(t) + fw(t, j);
                     end
                 end
                 
                 if(self.scaling)
                     %scale fw(t, i)
-                    self.c(t) = 1 / self.c(t);
+                    c(t) = 1 / c(t);
                     for i = 1 : self.N
-                        self.fw(t, i) = self.c(t) * self.fw(t, i);
+                        fw(t, i) = c(t) * fw(t, i);
                     end
                 end
             end
         end
         
-        function backward(self, O)
+        function bw = backward(self, O, c)
             T  = length(O);
+            bw = zeros(T, self.N);
+            
             if(self.scaling)
                 %Let bw(T, 1) = 1, scaled by c(T)
                 for i = 1 : self.N
-                    self.bw(T, i) = self.c(T);
+                    bw(T, i) = c(T);
                 end
             else
                 for i = 1 : self.N
-                    self.bw(T, i) = 1;
+                    bw(T, i) = 1;
                 end
             end
             
             %25
             for t = T - 1 : -1 : 1
                 for i = 1 : self.N
-                    self.bw(t, i) = 0;
+                    bw(t, i) = 0;
                     for j = 1 : self.N
-                        self.bw(t, i) = self.bw(t, i) + self.A(i,j) * self.B(j, O(t+1)) * self.bw(t+1, j);
+                        bw(t, i) = bw(t, i) + self.A(i,j) * self.B(j, O(t+1)) * bw(t+1, j);
                     end
                     %scale bw(t,i) with same scale factor as fw(t,i)
                     if(self.scaling)
-                        self.bw(t, i) = self.c(t) * self.bw(t, i);
+                        bw(t, i) = c(t) * bw(t, i);
                     end
                 end
             end
         end
         
-        function gamma(self, O)
+        function [gm, zet] = gamma(self, O, fw, bw)
             T = length(O);
-            self.zet  = zeros(T, self.N, self.N);
-            self.gm = zeros(T, self.N);
+            zet  = zeros(T, self.N, self.N);
+            gm = zeros(T, self.N);
             
             %37
             for t = 1 : T - 1
                 denom = 0;
                 for i = 1 : self.N
                     for j = 1: self.N
-                        denom = denom + self.fw(t, i) * self.A(i,j) * self.B(j, O(t+1)) * self.bw(t+1,j);
+                        denom = denom + fw(t, i) * self.A(i,j) * self.B(j, O(t+1)) * bw(t+1,j);
                     end
                 end
                 
                 for i = 1 : self.N
-                    self.zet(t, i) = 0;
+                    zet(t, i) = 0;
                     for j = 1 : self.N
-                        self.zet(t, i, j) = (self.fw(t, i) * self.A(i, j) * self.B(j, O(t+1)) * self.bw(t+1, j)) / denom;
-                        self.gm(t,i) = self.gm(t,i) + self.zet(t, i, j);
+                        zet(t, i, j) = (fw(t, i) * self.A(i, j) * self.B(j, O(t+1)) * bw(t+1, j)) / denom;
+                        gm(t,i) = gm(t,i) + zet(t, i, j);
                     end
                 end
             end
@@ -191,10 +187,10 @@ classdef HMM < handle
             %Special case for zet(T, i)
             denom = 0;
             for i = 1 : self.N
-                denom = denom + self.fw(T, i);
+                denom = denom + fw(T, i);
             end
             for i = 1 : self.N
-                self.gm(T, i) = self.fw(T, i) / denom;
+                gm(T, i) = fw(T, i) / denom;
             end
         end
         
@@ -207,18 +203,18 @@ classdef HMM < handle
             %7-To interate or not to iterate...
             while(iters < self.maxIters)
                 %2-The alpha-pass
-                self.forward(O);
+                [fw, c] = self.forward(O);
                 %3-The beta-pass
-                self.backward(O);
+                bw = self.backward(O, c);
                 %4-Compute zet(t, i, j) and gm(t,i)
-                self.gamma(O)
+                [gm, zet] = self.gamma(O, fw, bw);
                 
                 %5-Re-estimate A, B, pi
                 
                 %Re-estimate pi
                 % 40a
                 for i = 1 : self.N
-                    self.pi(i) = self.gm(1, i);
+                    self.pi(i) = gm(1, i);
                 end
                 
                 %Re-estimate A
@@ -228,8 +224,8 @@ classdef HMM < handle
                         numer = 0;
                         denom = 0;
                         for t = 1 : T - 1
-                            numer = numer + self.zet(t, i, j);
-                            denom = denom + self.gm(t, i);
+                            numer = numer + zet(t, i, j);
+                            denom = denom + gm(t, i);
                         end
                         self.A(i,j) = numer / denom;
                     end
@@ -243,9 +239,9 @@ classdef HMM < handle
                         denom = 0;
                         for t = 1 : T
                             if O(t) == k
-                                numer = numer + self.gm(t, j);
+                                numer = numer + gm(t, j);
                             end
-                            denom = denom + self.gm(t, j);
+                            denom = denom + gm(t, j);
                         end
                         self.b(j, k) = numer / denom;
                     end
@@ -255,12 +251,12 @@ classdef HMM < handle
                 logProb = 0;
                 if(self.scaling)
                     for i = 1 : T
-                        logProb = logProb + log10(self.c(i));
+                        logProb = logProb + log10(c(i));
                     end
                 else
                     logProb = 0;
                     for i = 1 : self.N
-                        logProb = logProb + self.fw(T, i);
+                        logProb = logProb + fw(T, i);
                     end
                 end
                 logProb = -logProb;
@@ -279,40 +275,40 @@ classdef HMM < handle
         end
         
         function train_multiple(self, O)
-            
-            self.forward(O);
-            self.backward(O);
+            T = length(O);
+            [fw, c] = self.forward(O);
+            bw = self.backward(O, c);
             
             %102
             P = 1;
-            for t = 1 : length(O)
-                P = P * 1/self.c(t);
+            for t = 1 : T - 1
+                P = P * 1/c(t);
             end
+            
+            num = zeros(self.N, self.N);
+            den = zeros(self.N, self.N);
             
             %109 % but already scaled
             for i = 1 : self.N
                 for j = 1 : self.N
-                    for t = 1 : length(O)-1
-                        self.ANum(i,j) = self.ANum(i,j) + self.fw(t,i) * self.A(i,j) * self.B(j, O(t+1)) * self.bw(t+1, j);
-                        self.ADen(i,j) = self.ADen(i,j) + self.fw(t,i) * self.bw(t,i);
+                    for t = 1 : 1
+                        num(i,j) = num(i,j) + fw(t,i) * self.A(i,j) * self.B(j, O(t+1)) * bw(t+1, j);
+                        den(i,j) = den(i,j) + fw(t,i) * bw(t,i); %! vai somar N vezes! sem ser necessário
                     end
                     
-                    self.ANum(i,j) = self.ANum(i,j) / P;
-                    self.ADen(i,j) = self.ADen(i,j) / P;
+                    self.ANum(i,j) = self.ANum(i,j) + num(i,j) / P;
+                    self.ADen(i,j) = self.ADen(i,j) + den(i,j) / P;
                 end
             end
             
             %110
             for i = 1 : self.N
                 for l = 1 : self.M
-                    for t = 1 : length(O)
+                    for t = 1 : T
                         if O(t) == l
-                            self.bNum(i,l) = self.bNum(i,l) + self.fw(t, i) * self.bw(t, i);
-                        else
-                            self.bNum(i,l) = self.bNum(i,l) + 0;
+                            self.bNum(i,l) = self.bNum(i,l) + fw(t, i) * bw(t, i);
                         end
-                        
-                        self.bDen(i,l) = self.bDen(i,l) + self.fw(t, i) * self.bw(t, i);
+                        self.bDen(i,l) = self.bDen(i,l) + fw(t, i) * bw(t, i);
                     end
                     
                     self.bNum(i,l) = self.bNum(i,l) / P;
@@ -321,20 +317,27 @@ classdef HMM < handle
             end
         end
         
-        function commit_mutiple(self)           
+        function commit_mutiple(self)
+            
             for i = 1 : self.N
+                sum = 0;
                 for j = 1 : self.N
                     %109
                     self.A(i,j) = self.ANum(i,j)/self.ADen(i,j);
+                    sum = sum + self.A(i,j);
                 end
+                fprintf('Sum of A(i,:) = %f\n', sum);
             end
             
+           
             for i = 1 : self.N
+                sum = 0;
                 for l = 1 : self.M
                     %110
                     self.b(i,l) = self.bNum(i,l)/self.bDen(i,l);
-                    
+                    sum = sum + self.b(i,l);
                 end
+                fprintf('Sum of b(i,:) = %f\n', sum);
             end
             
             self.ADen = zeros(self.N, self.N);
@@ -348,14 +351,14 @@ classdef HMM < handle
             
             T = length(O);
             
-            self.forward(O);
+            [~, c] = self.forward(O);
             %             P = 0;
             %             for i = 1 : self.N
-            %                 P = P + self.fw(T, i);
+            %                 P = P + fw(T, i);
             %             end
             P = 0;
             for t = 1 : T
-                P = P + log10(self.c(t));
+                P = P + log10(c(t));
             end
             
             P=-P;

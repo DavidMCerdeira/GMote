@@ -1,10 +1,11 @@
 %%{
 clear h;
-codebookSize = 2^4;
+codebookSize = 2^1;
 
-h = HMM(gesture, 3, codebookSize);
+h = HMM(gesture, 2, codebookSize);
 count = 1;
 
+%vector quantization
 [m, p, distor] = vqsplit([
                           gest1;...
                          %{  
@@ -24,7 +25,7 @@ count = 1;
                           
                           gest9;...
                           %}
-                         ]', codebookSize); %one training set
+                         ]', codebookSize);
 
 md1 = KDTreeSearcher(m'); % grow a kd-tree 
 %}
@@ -41,12 +42,12 @@ idx = knnsearch(md1, gest1); % match points with index
 fprintf('Train %d:\n', count);
 h.train_multiple(idx);
 count = count + 1;
-%{
+
 idx = knnsearch(md1, gest2); % match points with index
 fprintf('Train %d:\n', count);
 h.train_multiple(idx);
 count = count + 1;
-
+%{
 idx = knnsearch(md1, gest3); % match points with index
 fprintf('Train %d:\n', count);
 h.train_multiple(idx);
