@@ -225,21 +225,11 @@ classdef HMM < handle
                 for i = 1 : self.N
                     for j = 1 : self.N
                         numer = 0;
+                        denom = 0;
                         for t = 1 : T - 1
-                            numer = numer + zet(t, i, j);   
+                            numer = numer + zet(t, i, j);
+                            denom = denom + gm(t, i);
                         end
-                    end
-                end
-                
-                for i = 1 : self.N
-                    denom = 0;
-                    for t = 1 : T - 1
-                        denom = denom + gm(t, i);
-                    end
-                end
-                
-                for i = 1 : self.N
-                    for j = 1 : self.N
                         self.A(i,j) = numer / denom;
                     end
                 end
@@ -248,27 +238,18 @@ classdef HMM < handle
                 % 40c
                 for j = 1 : self.N
                     for k = 1 : self.M
-                        numer = 0;                        
+                        numer = 0;
+                        denom = 0;
                         for t = 1 : T
                             if O(t) == k
                                 numer = numer + gm(t, j);
-                            end                         
+                            end
+                            denom = denom + gm(t, j);
                         end
-                    end
-                end
-                
-                for j = 1 : self.N
-                    denom = 0;
-                    for t = 1 : T
-                         denom = denom + gm(t, j);
-                    end
-                end
-                 
-                for j = 1 : self.N
-                    for k = 1 : self.M
                         self.b(j, k) = numer / denom;
                     end
                 end
+                
                 %6-compute log[P(O|model)]
                 logProb = 0;
                 if(self.scaling)
@@ -283,7 +264,7 @@ classdef HMM < handle
                 end
                 logProb = -logProb;
                 
-                fprintf('LogProb = %f\n', logProb);
+                
                 
                 iters = iters + 1;
                 if(logProb > oldLogProb)
@@ -292,29 +273,22 @@ classdef HMM < handle
                     break;
                 end
             end
-            
+                      
             fprintf('Iterated %d times\n', iters);
+            fprintf('LogProb = %f\n', logProb);  
         end
         
         function train_multiple(self, O)
             T = length(O);          
-      
-            saveScalng = self.scaling;
-            self.scaling = 1;
-            [~, c] = self.forward(O);
-            
-            self.scaling = 0;
-            [fw, ~] = self.forward(O);
+
+            [fw, c] = self.forward(O);
             bw = self.backward(O, c);
-            self.scaling = saveScalng;
             
             %102
             Pk = 1;
             for t = 1 : T - 1
                 Pk = Pk * 1/c(t);
             end
-            
-            self.P = self.P*Pk;
             
             num = zeros(self.N, self.N);
             den = zeros(self.N, 1);
@@ -364,7 +338,7 @@ classdef HMM < handle
                 sum = 0;
                 for j = 1 : self.N
                     %109
-                    self.A(i,j) = self.ANum(i,j)/self.ADen(i);
+                    self.A(i,j) = self.ANum(i,j)/self.ADen(i) * self.M;
                     sum = sum + self.A(i,j);
                 end
                 fprintf('Sum of A(%d,:) = %f\n', i, sum);
@@ -380,8 +354,6 @@ classdef HMM < handle
                 end
                 fprintf('Sum of b(%d,:) = %f\n', i, sum);
             end
-            
-            fprintf('logP is %f\n', log10(self.P));
             
             self.ADen = zeros(self.N, 1);
             self.ANum = zeros(self.N, self.N);

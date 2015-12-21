@@ -1,7 +1,7 @@
 %%{
 circ_gesture = 'circle';
 
-%cd E:\Universidade\MESTRADO_EEIC\ProjectoI\GMote
+cd E:\Universidade\MESTRADO_EEIC\ProjectoI\GMote
 
 circ_gest1 = getDataFromFile(circ_gesture, 1);
 circ_gest2 = getDataFromFile(circ_gesture, 2);
@@ -17,7 +17,7 @@ circ_gest9 = getDataFromFile(circ_gesture, 9);
 %%{
 vi_gesture = 'video';
 
-%cd E:\Universidade\MESTRADO_EEIC\ProjectoI\GMote
+cd E:\Universidade\MESTRADO_EEIC\ProjectoI\GMote
 
 vi_gest1 = getDataFromFile(vi_gesture, 1);
 vi_gest2 = getDataFromFile(vi_gesture, 2);
