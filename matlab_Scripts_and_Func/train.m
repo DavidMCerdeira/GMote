@@ -1,6 +1,6 @@
 %%{
 clear h;
-codebookSize = 2^1;
+codebookSize = 2^4;
 
 h = HMM(gesture, 2, codebookSize);
 count = 1;
@@ -8,9 +8,9 @@ count = 1;
 %vector quantization
 [m, p, distor] = vqsplit([
                           gest1;...
-                         %{  
+                          
                           gest2;...
-                         
+                          %{
                           gest3;...
                         
                           gest4;...
@@ -37,7 +37,7 @@ fprintf('Train %d:\n', count);
 h.train_one(idx);
 %}
 
-%  %{
+%%{
 idx = knnsearch(md1, gest1); % match points with index
 fprintf('Train %d:\n', count);
 h.train_multiple(idx);

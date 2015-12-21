@@ -13,6 +13,7 @@ classdef HMM < handle
         ANum     = [];
         bDen     = [];
         bNum     = [];
+        P        = []; 
         
         maxIters = 200;
         
@@ -41,7 +42,7 @@ classdef HMM < handle
             for i = 1 : n
                 sum = 0;
                 for j = 1 : n
-                    self.A(i, j) = self.A(i, j) + (-1)^(rand(1)*2-1) * 1 / ((rand(1)*100) + 100);
+                    self.A(i, j) = self.A(i, j) + (-1)^(j) * 1 / ((rand(1)*100) + 100);
                     sum = sum + self.A(i,j);
                 end
                 
@@ -60,7 +61,7 @@ classdef HMM < handle
             for i = 1 : n
                 sum = 0;
                 for j = 1 : self.M
-                    self.b(i, j) = self.b(i, j) + (-1)^(rand(1)*2-1) * 1 / ((rand(1) * 1000000) + 1000000);
+                    self.b(i, j) = self.b(i, j) + (-1)^(j) * 1 / ((rand(1) * 1000000) + 1000000);
                     sum = sum + self.b(i,j);
                 end
                 if(sum > 1)
@@ -76,11 +77,13 @@ classdef HMM < handle
             
             self.pi = ones(self.N,1)/self.N;
             
-            self.ADen = zeros(self.N, self.N);
+            self.ADen = zeros(self.N, 1);
             self.ANum = zeros(self.N, self.N);
             
             self.bDen = zeros(self.N, self.M);
             self.bNum = zeros(self.N, self.M);
+            
+            self.P = 1;
         end
         
         function [fw, c] = forward(self, O)
@@ -275,30 +278,43 @@ classdef HMM < handle
         end
         
         function train_multiple(self, O)
-            T = length(O);
-            [fw, c] = self.forward(O);
+            T = length(O);          
+      
+            saveScalng = self.scaling;
+            self.scaling = 1;
+            [~, c] = self.forward(O);
+            
+            self.scaling = 0;
+            [fw, ~] = self.forward(O);
             bw = self.backward(O, c);
+            self.scaling = saveScalng;
             
             %102
-            P = 1;
+            Pk = 1;
             for t = 1 : T - 1
-                P = P * 1/c(t);
+                Pk = Pk * 1/c(t);
             end
             
-            num = zeros(self.N, self.N);
-            den = zeros(self.N, self.N);
+            self.P = self.P*Pk;
             
-            %109 % but already scaled
+            num = zeros(self.N, self.N);
+            den = zeros(self.N, 1);
+            
+            %109
             for i = 1 : self.N
                 for j = 1 : self.N
                     for t = 1 : T - 1
                         num(i,j) = num(i,j) + fw(t,i) * self.A(i,j) * self.B(j, O(t+1)) * bw(t+1, j);
-                        den(i,j) = den(i,j) + fw(t,i) * bw(t,i); %! vai somar N vezes! sem ser necessário
-                    end
-                    
-                    self.ANum(i,j) = self.ANum(i,j) + num(i,j) / P;
-                    self.ADen(i,j) = self.ADen(i,j) + den(i,j) / P;
+                    end                    
+                    self.ANum(i,j) = self.ANum(i,j) + num(i,j) / Pk;             
                 end
+            end
+            
+            for i = 1 : self.N
+                for t = 1 : T - 1
+                    den(i) = den(i) + fw(t,i) * bw(t,i);
+                end
+                self.ADen(i) = self.ADen(i) + den(i) / Pk;
             end
             
             %110
@@ -311,8 +327,8 @@ classdef HMM < handle
                         self.bDen(i,l) = self.bDen(i,l) + fw(t, i) * bw(t, i);
                     end
                     
-                    self.bNum(i,l) = self.bNum(i,l) / P;
-                    self.bDen(i,l) = self.bDen(i,l) / P;                   
+                    self.bNum(i,l) = self.bNum(i,l) / Pk;
+                    self.bDen(i,l) = self.bDen(i,l) / Pk;                   
                 end
             end
         end
@@ -323,10 +339,10 @@ classdef HMM < handle
                 sum = 0;
                 for j = 1 : self.N
                     %109
-                    self.A(i,j) = self.ANum(i,j)/self.ADen(i,j);
+                    self.A(i,j) = self.ANum(i,j)/self.ADen(i);
                     sum = sum + self.A(i,j);
                 end
-                fprintf('Sum of A(i,:) = %f\n', sum);
+                fprintf('Sum of A(%d,:) = %f\n', i, sum);
             end
             
            
@@ -337,10 +353,12 @@ classdef HMM < handle
                     self.b(i,l) = self.bNum(i,l)/self.bDen(i,l);
                     sum = sum + self.b(i,l);
                 end
-                fprintf('Sum of b(i,:) = %f\n', sum);
+                fprintf('Sum of b(%d,:) = %f\n', i, sum);
             end
             
-            self.ADen = zeros(self.N, self.N);
+            fprintf('logP is %f\n', log10(self.P));
+            
+            self.ADen = zeros(self.N, 1);
             self.ANum = zeros(self.N, self.N);
             
             self.bDen = zeros(self.N, self.M);
