@@ -1,0 +1,16 @@
+﻿Last best results of HMM
+
+# Please enter the commit message for your changes. Lines starting
+# with '#' will be ignored, and an empty message aborts the commit.
+# On branch master
+# Your branch is ahead of 'origin/master' by 2 commits.
+#   (use "git push" to publish your local commits)
+#
+# Changes to be committed:
+#	modified:   CBTemp.mat
+#	modified:   matlab_Scripts_and_Func/HMM.m
+#	modified:   matlab_Scripts_and_Func/init.m
+#	modified:   matlab_Scripts_and_Func/test.m
+#	modified:   matlab_Scripts_and_Func/train.m
+#
+
