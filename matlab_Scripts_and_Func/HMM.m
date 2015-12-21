@@ -336,15 +336,16 @@ classdef HMM < handle
                 self.ADen(i) = self.ADen(i) + den(i) / Pk;
             end
             
+            b_num = zeros(self.N, self.M);
             %110
             for i = 1 : self.N
                 for l = 1 : self.M
                     for t = 1 : T
                         if O(t) == l
-                            self.bNum(i,l) = self.bNum(i,l) + fw(t, i) * bw(t, i);
+                           b_num(i,l) = b_num(i,l) + fw(t, i) * bw(t, i);
                         end  
                     end     
-                    self.bNum(i,l) = self.bNum(i,l) / Pk;                  
+                    self.bNum(i,l) = self.bNum(i,l) + b_num(i,l)/ Pk;                  
                 end 
             end
             

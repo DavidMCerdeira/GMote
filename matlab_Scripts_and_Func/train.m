@@ -8,9 +8,9 @@ count = 1;
 %vector quantization
 [m, p, distor] = vqsplit([
                           gest1;...
-                          %{
+                          
                            gest2;...
-                         
+                        
                           gest3;...
                         
                           gest4;...
@@ -24,7 +24,7 @@ count = 1;
                           gest8;...
                           
                           gest9;...
-                          %}
+                           %{%}
                          ]', codebookSize);
 
 md1 = KDTreeSearcher(m'); % grow a kd-tree 
@@ -38,38 +38,42 @@ h.scaling = 1;
 h.train_one(idx);
 %}
 
-
 idx1 = knnsearch(md1, gest1); % match points with index
+idx2 = knnsearch(md1, gest2); % match points with index
+idx3 = knnsearch(md1, gest3); % match points with index
+idx4 = knnsearch(md1, gest4); % match points with index
+idx5 = knnsearch(md1, gest5); % match points with index
+idx6 = knnsearch(md1, gest6); % match points with index
+idx7 = knnsearch(md1, gest7); % match points with index
+idx8 = knnsearch(md1, gest8); % match points with index
+idx9 = knnsearch(md1, gest9); % match points with index
+
+%{
 fprintf('Train %d:\n', count);
 h.train_multiple(idx1);
 count = count + 1;
-
-idx2 = knnsearch(md1, gest2); % match points with index
+%}
 
 fprintf('Train %d:\n', count);
 h.train_multiple(idx2);
 count = count + 1;
-%{
-idx3 = knnsearch(md1, gest3); % match points with index
+
 fprintf('Train %d:\n', count);
 h.train_multiple(idx3);
 count = count + 1;
 
-idx4 = knnsearch(md1, gest4); % match points with index
 fprintf('Train %d:\n', count);
 h.train_multiple(idx4);
 count = count + 1;
 
-idx5 = knnsearch(md1, gest5); % match points with index
 fprintf('Train %d:\n', count);
 h.train_multiple(idx5);
 count = count + 1;
 
-idx6 = knnsearch(md1, gest6); % match points with index
 fprintf('Train %d:\n', count);
 h.train_multiple(idx6);
 count = count + 1;
-%}
+%{%}
 h.commit_mutiple();
 %}
 fprintf('Done!\n');
