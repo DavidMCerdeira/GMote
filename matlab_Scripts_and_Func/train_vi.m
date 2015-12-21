@@ -2,7 +2,7 @@
     clear vi_h
     vi_codebookSize = 2^4;
 
-    vi_h = HMM(vi_gesture, 3, vi_codebookSize);
+    vi_h = HMM(vi_gesture, 6, vi_codebookSize);
     vi_count = 1;
 
     %vector quantization
