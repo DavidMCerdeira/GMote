@@ -1,25 +1,11 @@
+#define NR_OF_STATES 4
+#define CDBK_SIZE 16
+#define NR_OF_DIM 6
 
-#define N 3 /*number of state*/
-#define M 16 /*codebook size*/
-
-
-enum gest { PICTURE = 0, /*VIDEO, MUSIC, SETTUNGS, PLAY_PAUSE, FULLSCREEN, NEXT, PREVIOUS,*/ N_GEST};
+enum gest { pictures = 0,video, music, settings, play_pause, next, previous, NUM_GEST};
 typedef enum gest gest;
 
-float A[N_GEST][N][N] = 
-{
-	{
-	{0,0,0},
-	{0,0,0},
-	{0,0,0}
-	},
-};
-
-float B[N_GEST][N][M] =
-{
-	{
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-	}
-};
+extern const float A[NUM_GEST][NR_OF_STATES][NR_OF_STATES];
+extern const float B[NUM_GEST][NR_OF_STATES][CDBK_SIZE];
+extern const float Pi[NUM_GEST][NR_OF_STATES];
+extern const float codeBookData[NUM_GEST][CDBK_SIZE][NR_OF_DIM];
