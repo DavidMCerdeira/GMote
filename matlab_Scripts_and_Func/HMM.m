@@ -4,7 +4,7 @@ classdef HMM < handle
         %Main properties
         N     = 8;  % number of states
         M     = 255; % number of features
-        A     = []; % NxN transition probability matrix
+        A     = []; % NxN transition probability matrixgit co
         b     = []; % NxM mean vector (D = number of features)
         pi    = []; % Nx1 initial state distribution vector
         
