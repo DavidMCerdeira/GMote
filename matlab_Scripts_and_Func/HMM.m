@@ -2,14 +2,15 @@ classdef HMM < handle
     properties
         name  = 'undefined';
         %Main properties
-        N     = 8;  % number of states
-        M     = 255; % number of features
+        N     = [];  % number of states
+        M     = []; % number of features
         A     = []; % NxN transition probability matrixgit co
         b     = []; % NxM mean vector (D = number of features)
         pi    = []; % Nx1 initial state distribution vector
         
         %codebook
         codebook;
+        codeData;
         
         %aproximate
         Anum     = [];
@@ -18,7 +19,7 @@ classdef HMM < handle
         bden     = [];
         P        = [];
         
-        maxIters = 200;
+        maxIters = [];
         
         %functionality
         scaling = 1;
@@ -26,11 +27,12 @@ classdef HMM < handle
     end
     
     methods
-        function self = HMM(name, numOfStates, codebookSize, kdtree, maxiter)
-            self.name = char(name);
+        function self = HMM(name, numOfStates, codebookSize, m, maxiter)
+            self.name = name;
             self.N = numOfStates;
             self.M = codebookSize;
-            self.codebook = kdtree;
+            self.codeData = m;
+            self.codebook = KDTreeSearcher(m);
             self.maxIters = maxiter;
             self.initialization();
         end
@@ -267,7 +269,7 @@ classdef HMM < handle
                     end
                 end
                 logProb = -logProb;
-             
+                
                 iters = iters + 1;
                 if(logProb > oldLogProb)
                     oldLogProb = logProb;
@@ -279,7 +281,7 @@ classdef HMM < handle
                 if mod(iters, 5) == 0
                     fprintf(' ');
                 end
-                    
+                
                 if (mod(iters, 20) == 0) && iters ~= self.maxIters
                     fprintf(': %f\n', logProb);
                 end
@@ -377,52 +379,76 @@ classdef HMM < handle
             P=-P;
         end
         
-        function printA(self)
-            
+        function printA(self, fileID)
+            fprintf(fileID, '{');
             for i = 1 : self.N
-                fprintf('{');
+                fprintf(fileID, '{');
                 for j = 1 : self.N
-                    fprintf('%6.6f', self.A(i,j));
+                    fprintf(fileID, '%6.6f', self.A(i,j));
                     if j ~= self.N
-                        fprintf(', ');
+                        fprintf(fileID, ', ');
                     end
                 end
                 
                 if i == self.N
-                    fprintf('}\n');
+                    fprintf(fileID, '}');
                 else
-                    fprintf('},\n');
+                    fprintf(fileID, '},\n');
                 end
             end
+            fprintf(fileID, '}');
         end
         
-        function printB(self)
+        function printB(self, fileID)
+            fprintf(fileID, '{');
             for i = 1 : self.N
-                fprintf('{');
+                fprintf(fileID, '{');
                 for j = 1 : self.M
-                    fprintf('%6.6f', self.b(i,j));
-                    if j ~= self.N
-                        fprintf(', ');
+                    fprintf(fileID, '%6.6f', self.b(i,j));
+                    if j ~= self.M
+                        fprintf(fileID, ', ');
                     end
                 end
                 
                 if i == self.N
-                    fprintf('}\n');
+                    fprintf(fileID, '}');
                 else
-                    fprintf('},\n');
+                    fprintf(fileID, '},\n');
                 end
             end
+            fprintf(fileID, '}');
         end
         
-        function printPi(self)
-            fprintf('{');
+        function printPi(self, fileID)
+            fprintf(fileID, '{');
             for i = 1 : self.N
-                fprintf('%6.6f', self.pi(i));
+                fprintf(fileID, '%6.6f', self.pi(i));
                 if i ~= self.N
-                    fprintf(', ');
+                    fprintf(fileID, ', ');
                 end
             end
+            fprintf(fileID, '}');
         end
         
+        function printCodeBook(self, fileID)
+            S = length(self.codeData(1,:));
+            fprintf(fileID, '{');
+            for i = 1 : self.M
+                fprintf(fileID, '{');
+                for j = 1 : S
+                    fprintf(fileID, '%+06.6f', self.codeData(i,j));
+                    if j ~= S
+                        fprintf(fileID, ', ');
+                    end
+                end
+                if i == self.M
+                    fprintf(fileID, '}');
+                else
+                    fprintf(fileID, '},\n');
+                end
+            end
+            fprintf(fileID, '}');
+        end
     end
+    
 end
