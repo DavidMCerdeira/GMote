@@ -8,12 +8,15 @@ classdef HMM < handle
         b     = []; % NxM mean vector (D = number of features)
         pi    = []; % Nx1 initial state distribution vector
         
+        %codebook
+        codebook;
+        
         %aproximate
-        ADen     = [];
-        ANum     = [];
-        bDen     = [];
-        bNum     = [];
-        P        = []; 
+        Anum     = [];
+        Aden     = [];
+        bnum     = [];
+        bden     = [];
+        P        = [];
         
         maxIters = 200;
         
@@ -23,10 +26,11 @@ classdef HMM < handle
     end
     
     methods
-        function self = HMM(name, numOfStates, codebookSize)
+        function self = HMM(name, numOfStates, codebookSize, kdtree)
             self.name = char(name);
             self.N = numOfStates;
             self.M = codebookSize;
+            self.codebook = kdtree;
             self.initialization();
         end
         
@@ -77,11 +81,10 @@ classdef HMM < handle
             
             self.pi = ones(self.N,1)/self.N;
             
-            self.ADen = zeros(self.N, 1);
-            self.ANum = zeros(self.N, self.N);
-            
-            self.bDen = zeros(self.N, 1);
-            self.bNum = zeros(self.N, self.M);
+            self.Anum = zeros(self.N, self.N);
+            self.Aden = zeros(self.N, 1);
+            self.bnum = zeros(self.N, self.M);
+            self.bden = zeros(self.N, 1);
             
             self.P = 1;
         end
@@ -263,24 +266,30 @@ classdef HMM < handle
                     end
                 end
                 logProb = -logProb;
-                
-                
-                
+             
                 iters = iters + 1;
                 if(logProb > oldLogProb)
                     oldLogProb = logProb;
                 else
                     break;
                 end
+                
+                fprintf('I');
+                if mod(iters, 5) == 0
+                    fprintf(' ');
+                end
+                    
+                if (mod(iters, 20) == 0) && iters ~= self.maxIters
+                    fprintf(': %f\n', logProb);
+                end
             end
-                      
-            fprintf('Iterated %d times\n', iters);
-            fprintf('LogProb = %f\n', logProb);  
+            fprintf(': %f\n', logProb);
+            fprintf('Iterated %d times\n\n', iters);
         end
         
         function train_multiple(self, O)
-            T = length(O);          
-
+            T = length(O);
+            
             [fw, c] = self.forward(O);
             bw = self.backward(O, c);
             
@@ -290,45 +299,34 @@ classdef HMM < handle
                 Pk = Pk * 1/c(t);
             end
             
-            num = zeros(self.N, self.N);
-            den = zeros(self.N, 1);
-            
             %109
             for i = 1 : self.N
                 for j = 1 : self.N
+                    num = 0;
+                    den = 0;
                     for t = 1 : T - 1
-                        num(i,j) = num(i,j) + fw(t,i) * self.A(i,j) * self.B(j, O(t+1)) * bw(t+1, j);
-                    end                    
-                    self.ANum(i,j) = self.ANum(i,j) + num(i,j) / Pk;             
+                        num = num + fw(t,i) * self.A(i,j) * self.B(j, O(t+1)) * bw(t+1, j);
+                        den = den + fw(t,i) * bw(t,i);
+                    end
+                    self.Anum(i,j) = self.Anum(i,j) + num / Pk;
+                    self.Aden(i) = self.Aden(i) + den / Pk;
                 end
             end
             
-            for i = 1 : self.N
-                for t = 1 : T - 1
-                    den(i) = den(i) + fw(t,i) * bw(t,i);
-                end
-                self.ADen(i) = self.ADen(i) + den(i) / Pk;
-            end
-            
-            b_num = zeros(self.N, self.M);
             %110
             for i = 1 : self.N
                 for l = 1 : self.M
+                    num = 0;
+                    den = 0;
                     for t = 1 : T
                         if O(t) == l
-                           b_num(i,l) = b_num(i,l) + fw(t, i) * bw(t, i);
-                        end  
-                    end     
-                    self.bNum(i,l) = self.bNum(i,l) + b_num(i,l)/ Pk;                  
-                end 
-            end
-            
-            for i = 1 : self.N
-                den(i) = 0;
-                for t = 1 : T
-                    den(i) = den(i) + fw(t, i) * bw(t, i);
+                            num = num + fw(t, i) * bw(t, i);
+                        end
+                        den = den + fw(t, i) * bw(t, i);
+                    end
+                    self.bnum(i,l) = self.bnum(i,l) + num/Pk;
+                    self.bden(i) = self.bden(i) + den/Pk;
                 end
-                self.bDen(i) = self.bDen(i) + den(i) / Pk; 
             end
         end
         
@@ -338,28 +336,27 @@ classdef HMM < handle
                 sum = 0;
                 for j = 1 : self.N
                     %109
-                    self.A(i,j) = self.ANum(i,j)/self.ADen(i) * self.M;
+                    self.A(i,j) = self.Anum(i,j)/self.Aden(i);
                     sum = sum + self.A(i,j);
                 end
                 fprintf('Sum of A(%d,:) = %f\n', i, sum);
             end
             
-           
+            
             for i = 1 : self.N
                 sum = 0;
                 for l = 1 : self.M
                     %110
-                    self.b(i,l) = self.bNum(i,l)/self.bDen(i);
+                    self.b(i,l) = self.bnum(i,l)/self.bden(i);
                     sum = sum + self.b(i,l);
                 end
                 fprintf('Sum of b(%d,:) = %f\n', i, sum);
             end
             
-            self.ADen = zeros(self.N, 1);
-            self.ANum = zeros(self.N, self.N);
-            
-            self.bDen = zeros(self.N, 1);
-            self.bNum = zeros(self.N, self.M);
+            self.Anum = zeros(self.N, self.N);
+            self.Aden = zeros(self.N, 1);
+            self.bnum = zeros(self.N, self.M);
+            self.bden = zeros(self.N, 1);
         end
         
         function P = problem1(self, O)
@@ -378,5 +375,53 @@ classdef HMM < handle
             
             P=-P;
         end
+        
+        function printA(self)
+            
+            for i = 1 : self.N
+                fprintf('{');
+                for j = 1 : self.N
+                    fprintf('%6.6f', self.A(i,j));
+                    if j ~= self.N
+                        fprintf(', ');
+                    end
+                end
+                
+                if i == self.N
+                    fprintf('}\n');
+                else
+                    fprintf('},\n');
+                end
+            end
+        end
+        
+        function printB(self)
+            for i = 1 : self.N
+                fprintf('{');
+                for j = 1 : self.M
+                    fprintf('%6.6f', self.b(i,j));
+                    if j ~= self.N
+                        fprintf(', ');
+                    end
+                end
+                
+                if i == self.N
+                    fprintf('}\n');
+                else
+                    fprintf('},\n');
+                end
+            end
+        end
+        
+        function printPi(self)
+            fprintf('{');
+            for i = 1 : self.N
+                fprintf('%6.6f', self.pi(i));
+                if i ~= self.N
+                    fprintf(', ');
+                end
+            end
+        end
+        
     end
 end
