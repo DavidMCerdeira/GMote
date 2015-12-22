@@ -1,4 +1,5 @@
 #include "codebook.h"
+#include "HMM_param.h"
 
 typedef struct forward forward;
 
@@ -16,7 +17,7 @@ struct HMM
 {
 	unsigned int N; //number of states
 	unsigned int M; //codebook size
-	float **A;
+	float **A; //A[PICTURE]
 	float **B;
 	float *pi;
 	
@@ -26,5 +27,5 @@ struct HMM
 
 void HMM_init(HMM *gest)
 {
-	
+		
 }

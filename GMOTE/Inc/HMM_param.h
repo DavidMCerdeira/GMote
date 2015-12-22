@@ -3,7 +3,7 @@
 #define M 16 /*codebook size*/
 
 
-enum gest { PICTURE = 0, /*, VIDEO, MUSIC, SETTUNGS, PLAY_PAUSE, FULLSCREEN, NEXT, PREVIOUS*/ N_GEST};
+enum gest { PICTURE = 0, /*VIDEO, MUSIC, SETTUNGS, PLAY_PAUSE, FULLSCREEN, NEXT, PREVIOUS,*/ N_GEST};
 typedef enum gest gest;
 
 float A[N_GEST][N][N] = 
