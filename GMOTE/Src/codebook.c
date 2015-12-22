@@ -1,28 +1,27 @@
 #include "codebook.h"
+#define myalloc(__SIZE__) pvPortMalloc(__SIZE__)
 
 QueueHandle_t framesRdy;
 
-void codeBook_init()
+void codeBook_init(codebook* codebook, float ***data)
 {
 	struct kdres *res;
 	volatile int i = 0;
 	volatile int k = 0;
 
-	kdTree = kd_create(6);
+	codebook = kd_create(NR_OF_DIM);
 	
-	printf("Heap size left %d\n",xPortGetFreeHeapSize());
-	
-	for(k = 0; k < N_GEST; k++)
+	for(k = 0; k < NUM_GEST; k++)
 	{
 		for(i = 0; i < CODE_BOOK_SIZE; i++)
 		{
-			if(kd_insertf(kdTree, dataTree[k][i], (void*)i) < 0){
+			if(kd_insertf(codebook, data[k][i], (void*)i) < 0){
 				error("Error building tree", 3);
 			}
 		}
 		
 		for(i = 0; i < CODE_BOOK_SIZE; i++){
-			res = kd_nearestf(kdTree, dataTree[k][i]);
+			res = kd_nearestf(codebook, data[k][i]);
 			if(!res){
 				error("Error finding near", 3);
 			}
@@ -34,19 +33,15 @@ void codeBook_init()
 			kd_res_free(res);
 		}
 	}
-	
-	printf("Everything is A-Ok!\n");
-	printf("Heap size left %d\n",xPortGetFreeHeapSize());
 }
 
-
-int codebook_idx(gest id, float *pos)
+int codebook_idx(codebook *codebook, float *pos)
 {
 	struct kdres *res;
 	int idx = 0;
 	
 	/*get nearest point*/
-	res = kd_nearestf(kdTree, pos);
+	res = kd_nearestf(codebook, pos);
 	if(!res){
 		error("Error finding near", 3);
 	}
@@ -59,3 +54,10 @@ int codebook_idx(gest id, float *pos)
 	
 	return idx;
 }
+
+void codebook_vecToIdx(codebook *codebook, int **vec, unsigned int rows)
+{
+	int *idx;
+	
+	idx = (int*)myalloc(sizeof(int)*rows);
+}	

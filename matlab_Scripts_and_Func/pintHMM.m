@@ -41,6 +41,9 @@ fprintf(fileID, '\n};\n\n');
 fclose(fileID);
 
 fileID = fopen('.//GMOTE//Inc//HMM_param.h', 'wt');
+fprintf(fileID, '#ifndef _HMM_PARAM_H\n');
+fprintf(fileID, '#define _HMM_PARAM_H\n\n');
+
 fprintf(fileID, '#define NR_OF_STATES %d\n', n_sates);
 fprintf(fileID, '#define CDBK_SIZE %d\n', codebookSize);
 fprintf(fileID, '#define NR_OF_DIM %d\n\n', 6);
@@ -61,4 +64,5 @@ fprintf(fileID, 'extern const float A[NUM_GEST][NR_OF_STATES][NR_OF_STATES];\n')
 fprintf(fileID, 'extern const float B[NUM_GEST][NR_OF_STATES][CDBK_SIZE];\n');
 fprintf(fileID, 'extern const float Pi[NUM_GEST][NR_OF_STATES];\n');
 fprintf(fileID, 'extern const float codeBookData[NUM_GEST][CDBK_SIZE][NR_OF_DIM];\n');
+fprintf(fileID, '\n#endif\n');
 fclose(fileID);
