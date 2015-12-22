@@ -3,8 +3,7 @@ codebookSize = 2^4;
 n_sates = 4;
 count = 1;
 
-
-%{ 
+% %{ 
 gesture = 'pictures';
 %vector quantization
 [m, ~, ~] = vqsplit([
@@ -29,7 +28,7 @@ gesture = 'pictures';
     ]', codebookSize);
 md = KDTreeSearcher(m'); % grow a kd-tree
 
-h(count) = HMM(gesture, n_sates, codebookSize, md);
+h(count) = HMM(gesture, n_sates, codebookSize, md, 75);
 idx = knnsearch( h(count).codebook, circ_gest1 ); % match points with index
 h(count).train_one(idx);
 count = count + 1;
@@ -41,16 +40,16 @@ gesture = 'video';
 [m, ~, ~] = vqsplit([
     %vi_gest1;
     
-    vi_gest2;
+    %vi_gest2;
     
-    vi_gest3;
+    %vi_gest3;
     
-    vi_gest4;
+    %vi_gest4;
 
     vi_gest5;
-
-    vi_gest6;
 %{
+    vi_gest6;
+
     vi_gest7;
 
     vi_gest8;
@@ -60,8 +59,8 @@ gesture = 'video';
     ]', codebookSize);
 
 md1 = KDTreeSearcher(m'); % grow a kd-tree
-h(count) = HMM(gesture, n_sates, codebookSize, md1);
-idx = knnsearch(h(count).codebook, vi_gest3); % match points with index
+h(count) = HMM(gesture, n_sates, codebookSize, md1, 30);
+idx = knnsearch(h(count).codebook, vi_gest7); % match points with index
 h(count).train_one(idx);
 count = count + 1;
 %}

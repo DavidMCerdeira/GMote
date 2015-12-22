@@ -26,11 +26,12 @@ classdef HMM < handle
     end
     
     methods
-        function self = HMM(name, numOfStates, codebookSize, kdtree)
+        function self = HMM(name, numOfStates, codebookSize, kdtree, maxiter)
             self.name = char(name);
             self.N = numOfStates;
             self.M = codebookSize;
             self.codebook = kdtree;
+            self.maxIters = maxiter;
             self.initialization();
         end
         
@@ -283,7 +284,7 @@ classdef HMM < handle
                     fprintf(': %f\n', logProb);
                 end
             end
-            fprintf(': %f\n', logProb);
+            fprintf(' : %f\n', logProb);
             fprintf('Iterated %d times\n\n', iters);
         end
         
