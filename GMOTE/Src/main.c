@@ -101,8 +101,6 @@ int main(void)
 
   /* USER CODE BEGIN 2 */
 	ORANGE(1);
-	codeBook_init();
-	while(1);
 	
   /* USER CODE END 2 */
 

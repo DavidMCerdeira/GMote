@@ -102,7 +102,7 @@ void gPress(void)
 		}
 	}
 	
-	printf("Received a total of %d frames\n", nFrames);
+	//printf("Received a total of %d frames\n", nFrames);
 	nFrames = 0;
 	ORANGE(0);
 }
