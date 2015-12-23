@@ -97,6 +97,9 @@ void HMM_ControlTsk(void *arg){
 void HMM_ForwardTsk(void* rModel){
 	HMM *ownModel = (HMM*) rModel;
 	
-
-	
+	/*
+			- Esperar EVENT go Forward para o bit específico
+			- Limpar Bit do Event
+			- Incrementar semáforo forwardFin
+	*/
 }
