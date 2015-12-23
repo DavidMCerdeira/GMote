@@ -48,11 +48,11 @@ fprintf(fileID, '#define NR_OF_STATES %d\n', n_sates);
 fprintf(fileID, '#define CDBK_SIZE %d\n', codebookSize);
 fprintf(fileID, '#define NR_OF_DIM %d\n\n', 6);
 
-fprintf(fileID, 'enum gest { ');
+fprintf(fileID, 'enum gest {');
 for i = 1 : number_of_gestures
     fprintf(fileID, '%s', gesture{i});
     if i == 1
-        fprintf(fileID, ' = 0,');
+        fprintf(fileID, ' = 0, ');
     else
        fprintf(fileID, ', ');
     end

@@ -1,7 +1,7 @@
 #include "codebook.h"
 #define myalloc(__SIZE__) pvPortMalloc(__SIZE__)
 
-QueueHandle_t framesRdy;
+
 
 void codeBook_init(codebook* codebook, float ***data)
 {
@@ -55,9 +55,20 @@ int codebook_idx(codebook *codebook, float *pos)
 	return idx;
 }
 
-void codebook_vecToIdx(codebook *codebook, int **vec, unsigned int rows)
+int* codebook_vecToIdx(codebook *codebook, int **vec, unsigned int start, unsigned int end)
 {
-	int *idx;
+	int *idx = NULL;
+	unsigned int size = (end - start);
+	int i = 0;
 	
-	idx = (int*)myalloc(sizeof(int)*rows);
+	if(vec != NULL)
+	{
+		idx = (int*)myalloc(sizeof(int)*(size));
+		
+		for(i = 0; i < size; i++){
+			idx[i] = codebook_idx(codebook, (float*)vec[start + i]);
+		}
+	}
+	
+	return idx;
 }	

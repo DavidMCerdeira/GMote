@@ -1371,6 +1371,7 @@ BaseType_t xEntryTimeSet = pdFALSE;
 TimeOut_t xTimeOut;
 int8_t *pcOriginalReadPosition;
 Queue_t * const pxQueue = ( Queue_t * ) xQueue;
+volatile	Queue_t * lol = ( Queue_t * ) xQueue;
 
 	configASSERT( pxQueue );
 	configASSERT( !( ( pvBuffer == NULL ) && ( pxQueue->uxItemSize != ( UBaseType_t ) 0U ) ) );

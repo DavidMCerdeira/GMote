@@ -5,7 +5,7 @@
 #define CDBK_SIZE 16
 #define NR_OF_DIM 6
 
-enum gest { pictures = 0,video, music, settings, play_pause, next, previous, NUM_GEST};
+enum gest {pictures = 0, video, music, settings, play_pause, next, previous, NUM_GEST};
 typedef enum gest gest;
 
 extern const float A[NUM_GEST][NR_OF_STATES][NR_OF_STATES];

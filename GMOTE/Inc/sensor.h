@@ -6,9 +6,15 @@
 
 #define SAMPLE_SIZE   6     //in bytes
 #define AQ_SIZE       300   //number of samples
-#define FRAME_SIZE    24    //in samples
-#define FRAME_OVERLAP 6     //in samples 
+#define FRAME_SIZE    20    //in samples
 #define NR_OF_AXES 3				//number of Axes per sensor
+
+#define ACCEL_X 0
+#define ACCEL_Y 1
+#define ACCEL_Z 2
+#define GYRO_X  3
+#define GYRO_Y  4
+#define GYRO_Z  5
 	
 /* USER SIGNALS */
 #define GStart 0x1
@@ -23,8 +29,9 @@ typedef struct aquisitn
 {
 	uint32_t start;
 	uint32_t end;
-	int16_t samples[NR_OF_AXES][AQ_SIZE];
 }aquisitn;
+
+extern int16_t data[6][300];
 
 void printBuffer(aquisitn aq);
 
