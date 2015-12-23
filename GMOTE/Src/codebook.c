@@ -1,6 +1,5 @@
 #include "codebook.h"
 
-#define myalloc(__SIZE__) pvPortMalloc(__SIZE__)
 
 void codeBook_init(codebook* codebook, float **data)
 {
@@ -51,15 +50,15 @@ int codebook_idx(codebook *codebook, float *pos)
 	return idx;
 }
 
-int* codebook_vecToIdx(codebook *codebook, int **vec, unsigned int start, unsigned int end)
+unsigned int* codebook_vecToIdx(codebook *codebook, int **vec, unsigned int start, unsigned int end)
 {
-	int *idx = NULL;
+	unsigned int *idx = NULL;
 	unsigned int size = (end - start);
 	int i = 0;
 	
-	if(vec != NULL)
+	if((vec != NULL) && (codebook != NULL))
 	{
-		idx = (int*)myalloc(sizeof(int)*(size));
+		idx = (unsigned int*)myalloc(sizeof(int)*(size));
 		
 		for(i = 0; i < size; i++){
 			idx[i] = codebook_idx(codebook, (float*)vec[start + i]);

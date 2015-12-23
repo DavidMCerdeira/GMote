@@ -13,7 +13,7 @@ for i = 1 : length(h)
         end
         %fprintf('Testing data: %s\n', gesture{j});
         for k = 1 : number_of_samples
-            idx = knnsearch(h{i}.codebook, sample{j, k});
+            idx = knnsearch(codebook, sample{j, k});
             P = h{i}.problem1(idx);
             %if P == P
             %fprintf('\t\t%d: %f\n', k, P);

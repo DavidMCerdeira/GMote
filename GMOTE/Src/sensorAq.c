@@ -1,12 +1,16 @@
 #include "sensorAq.h"
+#include "pre_processing.h"
 
 void gPress(void);
 void printFrame(int idx);
 
 QueueHandle_t accelFrameReadyMsgQ;
 QueueHandle_t gyroFrameReadyMsgQ;
+QueueHandle_t preProcFramReadyMsgQ;
+
 TaskHandle_t accelThreadHandle;
 TaskHandle_t gyroThreadHandle;
+TaskHandle_t preProcThreadHandle;
 
 void aqManager(void* argument)
 {
@@ -17,6 +21,7 @@ void aqManager(void* argument)
 	/* initialize accelerometer frame ready queue */
 	accelFrameReadyMsgQ = xQueueCreate(30, sizeof(uint32_t));
 	gyroFrameReadyMsgQ  = xQueueCreate(30, sizeof(uint32_t));
+	preProcFramReadyMsgQ = xQueueCreate(30, sizeof(uint32_t));
 	
 	/* init aquisitors */
 	initAccelAq();
@@ -25,6 +30,8 @@ void aqManager(void* argument)
 	/* initiate suspended thread */
 	xTaskCreate(runAccelGest, "AccelGest", 128, NULL, 0, &accelThreadHandle);
 	xTaskCreate(runGyroGest, "GyroGest", 128, NULL, 0, &gyroThreadHandle);
+	
+	xTaskCreate(preprocessing, "PreProcessing", 128, NULL, 1, &preProcThreadHandle);
 	
 	vTaskSuspend(accelThreadHandle);
 	vTaskSuspend(gyroThreadHandle);
@@ -101,7 +108,8 @@ void gPress(void)
 			else{
 				/* deal with it */
 				nFrames++;
-				printFrame(accelRes);
+				//printFrame(accelRes);
+				xQueueSend(preProcFramReadyMsgQ, &accelRes, 10);
 				//printf("Frame Received!\n");
 			}
 		}

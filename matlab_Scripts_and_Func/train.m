@@ -1,8 +1,9 @@
-init
+%init
 
-iters = repmat(75, number_of_gestures);
+iters = repmat(1, number_of_gestures);
 
 clear h
+<<<<<<< HEAD
 h = cell(number_of_gestures);
 
 codebookSize = 2^4;
@@ -34,11 +35,26 @@ for i = 1 : number_of_gestures
     %idx = knnsearch( h{i}.codebook, sample{i,4}); % match points with index
     fprintf('Training %s\n', gesture{i});
     %h{i}.train_one(idx);
+=======
+h = cell(number_of_gestures, 1);
+%%{
+n_sates = 8;
+
+for i = 1 : number_of_gestures
+    h{i} = HMM(gesture{i}, n_sates, codebookSize);
+    idx = knnsearch(codebook, sample{i,2}); % match points with index
+    fprintf('Training %s\n', gesture{i});
+    h{i}.train_one(idx, iters(i));
+>>>>>>> b0c0a4d570d58bc8d4bee86589943a745f2b1ba9
 end
 %{%}
 
 %{
+<<<<<<< HEAD
 codebookSize = 2^1;
+=======
+codebookSize = 2^2;
+>>>>>>> b0c0a4d570d58bc8d4bee86589943a745f2b1ba9
 n_sates = 2;
 count = 1;
 iter = 1;
@@ -48,7 +64,7 @@ for i = 1 : number_of_gestures
     fprintf('Training %s\n', gesture{i});
     %vector quantization
     [m, ~, ~] = vqsplit([sample{i,1}; sample{i,2}; sample{i,3}; sample{i,4}; sample{i,5}; sample{i,6};  sample{i,7};  sample{i,8};]', codebookSize);
-    h{i} = HMM(gesture{i}, n_sates, codebookSize, m', iters(i));
+    h{i} = HMM(gesture{i}, n_sates, codebookSize, m', 0);
     
     for it = 1 : iter       
         for j = 1 : 5
