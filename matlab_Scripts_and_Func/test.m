@@ -4,31 +4,13 @@ results = zeros(number_of_samples, number_of_gestures, length(h));
 
 threshold = -400;
 
-%{
-for i = 1 : length(h)
-    %fprintf('HMM: %s\n', h{i}.name);
-    for j = 1 : 7
-        %fprintf('\t')
-        if j == i
-            %fprintf('*');
-        end
-        %fprintf('Testing data: %s\n', gesture{j});
-        for k = 1 : number_of_samples
-            idx = knnsearch(codebook, sample{j, k});
-            P = h{i}.problem1(idx);
-            %if P == P
-            %fprintf('\t\t%d: %f\n', k, P);
-            %end
-            if P < threshold
-                P = NaN;
-            end
-            
-            results(k, j, i) = P;
-        end
-    end
-end
-%}
 %%{
+for pk = 1 : 2
+    if pk == 1
+        fprintf('Matlab:\n');
+    else
+        fprintf('GMote:\n');
+    end
 for i = 1 : length(h)
     %fprintf('HMM: %s\n', h{i}.name);
     for j = 1 : 7
@@ -38,11 +20,11 @@ for i = 1 : length(h)
         end
         %fprintf('Testing data: %s\n', gesture{j});
         for k = 1 : number_of_samples
-            [~, P] = hmmdecode(idx{j, k}', h{i}.A, h{i}.b);
-            %P = h{i}.problem1(idx{j,k});
-            %if P == P
-            %fprintf('\t\t%d: %f\n', k, P);
-            %end
+            if pk == 1
+                [~, P] = hmmdecode(idx{j, k}', h{i}.A, h{i}.b);
+            else
+                P = h{i}.problem1(idx{j,k});
+            end
             if P < threshold
                 P = NaN;
             end
@@ -71,6 +53,7 @@ for i = 1 : length(h)
         end
     end
     fprintf('\n');
+end
 end
 
 fprintf('Done!\n\n');
