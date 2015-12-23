@@ -278,7 +278,7 @@ classdef HMM < handle
                 end
                 
                 fprintf('I');
-                if mod(iters, 5) == 0
+                if mod(iters, 5) == 0 && iters ~= self.maxIters
                     fprintf(' ');
                 end
                 
@@ -304,45 +304,49 @@ classdef HMM < handle
             
             %109
             for i = 1 : self.N
+                den = 0;
                 for j = 1 : self.N
-                    num = 0;
-                    den = 0;
+                    num = 0;                    
                     for t = 1 : T - 1
                         num = num + fw(t,i) * self.A(i,j) * self.B(j, O(t+1)) * bw(t+1, j);
-                        den = den + fw(t,i) * bw(t,i);
+                        if j == 1
+                            den = den + fw(t,i) * bw(t,i);
+                        end
                     end
                     self.Anum(i,j) = self.Anum(i,j) + num / Pk;
-                    self.Aden(i) = self.Aden(i) + den / Pk;
                 end
+                self.Aden(i) = self.Aden(i) + den / Pk;
             end
             
             %110
             for i = 1 : self.N
+                den = 0;
                 for l = 1 : self.M
                     num = 0;
-                    den = 0;
                     for t = 1 : T
                         if O(t) == l
                             num = num + fw(t, i) * bw(t, i);
+                        end                        
+                        if l == 1
+                            den = den + fw(t, i) * bw(t, i);
                         end
-                        den = den + fw(t, i) * bw(t, i);
                     end
                     self.bnum(i,l) = self.bnum(i,l) + num/Pk;
-                    self.bden(i) = self.bden(i) + den/Pk;
                 end
+                self.bden(i) = self.bden(i) + den/Pk;
             end
         end
         
-        function commit_mutiple(self)
+        function commit_multiple(self)
             
             for i = 1 : self.N
                 sum = 0;
                 for j = 1 : self.N
                     %109
-                    self.A(i,j) = self.Anum(i,j)/self.Aden(i);
+                    self.A(i,j) = self.Anum(i,j)/self.Aden(i) * self.M;
                     sum = sum + self.A(i,j);
                 end
-                fprintf('Sum of A(%d,:) = %f\n', i, sum);
+                %fprintf('Sum of A(%d,:) = %f\n', i, sum);
             end
             
             
@@ -353,7 +357,7 @@ classdef HMM < handle
                     self.b(i,l) = self.bnum(i,l)/self.bden(i);
                     sum = sum + self.b(i,l);
                 end
-                fprintf('Sum of b(%d,:) = %f\n', i, sum);
+                %fprintf('Sum of b(%d,:) = %f\n', i, sum);
             end
             
             self.Anum = zeros(self.N, self.N);
