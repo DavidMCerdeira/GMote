@@ -4,7 +4,7 @@
 aquisitn gyroAq;
 
 volatile int interruptEn = 0;
-osSemaphoreId gyroDrdySemaph;
+SemaphoreHandle_t gyroDrdySemaph;
 extern volatile osMessageQId gyroFrameReadyMsgQ;
 
 void gyroGetAq(void);
@@ -12,7 +12,6 @@ void gyroGetAq(void);
 void  runGyroGest(void * argument){
 	volatile int sampleCount = 0;
 	volatile int frameCount = 0;
-	int firstTime = 1;
 	
 	int16_t sample[NR_OF_AXES];
 	int16_t* ptr[NR_OF_AXES];
@@ -21,7 +20,6 @@ void  runGyroGest(void * argument){
 	
 	BaseType_t notifRcvd = pdFALSE;
 	uint32_t notification;
-	int nSamples = FRAME_OVERLAP;
 	
 	while(1){
 		/* start aquisition */
@@ -33,16 +31,17 @@ void  runGyroGest(void * argument){
 			notifRcvd = xTaskNotifyWait(STOP, 0, &notification, 0);
 			if(notifRcvd && (notification & STOP))
 				goto EXIT;
-			/* wait for accelerometer data */
-			for(i=0; i < nSamples; 
+			
+			/* wait for gyro data */
+			for(i=0; i < FRAME_SIZE; 
 					i++, sampleCount++)
 			{
 				xSemaphoreTake(gyroDrdySemaph, portMAX_DELAY);
 				/* put sample in buffer */
 				MPU_GetGyro_Sample(sample);
-				gyroAq.samples[0][gyroAq.end] = sample[0];
-				gyroAq.samples[1][gyroAq.end] = sample[1];
-				gyroAq.samples[2][gyroAq.end] = sample[2];
+				data[GYRO_X][gyroAq.end] = sample[0];
+				data[GYRO_Y][gyroAq.end] = sample[1];
+				data[GYRO_Z][gyroAq.end] = sample[2];
 				/* prepare for next sample */
 				gyroAq.end++;
 			}
@@ -50,23 +49,18 @@ void  runGyroGest(void * argument){
 			if(sampleCount > (AQ_SIZE - FRAME_SIZE)){
 				break;
 			}
-			
-			if(nSamples == FRAME_OVERLAP)
-				nSamples = 24;
-			else if(get_nextFrame((int16_t**)ptr, &gyroAq, &firstTime) != -1)
-					/* send frame */
-					xQueueSend(gyroFrameReadyMsgQ, ptr, 10);			
+
+			xQueueSend(gyroFrameReadyMsgQ, &i, 10);			
 		}
+		i = 0;
 		
 		/* send NULL pointer indicating end of aquisition */
-		xQueueSend(gyroFrameReadyMsgQ, NULL, 10);
+		xQueueSend(gyroFrameReadyMsgQ, &i, 10);
 		EXIT:		
 		MPU_SLEEP();
 		sampleCount = 0;
 		frameCount = 0;		
-		nSamples = FRAME_OVERLAP;
 		initBuffer(&gyroAq);
-		firstTime = 1;
 		//BLUE(0);
 		vTaskSuspend(NULL);
 	}
@@ -74,7 +68,6 @@ void  runGyroGest(void * argument){
 
 void initGyroAq(void)
 {
-	
 	/* Create semaphore */
 	gyroDrdySemaph = xSemaphoreCreateCounting(7, 0);
 	

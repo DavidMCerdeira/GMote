@@ -3,7 +3,7 @@
 aquisitn accelAq;
 
 SemaphoreHandle_t  accelDrdySemaph;
-extern osMessageQId accelFrameReadyMsgQ;
+extern QueueHandle_t accelFrameReadyMsgQ;
 
 int get_nextFram1(int16_t** buff);
 
@@ -18,7 +18,7 @@ void runAccelGest(void* argument)
 	uint32_t i = 0;
 	BaseType_t notifRcvd = pdFALSE;
 	uint32_t notification;
-	int nSamples = 6;
+	volatile int sem;
 	
 	/* infinite cycle */
 	while(1)
@@ -35,17 +35,17 @@ void runAccelGest(void* argument)
 				goto EXIT;
 			
 			/* wait for accelerometer data */
-			xSemaphoreTake(accelDrdySemaph, portMAX_DELAY);
+			sem = xSemaphoreTake(accelDrdySemaph, portMAX_DELAY);
 			
 			/* read 24 samples */
-			for(i = 0; i < nSamples; 
+			for(i = 0; i < FRAME_SIZE; 
 					i++, sampleCount++)
 			{
 				read_sample((uint8_t*)(&sample));
 				/* put sample in buffer */
-				accelAq.samples[0][accelAq.end] = sample[0];
-				accelAq.samples[1][accelAq.end] = sample[1];
-				accelAq.samples[2][accelAq.end] = sample[2];
+				data[ACCEL_X][accelAq.end] = sample[0];
+				data[ACCEL_Y][accelAq.end] = sample[1];
+				data[ACCEL_Z][accelAq.end] = sample[2];
 				/* prepare for next sample */
 				accelAq.end++;
 			}
@@ -54,18 +54,14 @@ void runAccelGest(void* argument)
 				break;
 			}
 			/* reached end of frame? */
-				if(nSamples == FRAME_OVERLAP)
-						nSamples = 24;
-			  else if(get_nextFrame((int16_t**)ptr, &accelAq, &firstTime) != -1){
-						/* send frame */
-						xQueueSend(accelFrameReadyMsgQ, ptr, 10);
-				}
-			nSamples = 24;
+			/* send frame */
+			xQueueSend(accelFrameReadyMsgQ, &i, 10);
 		}
+		i = 0;
 		
 		/* send NULL pointer indicating end of aquisition */
-		xQueueSend(accelFrameReadyMsgQ, NULL, 10);
-	EXIT:		
+		xQueueSend(accelFrameReadyMsgQ, &i, 10);
+	EXIT:	
 		pause_accel();
 		sampleCount = 0;
 		frameCount = 0;		
@@ -86,9 +82,9 @@ void initAccelAq(void)
 	initBuffer(&accelAq);
 	
 	/* Create semaphore */
-	accelDrdySemaph = xSemaphoreCreateCounting(7, 0);
+	accelDrdySemaph = xSemaphoreCreateCounting(30, 0);
 	
-	/* enbale interrupt */
+	/* enable interrupt */
 	HAL_NVIC_EnableIRQ(EXTI0_IRQn);
 }
 

@@ -1,4 +1,4 @@
-cd E:\Universidade\MESTRADO_EEIC\ProjectoI\GMote;
+cd E:\Universidade\MESTRADO_EEIC\ProjectoI\GMote
 
 gesture = {'pictures'; 'video';  'music'; 'settings'; 'play_pause'; 'next'; 'previous'};
 number_of_samples = 9;

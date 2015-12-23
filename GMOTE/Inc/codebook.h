@@ -1,11 +1,12 @@
 #include "kdtree.h"
+#include "cmsis_os.h"
+#include "HMM_param.h"
 #include "error.h"
 
 #define CODE_BOOK_SIZE 16
 
+typedef struct kdtree codebook;
 
-typedef struct kdTree codebook;
+void codeBook_init(codebook* codebook, float **data);
 
-void codeBook_init(void);
-
-//int codebook_idx(gest id, float *pos);
+int codebook_idx(codebook *codebook, float *pos);

@@ -1,6 +1,6 @@
 #include "HMM.h"
 
-HMM alphabet_Models[N_GEST];
+HMM alphabet_Models[NUM_GEST];
 
 QueueHandle_t framesRdy;
 EventGroupHandle_t goForward;
@@ -8,9 +8,11 @@ SemaphoreHandle_t forwardFin;
 QueueHandle_t likelyGest;
 
 void HMM_Init(){
-	TaskHandle_t forwardTsks[N_GEST], hmmCtrlTsk;
+	TaskHandle_t forwardTsks[NUM_GEST], hmmCtrlTsk;
 	int i;
-		
+	char hmm_frwrd[] = {'H','M','M','_','F','R','W','R','D', 0, 0};
+	char temp[1];
+
 	/* prepares a structure for each gest the alphabet */
 	HMM_Init_models();
 	
@@ -28,23 +30,24 @@ void HMM_Init(){
 	xTaskCreate(HMM_ControlTsk, "HMM_CTRL", 128, NULL, 0, &hmmCtrlTsk);
 	
 	/* creating a forward task for each model */
-	for(i = 0; i < N_GEST; i++)
+	for(i = 0; i < NUM_GEST; i++)
 	{
-		xTaskCreate(HMM_ForwardTsk, "HMM_FRWRD", 128,(void*)&alphabet_Models[i], 0, &forwardTsks[i]);
+		temp[0] = '0' + i;
+		strcat(hmm_frwrd, temp);
+		xTaskCreate(HMM_ForwardTsk, hmm_frwrd, 128,(void*)&alphabet_Models[i], 0, &forwardTsks[i]);
 		vTaskSuspend(forwardTsks[i]);
 	}	
-	
 }
 
 void HMM_Init_models(){
 	int i;
 	/* prepares each model's matrixes, with the respectives ones 
 	 * prepared in HMM_Parm.h */
-	for(i = 0; i < N_GEST; i++){
-		alphabet_Models[i].A = A[i];
-		alphabet_Models[i].B = B[i];
-		alphabet_Models[i].pi = Pi[i];
-		alphabet_Models[i].codebook = codeBookData[i];
+	for(i = 0; i < NUM_GEST; i++){
+		alphabet_Models[i].A = (float**)A[i];
+		alphabet_Models[i].B = (float**)B[i];
+		alphabet_Models[i].pi = (float*)Pi[i];
+		codeBook_init(alphabet_Models[i].codebook, (float**)codeBookData[i]);
 		alphabet_Models[i].gest = i;
 	}
 }
@@ -63,11 +66,11 @@ void HMM_ControlTsk(void *arg){
 		if(buff != NULL){
 			
 			/* notify forward tasks */
-			for(i = 0; i < N_GEST; i++)
+			for(i = 0; i < NUM_GEST; i++)
 				xEventGroupSetBits(goForward,(0x01 << i));
 			
 			/* check if all the forward algorithms ran */
-			while(count_frwrd < N_GEST){
+			while(count_frwrd < NUM_GEST){
 				xSemaphoreTake(forwardFin, portMAX_DELAY);
 				count_frwrd++;
 			}
@@ -86,7 +89,7 @@ void HMM_ControlTsk(void *arg){
 			
 			/*AVALIAR AQUI QUAL O MELHOR GESTO!! OU NADA*/
 			
-			xQueueSendToBack(likelyGest, (void*)&most_likely, 10);
+			//xQueueSendToBack(likelyGest, (void*)&most_likely, 10);
 		}
 	}
 }

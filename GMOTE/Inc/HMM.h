@@ -1,7 +1,9 @@
 #include "codebook.h"
+
 #include "cmsis_os.h"
 #include "HMM_param.h"
 #include "string.h"
+#include "HMM_param.h"
 
 #define MAX_FRAMES_NR 10
 
@@ -20,7 +22,7 @@ struct HMM
 {
 	unsigned int N; //number of states
 	unsigned int M; //codebook size
-	float **A;
+	float **A; //A[PICTURE]
 	float **B;
 	float *pi;
 	//Probabilidade referencia do modelo;
@@ -35,3 +37,4 @@ void HMM_Init_models();
 void HMM_ControlTsk();
 
 void HMM_ForwardTsk(void* rModel);
+
