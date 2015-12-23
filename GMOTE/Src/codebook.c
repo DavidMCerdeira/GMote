@@ -1,7 +1,6 @@
 #include "codebook.h"
+
 #define myalloc(__SIZE__) pvPortMalloc(__SIZE__)
-
-
 
 void codeBook_init(codebook* codebook, float ***data)
 {

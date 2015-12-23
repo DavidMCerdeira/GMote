@@ -1,10 +1,10 @@
 init
 
-iters = [100, 30, 100, 100, 100, 30, 30];
+iters = [100, 30, 30, 30, 30, 30, 30];
 
 clear h
 codebookSize = 2^4;
-n_sates = 4;
+n_sates = 8;
 count = 1;
 
 % %{ 
@@ -36,4 +36,4 @@ for i = 1 : number_of_gestures
     h(i).train_one(idx);
 end
 fprintf('Done!\n');
-%test
+test
