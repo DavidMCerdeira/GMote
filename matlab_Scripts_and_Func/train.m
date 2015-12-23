@@ -4,7 +4,7 @@ iters = repmat(75, number_of_gestures);
 
 clear h
 h = cell(number_of_gestures);
-%{
+
 codebookSize = 2^4;
 n_sates = 3;
 count = 1;
@@ -31,13 +31,13 @@ for i = 1 : number_of_gestures
         ]', codebookSize);
 
     h{i} = HMM(gesture{i}, n_sates, codebookSize, m', iters(i));
-    idx = knnsearch( h{i}.codebook, sample{i,4}); % match points with index
+    %idx = knnsearch( h{i}.codebook, sample{i,4}); % match points with index
     fprintf('Training %s\n', gesture{i});
-    h{i}.train_one(idx);
+    %h{i}.train_one(idx);
 end
-%}
+%{%}
 
-% %{
+%{
 codebookSize = 2^1;
 n_sates = 2;
 count = 1;
@@ -63,4 +63,21 @@ for i = 1 : number_of_gestures
 end
 %}
 
-test
+h_matlab = HMM('circle', 4, 2^4, m', 0);
+
+init
+
+ idx2 = knnsearch( h{2}.codebook, sample{2,4}); % match points with index
+ idx3 = knnsearch( h{3}.codebook, sample{3,4});
+ idx4 = knnsearch( h{4}.codebook, sample{4,4});
+ idx5 = knnsearch( h{5}.codebook, sample{5,4});
+ idx6 = knnsearch( h{6}.codebook, sample{6,4});
+ idx7 = knnsearch( h{7}.codebook, sample{7,4});
+
+ seq ={ idx2; idx3; idx4; idx5; idx6; idx7}; 
+ 
+[TrainA, TrainB] = hmmtrain(seq, h_matlab.A, h_matlab.b); 
+
+%{%}
+
+%test
