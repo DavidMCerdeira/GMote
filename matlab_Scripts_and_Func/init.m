@@ -2,7 +2,7 @@ cd E:\Universidade\MESTRADO_EEIC\ProjectoI\GMote
 
 gesture = {'pictures'; 'video';  'music'; 'settings'; 'play_pause'; 'next'; 'previous'};
 number_of_samples = 9;
-number_of_gestures = 7;
+number_of_gestures = 1;
 
 sample = cell(number_of_gestures, number_of_samples);
 

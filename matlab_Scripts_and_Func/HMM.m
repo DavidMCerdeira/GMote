@@ -343,10 +343,10 @@ classdef HMM < handle
                 sum = 0;
                 for j = 1 : self.N
                     %109
-                    self.A(i,j) = self.Anum(i,j)/self.Aden(i) * self.M;
+                    self.A(i,j) = self.Anum(i,j)/self.Aden(i);
                     sum = sum + self.A(i,j);
                 end
-                %fprintf('Sum of A(%d,:) = %f\n', i, sum);
+                fprintf('Sum of A(%d,:) = %f\n', i, sum);
             end
             
             
@@ -357,7 +357,7 @@ classdef HMM < handle
                     self.b(i,l) = self.bnum(i,l)/self.bden(i);
                     sum = sum + self.b(i,l);
                 end
-                %fprintf('Sum of b(%d,:) = %f\n', i, sum);
+                fprintf('Sum of b(%d,:) = %f\n', i, sum);
             end
             
             self.Anum = zeros(self.N, self.N);
