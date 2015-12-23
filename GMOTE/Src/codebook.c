@@ -2,7 +2,7 @@
 
 #define myalloc(__SIZE__) pvPortMalloc(__SIZE__)
 
-void codeBook_init(codebook* codebook, float ***data)
+void codeBook_init(codebook* codebook, float **data)
 {
 	struct kdres *res;
 	volatile int i = 0;
@@ -10,27 +10,24 @@ void codeBook_init(codebook* codebook, float ***data)
 
 	codebook = kd_create(NR_OF_DIM);
 	
-	for(k = 0; k < NUM_GEST; k++)
+	for(i = 0; i < CODE_BOOK_SIZE; i++)
 	{
-		for(i = 0; i < CODE_BOOK_SIZE; i++)
-		{
-			if(kd_insertf(codebook, data[k][i], (void*)i) < 0){
-				error("Error building tree", 3);
-			}
+		if(kd_insertf(codebook, data[i], (void*)i) < 0){
+			error("Error building tree", 3);
+		}
+	}
+	
+	for(i = 0; i < CODE_BOOK_SIZE; i++){
+		res = kd_nearestf(codebook, data[i]);
+		if(!res){
+			error("Error finding near", 3);
 		}
 		
-		for(i = 0; i < CODE_BOOK_SIZE; i++){
-			res = kd_nearestf(codebook, data[k][i]);
-			if(!res){
-				error("Error finding near", 3);
-			}
-			
-			if((int)kd_res_item_data(res) != i){
-				error("Error confirming", 3);
-			}
-			
-			kd_res_free(res);
+		if((int)kd_res_item_data(res) != i){
+			error("Error confirming", 3);
 		}
+		
+		kd_res_free(res);
 	}
 }
 

@@ -1,6 +1,6 @@
 #include "pre_processing.h"
 
-QueueHandle_t framesRdy;
+extern QueueHandle_t framesRdy;
 
 void preprocessing(void *arg)
 {

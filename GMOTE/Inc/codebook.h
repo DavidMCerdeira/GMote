@@ -8,7 +8,7 @@
 
 typedef struct kdtree codebook;
 
-void codeBook_init(codebook* codebook, float ***data);
+void codeBook_init(codebook* codebook, float **data);
 
 int codebook_idx(codebook *codebook, float *pos);
 
