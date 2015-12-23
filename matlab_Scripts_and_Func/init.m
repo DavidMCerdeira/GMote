@@ -1,4 +1,4 @@
-%cd E:\Universidade\MESTRADO_EEIC\ProjectoI\GMote
+cd E:\Universidade\MESTRADO_EEIC\ProjectoI\GMote
 
 gesture = {'pictures'; 'video';  'music'; 'settings'; 'play_pause'; 'next'; 'previous'};
 number_of_samples = 9;
@@ -24,6 +24,9 @@ end
 
 codebook = KDTreeSearcher(m');
 
-idx = knnsearch(codebook, sample{1, 2});
-
+for k = 1 : 7
+    for i = 1 : number_of_samples
+        idx{k, i} = knnsearch(codebook, sample{k, i});
+    end
+end
 %circ_gest10 = getDataFromFile(gesture, 10);
