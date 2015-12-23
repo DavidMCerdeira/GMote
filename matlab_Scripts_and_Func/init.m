@@ -1,12 +1,9 @@
-%cd E:\Universidade\MESTRADO_EEIC\ProjectoI\GMote
+cd E:\Universidade\MESTRADO_EEIC\ProjectoI\GMote
 
 gesture = {'pictures'; 'video';  'music'; 'settings'; 'play_pause'; 'next'; 'previous'};
 number_of_samples = 9;
-<<<<<<< HEAD
-number_of_gestures = 7;
-=======
 number_of_gestures = 5;
->>>>>>> b0c0a4d570d58bc8d4bee86589943a745f2b1ba9
+
 
 sample = cell(number_of_gestures, number_of_samples);
 
@@ -27,6 +24,9 @@ end
 
 codebook = KDTreeSearcher(m');
 
-idx = knnsearch(codebook, sample{1, 2});
-
+for k = 1 : 7
+    for i = 1 : number_of_samples
+        idx{k, i} = knnsearch(codebook, sample{k, i});
+    end
+end
 %circ_gest10 = getDataFromFile(gesture, 10);
