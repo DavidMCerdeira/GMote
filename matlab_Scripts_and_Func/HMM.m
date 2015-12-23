@@ -19,21 +19,16 @@ classdef HMM < handle
         bden     = [];
         P        = [];
         
-        maxIters = [];
-        
         %functionality
         scaling = 1;
         
     end
     
     methods
-        function self = HMM(name, numOfStates, codebookSize, m, maxiter)
+        function self = HMM(name, numOfStates, codebookSize)
             self.name = name;
             self.N = numOfStates;
             self.M = codebookSize;
-            self.codeData = m;
-            self.codebook = KDTreeSearcher(m);
-            self.maxIters = maxiter;
             self.initialization();
         end
         
@@ -203,14 +198,14 @@ classdef HMM < handle
             end
         end
         
-        function train_one(self, O)
+        function train_one(self, O, maxIters)
             %1-Initialization
             iters = 0;
             oldLogProb = -Inf;
             T = length(O);
             
             %7-To interate or not to iterate...
-            while(iters < self.maxIters)
+            while(iters < maxIters)
                 %2-The alpha-pass
                 [fw, c] = self.forward(O);
                 %3-The beta-pass
@@ -278,11 +273,11 @@ classdef HMM < handle
                 end
                 
                 fprintf('I');
-                if mod(iters, 5) == 0 && iters ~= self.maxIters
+                if mod(iters, 5) == 0 && iters ~= maxIters
                     fprintf(' ');
                 end
                 
-                if (mod(iters, 20) == 0) && iters ~= self.maxIters
+                if (mod(iters, 20) == 0) && iters ~= maxIters
                     fprintf(': %f\n', logProb);
                 end
             end
@@ -295,6 +290,9 @@ classdef HMM < handle
             
             [fw, c] = self.forward(O);
             bw = self.backward(O, c);
+            
+            self.pi = zeros(self.N, 1);
+            self.pi(1) = 1;
             
             %102
             Pk = 1;

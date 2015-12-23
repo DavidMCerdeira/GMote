@@ -30,11 +30,11 @@ struct HMM
 	codebook *codebook;
 };
 
-void HMM_Init();
+void HMM_Init(void);
 
-void HMM_Init_models();
+void HMM_Init_models(void);
 
-void HMM_ControlTsk();
+void HMM_ControlTsk(void*);
 
 void HMM_ForwardTsk(void* rModel);
 

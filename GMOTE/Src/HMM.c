@@ -43,18 +43,18 @@ void HMM_Init_models(){
 	int i;
 	/* prepares each model's matrixes, with the respectives ones 
 	 * prepared in HMM_Parm.h */
-	for(i = 0; i < NUM_GEST; i++){
+	for(i = 0; i < (int)NUM_GEST; i++){
 		alphabet_Models[i].A = (float**)A[i];
 		alphabet_Models[i].B = (float**)B[i];
 		alphabet_Models[i].pi = (float*)Pi[i];
 		codeBook_init(alphabet_Models[i].codebook, (float**)codeBookData[i]);
-		alphabet_Models[i].gest = i;
+		alphabet_Models[i].gest = (gest)i;
 	}
 }
 
 void HMM_ControlTsk(void *arg){
 	int *buff, count_frwrd = 0;
-	gest i, most_likely;
+	int i, most_likely;
 	
 	while(1){
 		/* waiting for frames */
@@ -66,7 +66,7 @@ void HMM_ControlTsk(void *arg){
 		if(buff != NULL){
 			
 			/* notify forward tasks */
-			for(i = 0; i < NUM_GEST; i++)
+			for(i = 0; i < (int)NUM_GEST; i++)
 				xEventGroupSetBits(goForward,(0x01 << i));
 			
 			/* check if all the forward algorithms ran */

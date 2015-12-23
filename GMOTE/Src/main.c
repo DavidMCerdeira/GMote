@@ -37,7 +37,7 @@
 /* USER CODE BEGIN Includes */
 #include "sensorAq.h"
 #include "nrf24l01.h"
-#include "codebook.h"
+#include "pre_processing.h"
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
@@ -79,7 +79,6 @@ void StartDefaultTask(void const * argument);
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-		uint8_t retVal;
 	// don't forget to turn off external interrupt 0 at first
   /* USER CODE END 1 */
 
@@ -120,8 +119,7 @@ int main(void)
   /* definition and creation of defaultTask */
 
   /* USER CODE BEGIN RTOS_THREADS */
-	xTaskCreate(aqManager, "AqManager", 512, NULL, 1, &aqManagerHandle);
-
+	xTaskCreate(aqManager,     "AqManager",    512, NULL, 1, &aqManagerHandle);
   /* USER CODE END RTOS_THREADS */
 
   /* USER CODE BEGIN RTOS_QUEUES */

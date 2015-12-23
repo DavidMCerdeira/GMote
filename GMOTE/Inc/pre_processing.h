@@ -1,6 +1,8 @@
 /*This module will convert the raw data to a useful form
 * namely the indexes of the codebook */
-
+#ifndef _PRE_PROCESSING
+#define _PRE_PROCESSING
 #include "codebook.h"
 
 void preprocessing(void*);
+#endif

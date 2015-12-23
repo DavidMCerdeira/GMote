@@ -34,7 +34,7 @@ OF SUCH DAMAGE.
 #include "freeRTOS.h"
 
 #define myalloc(__SIZE__) pvPortMalloc(__SIZE__)
-#define myfree(__SIZE__)  vPortFree(__SIZE__)
+#define myfree(ptr)  vPortFree(ptr)
 
 #undef USE_LIST_NODE_ALLOCATOR
 #ifdef USE_LIST_NODE_ALLOCATOR
