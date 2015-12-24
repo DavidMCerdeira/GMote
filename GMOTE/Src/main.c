@@ -50,11 +50,10 @@ TIM_HandleTypeDef htim6;
 
 UART_HandleTypeDef huart2;
 
-osThreadId defaultTaskHandle;
-
 /* USER CODE BEGIN PV */
 /* Private variables ---------------------------------------------------------*/
 TaskHandle_t aqManagerHandle = NULL;
+TaskHandle_t preProcThreadHandle = NULL;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -119,7 +118,10 @@ int main(void)
   /* definition and creation of defaultTask */
 
   /* USER CODE BEGIN RTOS_THREADS */
-	xTaskCreate(aqManager,     "AqManager",    512, NULL, 1, &aqManagerHandle);
+	/* initiate aquisition manager */
+	xTaskCreate(aqManager,     "AqManager",    512, NULL, 1, &aqManagerHandle);	
+	/* initiate pre processing thread; empirically 128 bytes is not enough */
+	xTaskCreate(preprocessing, "PreProcessing", 256, NULL, 2, &preProcThreadHandle);
   /* USER CODE END RTOS_THREADS */
 
   /* USER CODE BEGIN RTOS_QUEUES */

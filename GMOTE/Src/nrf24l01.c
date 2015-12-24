@@ -362,7 +362,7 @@ unsigned char SPI_Send(unsigned char dat)
  */
 void nrf24l01_Init(void) {
 		uint8_t config;
-	uint8_t addrtx0[NRF24L01_ADDRSIZE] = NRF24L01_ADDRP0;
+		uint8_t addrtx0[NRF24L01_ADDRSIZE] = NRF24L01_ADDRP0;
 
 		nrf24l01_CElo(); //low CE
 		nrf24l01_CSNhi(); //high CSN

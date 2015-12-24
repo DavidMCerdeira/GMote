@@ -4,6 +4,7 @@ aquisitn accelAq;
 
 SemaphoreHandle_t  accelDrdySemaph;
 extern QueueHandle_t accelFrameReadyMsgQ;
+extern QueueHandle_t simpleProcFramReadyMsgQ;
 
 int get_nextFram1(int16_t** buff);
 
@@ -108,7 +109,7 @@ void runAccelSimple(void* argument)
 				/* read sample */
 				read_sample((uint8_t*)(&sample));				
 				/* send sample in Q */
-				xQueueSend(accelFrameReadyMsgQ, sample, 10);
+				xQueueSend(simpleProcFramReadyMsgQ, sample, 10);
 			}
 			/* notification*/
 			else if(receivedNotify == pdTRUE)
