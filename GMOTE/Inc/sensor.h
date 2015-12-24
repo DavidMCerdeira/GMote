@@ -31,7 +31,7 @@ typedef struct aquisitn
 	uint32_t end;
 }aquisitn;
 
-extern int16_t data[6][300];
+extern float data[300][6];
 
 void printBuffer(aquisitn aq);
 

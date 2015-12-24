@@ -17,6 +17,6 @@ void codeBook_init(void);
 
 int codebook_idx(float *pos);
 
-unsigned int* codebook_vecToIdx(int **vec, unsigned int start, unsigned int end);
+unsigned int* codebook_vecToIdx(float **vec, unsigned int rows, unsigned int columns);
 
 #endif

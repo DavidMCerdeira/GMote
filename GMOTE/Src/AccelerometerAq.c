@@ -48,9 +48,9 @@ void runAccelGest(void* argument)
 				{
 					read_sample((uint8_t*)(&sample));
 					/* put sample in buffer */
-					data[ACCEL_X][accelAq.end] = sample[0];
-					data[ACCEL_Y][accelAq.end] = sample[1];
-					data[ACCEL_Z][accelAq.end] = sample[2];
+					data[accelAq.end][ACCEL_X] = (float)sample[0];
+					data[accelAq.end][ACCEL_Y] = (float)sample[1];
+					data[accelAq.end][ACCEL_Z] = (float)sample[2];
 					/* prepare for next sample */
 					accelAq.end++;
 				}

@@ -42,9 +42,9 @@ void  runGyroGest(void * argument){
 				
 				/* put sample in buffer */
 				MPU_GetGyro_Sample(sample);
-				data[GYRO_X][gyroAq.end] = sample[0];
-				data[GYRO_Y][gyroAq.end] = sample[1];
-				data[GYRO_Z][gyroAq.end] = sample[2];
+				data[gyroAq.end][GYRO_X] = (float)sample[0];
+				data[gyroAq.end][GYRO_Y] = (float)sample[1];
+				data[gyroAq.end][GYRO_Z] = (float)sample[2];
 				/* prepare for next sample */
 				gyroAq.end++;
 			}

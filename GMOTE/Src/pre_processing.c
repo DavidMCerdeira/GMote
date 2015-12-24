@@ -24,7 +24,7 @@ void preprocessing(void *arg)
 		preProcMsgRcvd = pdFALSE;
 		
 		/*convert data matrix*/
-		idx = codebook_vecToIdx((int**)data, begin, begin + aqSensorRes);
+		idx = codebook_vecToIdx((float**)&data[begin],  begin + aqSensorRes, 6);
 		/*save last value*/
 		begin += aqSensorRes;
 		/*send decoded data*/

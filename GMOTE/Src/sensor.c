@@ -1,6 +1,6 @@
 #include "sensor.h"
 
-int16_t data[6][300];
+float data[300][6];
 
 void initBuffer(aquisitn *aq)
 {
