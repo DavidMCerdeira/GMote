@@ -37,15 +37,17 @@ void aqManager(void* argument)
 	xTaskCreate(runAccelSimple, "AccelSimple", 128, NULL, 0, &accelSimpleThreadHandle);
 	
 	/* initiate pre processing thread; empirically 128 bytes is not enough */
-	xTaskCreate(preprocessing, "PreProcessing", 256, NULL, 1, &preProcThreadHandle);
+	xTaskCreate(preprocessing, "PreProcessing", 512, NULL, 1, &preProcThreadHandle);
 	
 	/*suspend lowered priority threads*/
 	vTaskSuspend(accelGestThreadHandle);
 	vTaskSuspend(gyroThreadHandle);
+	vTaskSuspend(accelSimpleThreadHandle);
 	
 	/*Now that they are suspended we can raise their priority*/
 	vTaskPrioritySet(runAccelGest, 2);
 	vTaskPrioritySet(gyroThreadHandle, 2);
+	vTaskPrioritySet(accelSimpleThreadHandle, 2);
 	
 	/* infinite cycle */
 	while(1)

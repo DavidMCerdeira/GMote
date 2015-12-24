@@ -130,8 +130,8 @@ void accelInit(void)
 	accel_write(ACCEL_CTRL_REG6, 0x80);		// reboot
 	/* give time to reboot */
 	HAL_Delay(10);
-
-	return;
+	
+	accel_fifoEnable();
 }
 
 void read_sample(uint8_t* buff)

@@ -29,6 +29,8 @@ void codeBook_init(void)
 		
 		kd_res_free(res);
 	}
+	
+	printf("Free heap %d bytes\n", xPortGetFreeHeapSize());
 }
 
 int codebook_idx(float *pos)
@@ -60,9 +62,12 @@ unsigned int* codebook_vecToIdx(int **vec, unsigned int start, unsigned int end)
 	if((vec != NULL) && (codebook != NULL))
 	{
 		idx = (unsigned int*)myalloc(sizeof(int)*(size));
+		if(idx == NULL){
+			error("Error allocating memory", 3);
+		}
 		
 		for(i = 0; i < size; i++){
-			idx[i] = codebook_idx((float*)vec[start + i]);
+			//idx[i] = codebook_idx(vec[start + i]);
 		}
 	}
 	
