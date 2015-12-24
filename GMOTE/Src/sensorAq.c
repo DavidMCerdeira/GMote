@@ -5,10 +5,13 @@ void gPress(void);
 void printFrame(int idx);
 
 QueueHandle_t accelFrameReadyMsgQ;
+QueueHandle_t accelSampleReadyMsgQ;
 QueueHandle_t gyroFrameReadyMsgQ;
 QueueHandle_t preProcFramReadyMsgQ;
 
-TaskHandle_t accelThreadHandle;
+TaskHandle_t accelGestThreadHandle;
+TaskHandle_t accelSimpleThreadHandle;
+
 TaskHandle_t gyroThreadHandle;
 TaskHandle_t preProcThreadHandle;
 
@@ -18,35 +21,49 @@ void aqManager(void* argument)
 	BaseType_t notifRcvd = pdFALSE;
 	uint32_t notification;	
 	
-	/* initialize accelerometer frame ready queue */
-	accelFrameReadyMsgQ = xQueueCreate(30, sizeof(uint32_t));
-	gyroFrameReadyMsgQ  = xQueueCreate(30, sizeof(uint32_t));
-	preProcFramReadyMsgQ = xQueueCreate(30, sizeof(uint32_t));
+	accelFrameReadyMsgQ  = xQueueCreate(30, sizeof(uint32_t)); /* initialize accelerometer frame ready queue */
+	accelSampleReadyMsgQ = xQueueCreate(30, sizeof(int16_t)*3); /* initialize accelerometer sampleQ */
+	gyroFrameReadyMsgQ   = xQueueCreate(30, sizeof(uint32_t)); /* initialize gyroScope msgQ */
+	
+	preProcFramReadyMsgQ = xQueueCreate(30, sizeof(uint32_t)); /* initialize pre proc msgQ */
 	
 	/* init aquisitors */
 	initAccelAq();
 	initGyroAq();
 	
-	/* initiate suspended thread */
-	xTaskCreate(runAccelGest, "AccelGest", 128, NULL, 0, &accelThreadHandle);
-	xTaskCreate(runGyroGest, "GyroGest", 128, NULL, 0, &gyroThreadHandle);
+	/* initiate suspended threads */
+	xTaskCreate(runAccelGest,   "AccelGest",   128, NULL, 0, &accelGestThreadHandle);
+	xTaskCreate(runGyroGest,    "GyroGest",    128, NULL, 0, &gyroThreadHandle);
+	xTaskCreate(runAccelSimple, "AccelSimple", 128, NULL, 0, &accelSimpleThreadHandle);
 	
-	xTaskCreate(preprocessing, "PreProcessing", 128, NULL, 1, &preProcThreadHandle);
+	/* initiate pre processing thread; empirically 128 bytes is not enough */
+	xTaskCreate(preprocessing, "PreProcessing", 256, NULL, 1, &preProcThreadHandle);
 	
-	vTaskSuspend(accelThreadHandle);
+	/*suspend lowered priority threads*/
+	vTaskSuspend(accelGestThreadHandle);
 	vTaskSuspend(gyroThreadHandle);
 	
-	vTaskPrioritySet(accelThreadHandle, 2);
+	/*Now that they are suspended we can raise their priority*/
+	vTaskPrioritySet(runAccelGest, 2);
 	vTaskPrioritySet(gyroThreadHandle, 2);
 	
+	/* infinite cycle */
 	while(1)
 	{
+		/* rececive notification*/
 		notifRcvd = xTaskNotifyWait(0, 0, &notification, portMAX_DELAY);
+		
+		/* notification received */
 		if(notifRcvd == pdTRUE){
-			if(notification & GStart)
+			/* start gesture?*/
+			if(notification & GStart){
+				/*gesture mode*/
 				gPress();
-			else if(notification & EqON)
-				/* equilibrium mode */;
+			}
+			/* start equilib? */
+			else if(notification & EqON){
+				/* equilibrium mode */			
+			}
 		}
 	}
 }
@@ -61,50 +78,53 @@ void gPress(void)
 	BaseType_t notifRcvd = pdFALSE;
 	uint32_t notification;
 	
-	/* wait for thread to be actualy suspended */
-	while(eTaskGetState(accelThreadHandle) != eSuspended){}
-	while(eTaskGetState(gyroThreadHandle) != eSuspended){}
+	/* wait for threads to be actualy suspended */
+	while(eTaskGetState(accelGestThreadHandle) != eSuspended){}
+	while(eTaskGetState(gyroThreadHandle)  != eSuspended){}
 	
 	/* wake up tasks */
-	vTaskResume(accelThreadHandle);
+	vTaskResume(accelGestThreadHandle);
 	vTaskResume(gyroThreadHandle);
 	
 	ORANGE(1);
 	while(1){
-		/* wait for frame */
 		
-		/*Verificar que a sequência das duas linhas que se seguem não dão problemas*/
+		/* wait for frames */
 		accelMsgQRcvd = xQueueReceive(accelFrameReadyMsgQ, (void*)&accelRes, portMAX_DELAY);
 		gyroMsgQRcvd =  xQueueReceive(gyroFrameReadyMsgQ,  (void*)&gyroRes,  portMAX_DELAY);
-		/* check if user released button */
+		
+		/* check if user stopped gesture */
 		notifRcvd = xTaskNotifyWait(GStop, 0, &notification, 0);
 		
 
-		/* user gesture ended? discard frame */
+		/* user gesture ended?*/
 		if(notifRcvd && (notification & GStop))
 		{
 			/* order aquisition thread to stop */;
-			xTaskNotify(accelThreadHandle, STOP, eSetBits);
+			xTaskNotify(runAccelGest,      STOP, eSetBits);
 			xTaskNotify(gyroThreadHandle,  STOP, eSetBits);
 			break;
 		}
 		/* message received */
 		if(accelMsgQRcvd == pdTRUE && gyroMsgQRcvd == pdTRUE){
-			/* if end of sampling */
+			/* gyro stoped? */
 			if((gyroRes) == 0){
-				xTaskNotify(accelThreadHandle, STOP, eSetBits);
+				xTaskNotify(accelGestThreadHandle, STOP, eSetBits);
 				break;
 			}
+			/*accel stoped?*/
 			if((accelRes) == 0){
 				xTaskNotify(gyroThreadHandle,  STOP, eSetBits);
 				break;
 			}
-			/* we received a frame */
+			/*something went wrong just cancel everything*/
 			else if((gyroRes) != (accelRes)){
-				xTaskNotify(accelThreadHandle, STOP, eSetBits);
-				xTaskNotify(gyroThreadHandle,  STOP, eSetBits);
+				xTaskNotify(accelGestThreadHandle, STOP, eSetBits);
+				xTaskNotify(gyroThreadHandle,      STOP, eSetBits);
+				printf("Accel %d - Gyro %d\n", accelRes, gyroRes);
 				error("Error aquiring: different Lenghts", 3);
 			}
+			/* we received a frame */
 			else{
 				/* deal with it */
 				nFrames++;
@@ -113,9 +133,8 @@ void gPress(void)
 				//printf("Frame Received!\n");
 			}
 		}
-	}
-	
-	printf("Received a total of %d frames\n", nFrames);
+	}	
+	//printf("Received a total of %d frames\n", nFrames);
 	nFrames = 0;
 	ORANGE(0);
 }

@@ -5,6 +5,7 @@
 #include "sensor.h"
 
 void runAccelGest(void* argument);
+void runAccelSimple(void* argument);
 void initAccelAq(void);
 
 #endif

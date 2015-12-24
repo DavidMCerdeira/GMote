@@ -43,6 +43,9 @@
 void start_accel(int speed);  
 void pause_accel(void);
 
+void accel_byteByByte(void);
+void accel_fifoEnable(void);
+
 void accelInit(void);
 void read_sample(uint8_t* buff);
 

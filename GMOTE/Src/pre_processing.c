@@ -12,15 +12,19 @@ void preprocessing(void *arg)
 	int aqSensorRes = 0;
 	static int begin = 0;
 	
+	/* init codebook */
+	codeBook_init();
+	
 	while(1){
 		/*Receive frame for converting*/
 		while(preProcMsgRcvd == pdFALSE){
 			preProcMsgRcvd = xQueueReceive(preProcFramReadyMsgQ, (void*)&aqSensorRes, portMAX_DELAY);
 		}
+		/* reset flag */
 		preProcMsgRcvd = pdFALSE;
 		
 		/*convert data matrix*/
-		idx = codebook_vecToIdx((codebook*)NULL, (int**)data, begin, begin + aqSensorRes);
+		idx = codebook_vecToIdx((int**)data, begin, begin + aqSensorRes);
 		/*save last value*/
 		begin += aqSensorRes;
 		/*send decoded data*/

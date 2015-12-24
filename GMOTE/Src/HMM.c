@@ -47,7 +47,6 @@ void HMM_Init_models(){
 		alphabet_Models[i].A = (float**)A[i];
 		alphabet_Models[i].B = (float**)B[i];
 		alphabet_Models[i].pi = (float*)Pi[i];
-		codeBook_init(alphabet_Models[i].codebook, (float**)codeBookData[i]);
 		alphabet_Models[i].gest = (gest)i;
 	}
 }

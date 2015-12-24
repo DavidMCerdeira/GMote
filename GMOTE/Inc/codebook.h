@@ -13,12 +13,10 @@
 
 #define CODE_BOOK_SIZE 16
 
-typedef struct kdtree codebook;
+void codeBook_init(void);
 
-void codeBook_init(codebook* codebook, float **data);
+int codebook_idx(float *pos);
 
-int codebook_idx(codebook *codebook, float *pos);
-
-unsigned int* codebook_vecToIdx(codebook *codebook, int **vec, unsigned int start, unsigned int end);
+unsigned int* codebook_vecToIdx(int **vec, unsigned int start, unsigned int end);
 
 #endif

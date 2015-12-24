@@ -19,6 +19,90 @@ uint8_t accel_multiRead(uint8_t addr);
 uint8_t accel_read(uint8_t addr);
 void accel_write(uint8_t addr, uint8_t wat);
 
+/*Fifo mode*/
+	#define REG3_CONFIG_FIFO      0x68  				 // Interrupt active high, interrupt pulsed, Enable IT	
+	#define REG5_CONFIG_FIFO 		  0xC0  				 // Anti aliasing filter bandwidth 50Hz, +/-2G, self-test, 4-wire interface
+	#define REG6_CONFIG_FIFO      0x54				 	 // fifo enabled, ADD_INC, watermark interrupt
+	#define FIFO_CTRL_CONFIG_FIFO (0x40 | 0x18) // FIFO stream mode, watermark on 24th sample
+
+/*Data ready*/
+	#define REG3_CONFIG_BYTE      0xE8  				 // DRDY IT, Interrupt active high, interrupt pulsed, Enable IT	
+	#define REG5_CONFIG_BYTE 		  0xC0  				 // Anti aliasing filter bandwidth 50Hz, +/-2G, self-test, 4-wire interface
+	#define REG6_CONFIG_BYTE      0x10				 	 // ADD_INC
+	#define FIFO_CTRL_CONFIG_BYTE (0) 					 // FIFO disabled 
+
+
+inline void accel_fifoEnable(void)
+{
+	int ret;
+	
+	accel_write(ACCEL_CTRL_REG5, REG5_CONFIG_FIFO);					
+	accel_write(ACCEL_CTRL_REG6, REG6_CONFIG_FIFO);				 
+	accel_write(ACCEL_CTRL_REG3, REG3_CONFIG_FIFO);   
+	accel_write(ACCEL_FIFO_CTRL, 0x18); // watermark 24th sample, bypass mode to reset FIFO	
+	accel_write(ACCEL_FIFO_CTRL, FIFO_CTRL_CONFIG_FIFO);
+	
+	ret = accel_read(ACCEL_CTRL_REG5);
+	if(ret != REG5_CONFIG_FIFO)
+		goto ERROR;
+	
+	ret = accel_read(ACCEL_CTRL_REG6);
+	if(ret != REG6_CONFIG_FIFO)
+		goto ERROR;
+	
+	ret = accel_read(ACCEL_CTRL_REG3);
+	if(ret != REG3_CONFIG_FIFO)
+		goto ERROR;
+	
+	ret = accel_read(ACCEL_FIFO_CTRL);
+	if(ret != FIFO_CTRL_CONFIG_FIFO)
+		goto ERROR;
+	
+	ret = accel_read(ACCEL_WHO_AM_I);
+	if(ret != 0x3F)
+		goto ERROR;
+	
+	return;	
+	
+	ERROR:
+		error("Accel configuration failure", 3);
+}
+
+inline void accel_byteByByte(void)
+{
+	int ret;
+	
+	accel_write(ACCEL_CTRL_REG5, REG5_CONFIG_BYTE);					
+	accel_write(ACCEL_CTRL_REG6, REG6_CONFIG_BYTE);				 
+	accel_write(ACCEL_CTRL_REG3, REG3_CONFIG_BYTE); 
+	accel_write(ACCEL_FIFO_CTRL, FIFO_CTRL_CONFIG_BYTE);
+	
+	ret = accel_read(ACCEL_CTRL_REG5);
+	if(ret != REG5_CONFIG_BYTE)
+		goto ERROR;
+	
+	ret = accel_read(ACCEL_CTRL_REG6);
+	if(ret != REG6_CONFIG_BYTE)
+		goto ERROR;
+	
+	ret = accel_read(ACCEL_CTRL_REG3);
+	if(ret != REG3_CONFIG_BYTE)
+		goto ERROR;
+	
+	ret = accel_read(ACCEL_FIFO_CTRL);
+	if(ret != FIFO_CTRL_CONFIG_BYTE)
+		goto ERROR;
+	
+	ret = accel_read(ACCEL_WHO_AM_I);
+	if(ret != 0x3F)
+		goto ERROR;
+	
+	return;	
+	
+	ERROR:
+		error("Accel configuration failure", 3);
+}
+
 inline void start_accel(int speed)
 {
 	volatile int tempSpeed = speed;
@@ -35,62 +119,19 @@ inline void start_accel(int speed)
 
 inline void pause_accel(void)
 {
+	/* no sampling */
 	accel_write(ACCEL_CTRL_REG4, HZ_0);
 }
-
-#define _FIFO_MODE
-#ifdef _FIFO_MODE
-	#define REG3_CONFIG      0x68  				 // Interrupt active high, interrupt pulsed, Enable IT	
-	#define REG5_CONFIG 		 0xC0  				 // Anti aliasing filter bandwidth 50Hz, +/-2G, self-test, 4-wire interface
-	#define REG6_CONFIG      0x54				 	 // fifo enabled, ADD_INC, watermark interrupt
-	#define FIFO_CTRL_CONFIG (0x40 | 0x18) // FIFO stream mode, watermark on 24th sample
-#endif
-#ifdef _DATA_READY
-	#define REG3_CONFIG      0xE8  				 // DRDY IT, Interrupt active high, interrupt pulsed, Enable IT	
-	#define REG5_CONFIG 		 0xC0  				 // Anti aliasing filter bandwidth 50Hz, +/-2G, self-test, 4-wire interface
-	#define REG6_CONFIG      0x10				 	 // ADD_INC
-	#define FIFO_CTRL_CONFIG (0) 					 // FIFO disabled 
-#endif
-
-	
 
 void accelInit(void)
 {
 	volatile int ret = 0;
 
 	accel_write(ACCEL_CTRL_REG6, 0x80);		// reboot
+	/* give time to reboot */
 	HAL_Delay(10);
-	
-	accel_write(ACCEL_CTRL_REG5, REG5_CONFIG);					
-	accel_write(ACCEL_CTRL_REG6, REG6_CONFIG);				 
-	accel_write(ACCEL_CTRL_REG3, REG3_CONFIG);   
-	accel_write(ACCEL_FIFO_CTRL, 0x18); // watermark 24th sample, bypass mode to reset FIFO	
-	accel_write(ACCEL_FIFO_CTRL, FIFO_CTRL_CONFIG);
-	
-	ret = accel_read(ACCEL_CTRL_REG5);
-	if(ret != REG5_CONFIG)
-		goto ERROR;
-	
-	ret = accel_read(ACCEL_CTRL_REG6);
-	if(ret != REG6_CONFIG)
-		goto ERROR;
-	
-	ret = accel_read(ACCEL_CTRL_REG3);
-	if(ret != REG3_CONFIG)
-		goto ERROR;
-	
-	ret = accel_read(ACCEL_FIFO_CTRL);
-	if(ret != FIFO_CTRL_CONFIG)
-		goto ERROR;
-	
-	ret = accel_read(ACCEL_WHO_AM_I);
-	if(ret != 0x3F)
-		goto ERROR;
-	
+
 	return;
-	
-ERROR:
-	error("Accel configuration failure", 3);
 }
 
 void read_sample(uint8_t* buff)

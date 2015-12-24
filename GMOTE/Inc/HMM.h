@@ -22,12 +22,11 @@ struct HMM
 {
 	unsigned int N; //number of states
 	unsigned int M; //codebook size
-	float **A; //A[PICTURE]
+	float **A; //transition matrix
 	float **B;
 	float *pi;
-	//Probabilidade referencia do modelo;
+	//!Probabilidade referencia do modelo;
 	gest gest;
-	codebook *codebook;
 };
 
 void HMM_Init(void);
