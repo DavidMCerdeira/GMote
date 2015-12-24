@@ -53,21 +53,24 @@ int codebook_idx(float *pos)
 	return idx;
 }
 
-unsigned int* codebook_vecToIdx(int **vec, unsigned int start, unsigned int end)
+unsigned int* codebook_vecToIdx(float **vec, unsigned int rows, unsigned int cols)
 {
 	unsigned int *idx = NULL;
-	unsigned int size = (end - start);
 	int i = 0;
 	
+	/* check that pointers are valid */
 	if((vec != NULL) && (codebook != NULL))
 	{
-		idx = (unsigned int*)myalloc(sizeof(int)*(size));
+		/* alloc buffer for results */
+		idx = (unsigned int*)myalloc(sizeof(int)*(rows));
+		/* error? */
 		if(idx == NULL){
 			error("Error allocating memory", 3);
 		}
 		
-		for(i = 0; i < size; i++){
-			//idx[i] = codebook_idx(vec[start + i]);
+		/* go trough all columns and retreive indexes*/
+		for(i = 0; i < rows; i++){
+			idx[i] = codebook_idx((float*)(vec += cols));
 		}
 	}
 	

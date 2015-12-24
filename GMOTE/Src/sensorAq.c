@@ -130,7 +130,7 @@ void gPress(void)
 			else{
 				/* deal with it */
 				nFrames++;
-				//printFrame(accelRes);
+				printFrame(accelRes);
 				xQueueSend(preProcFramReadyMsgQ, &accelRes, 10);
 				//printf("Frame Received!\n");
 			}
@@ -147,13 +147,13 @@ void printFrame(int idx)
 	int i = 0;
 	for(; i < (last + idx); i++)
 	{
-		printf("%+06hd, %+06hd, %+06hd, %+06hd, %+06hd, %+06hd\n", 
-					data[ACCEL_X][i], 
-					data[ACCEL_Y][i], 
-					data[ACCEL_Z][i],
-					data[GYRO_X] [i], 
-					data[GYRO_Y] [i], 
-					data[GYRO_Z] [i]);
+		printf("%+06.0f, %+06.0f, %+06.0f, %+06.0f, %+06.0f, %+06.0f\n", 
+					data[i][ACCEL_X], 
+					data[i][ACCEL_Y], 
+					data[i][ACCEL_Z],
+					data[i][GYRO_X], 
+					data[i][GYRO_Y], 
+					data[i][GYRO_Z]);
 	}
 	
 	last += idx;
