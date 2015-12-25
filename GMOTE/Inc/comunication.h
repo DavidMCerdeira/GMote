@@ -2,9 +2,10 @@
 #define _COMUNICATION_H_
 
 #include "nrf24l01.h"
-#include "cmsis_os.h"
+#include "FreeRTOS.h"
+#include "queue.h"
+#include "semphr.h"
 
-#define comunication_hw_init() nrf24l01_Init()
 #define communication_send(...) nrfPrint(__VA_ARGS__)
 
 #define CMD     0x00

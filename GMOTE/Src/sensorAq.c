@@ -1,5 +1,5 @@
 #include "sensorAq.h"
-#include "pre_processing.h"
+
 
 void gPress(void);
 void gEquilib(void);

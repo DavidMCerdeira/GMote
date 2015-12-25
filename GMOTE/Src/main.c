@@ -32,12 +32,12 @@
   */
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f4xx_hal.h"
-#include "cmsis_os.h"
+#include "FreeRTOS.h"
 
 /* USER CODE BEGIN Includes */
 #include "sensorAq.h"
-#include "nrf24l01.h"
 #include "pre_processing.h"
+#include "comunication.h"
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
@@ -54,6 +54,7 @@ UART_HandleTypeDef huart2;
 /* Private variables ---------------------------------------------------------*/
 TaskHandle_t aqManagerHandle = NULL;
 TaskHandle_t preProcThreadHandle = NULL;
+TaskHandle_t communicationThreadHandle = NULL;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -122,6 +123,8 @@ int main(void)
 	xTaskCreate(aqManager,     "AqManager",    512, NULL, 1, &aqManagerHandle);	
 	/* initiate pre processing thread; empirically 128 bytes is not enough */
 	xTaskCreate(preprocessing, "PreProcessing", 256, NULL, 2, &preProcThreadHandle);
+	/* initiate comunication module */
+	xTaskCreate(communication_run, "Comunication", 128, NULL, 0, &communicationThreadHandle);
   /* USER CODE END RTOS_THREADS */
 
   /* USER CODE BEGIN RTOS_QUEUES */
@@ -446,7 +449,7 @@ void StartDefaultTask(void const * argument)
   /* Infinite loop */
   for(;;)
   {
-    osDelay(1);
+    HAL_Delay(1);
   }
   /* USER CODE END 5 */ 
 }

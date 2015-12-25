@@ -3,6 +3,8 @@
 QueueHandle_t comunicationMsgQ;
 
 int communication_validate(int8_t byte);
+#define comunication_hw_init() nrf24l01_Init()
+
 
 void communication_init(void)
 {
@@ -29,7 +31,7 @@ void communication_run(void *arg)
 		
 		if(communication_validate(byte)){		
 			communication_send("%c", byte);	
-		}			
+		}
 	}
 }
 
