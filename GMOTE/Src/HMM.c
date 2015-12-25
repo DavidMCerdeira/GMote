@@ -1,10 +1,13 @@
 #include "HMM.h"
 
 HMM alphabet_Models[NUM_GEST];
+forward fwData[NUM_GEST];
 
 QueueHandle_t framesRdy;
+
 EventGroupHandle_t goForward;
-SemaphoreHandle_t forwardFin;
+EventGroupHandle_t fwComplete;
+
 QueueHandle_t likelyGest;
 
 void HMM_Init(){
@@ -16,15 +19,15 @@ void HMM_Init(){
 	/* prepares a structure for each gest the alphabet */
 	HMM_Init_models();
 	
-	/* prepare semaphore for forward */
-	forwardFin = xSemaphoreCreateBinary();
+	/* preparing queue to store the likely gests processing */
 	likelyGest = xQueueCreate(5, sizeof(gest));
 	
-	/* prepare event*/
+	/* prepare event for fw processing */
 	goForward = xEventGroupCreate();
+	fwComplete = xEventGroupCreate();
 	
 	/* whenever the a frame is ready this will store it */
-	framesRdy = xQueueCreate( MAX_FRAMES_NR, sizeof(int*));		
+	framesRdy = xQueueCreate( FRAME_SIZE, sizeof(int*));		
 	
 	/* creating the HMM main task */
 	xTaskCreate(HMM_ControlTsk, "HMM_CTRL", 128, NULL, 0, &hmmCtrlTsk);
@@ -46,14 +49,24 @@ void HMM_Init_models(){
 	for(i = 0; i < (int)NUM_GEST; i++){
 		alphabet_Models[i].A = (float**)AT[i];
 		alphabet_Models[i].B = (float**)BT[i];
+		alphabet_Models[i].N = NR_OF_STATES;
+		alphabet_Models[i].M = CDBK_SIZE;
+
 		alphabet_Models[i].pi = (float*)Pi[i];
 		alphabet_Models[i].gest = (gest)i;
 	}
 }
 
 void HMM_ControlTsk(void *arg){
-	int *buff, count_frwrd = 0;
+	int *buff;
 	int i, most_likely;
+	EventBits_t fwFinished = 0;
+	EventBits_t fwSetMask = 0;
+	
+	/* initializing the expected mask for the events that
+	 * notify the end of a fw function*/
+	for(i=0; i<NUM_GEST; i++)
+			fwSetMask |= (0x01 << alphabet_Models[i].gest); 
 	
 	while(1){
 		/* waiting for frames */
@@ -65,20 +78,17 @@ void HMM_ControlTsk(void *arg){
 		if(buff != NULL){
 			
 			/* notify forward tasks */
-			for(i = 0; i < (int)NUM_GEST; i++)
-				xEventGroupSetBits(goForward,(0x01 << i));
+			xEventGroupSetBits(goForward, fwSetMask);
 			
 			/* check if all the forward algorithms ran */
-			while(count_frwrd < NUM_GEST){
-				xSemaphoreTake(forwardFin, portMAX_DELAY);
-				count_frwrd++;
+			while(!(fwFinished & fwSetMask)){
+				fwFinished = xEventGroupWaitBits(fwComplete, fwSetMask, pdTRUE, pdTRUE, portMAX_DELAY );
 			}
-
-			/* reset counter of forward algorithm */
-			count_frwrd = 0;
+			/* Reset waiting for forward algorithm */
+			fwFinished = 0;
 			
 			/* once every forward of every model has performed,
-			 * the resource is consumed*/
+			 * the resource is consumed */
 			xQueueReceive(framesRdy, buff, 1);
 			buff = NULL;
 		}
@@ -95,10 +105,24 @@ void HMM_ControlTsk(void *arg){
 
 void HMM_ForwardTsk(void* rModel){
 	HMM *ownModel = (HMM*) rModel;
+	EventBits_t waitingBits = 0;
+	forward ownFw;
+	int fwIndex = ownModel->gest;
 	
-	/*
-			- Esperar EVENT go Forward para o bit específico
-			- Limpar Bit do Event
-			- Incrementar semáforo forwardFin
-	*/
+	/* init respetive forward struct */
+	fwData[fwIndex].firstTime = 1;
+	fwData[fwIndex].Cur_gest = ownModel->gest;
+	fwData[fwIndex].N = ownModel->N;
+	fwData[fwIndex].T = FRAME_SIZE;
+	
+	while(1){
+		while(!(waitingBits & (0x01 << ownModel->gest))){
+		 waitingBits = xEventGroupWaitBits(goForward,(0x01 << ownModel->gest), pdTRUE, pdTRUE, portMAX_DELAY ); 	
+		}
+		
+		/* fw algoritmo */
+		
+	
+		xEventGroupSetBits(fwComplete, (0x01 << ownModel->gest));
+	}	
 }
