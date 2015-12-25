@@ -44,8 +44,8 @@ void HMM_Init_models(){
 	/* prepares each model's matrixes, with the respectives ones 
 	 * prepared in HMM_Parm.h */
 	for(i = 0; i < (int)NUM_GEST; i++){
-		alphabet_Models[i].A = (float**)A[i];
-		alphabet_Models[i].B = (float**)B[i];
+		alphabet_Models[i].A = (float**)AT[i];
+		alphabet_Models[i].B = (float**)BT[i];
 		alphabet_Models[i].pi = (float*)Pi[i];
 		alphabet_Models[i].gest = (gest)i;
 	}

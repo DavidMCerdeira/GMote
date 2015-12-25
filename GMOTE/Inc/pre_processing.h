@@ -2,7 +2,10 @@
 * namely the indexes of the codebook */
 #ifndef _PRE_PROCESSING
 #define _PRE_PROCESSING
+
 #include "codebook.h"
+#include "simpleProcessing.h"
 
 void preprocessing(void*);
+
 #endif

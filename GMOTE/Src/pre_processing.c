@@ -54,16 +54,19 @@ void preprocessing(void *arg)
 void simpleProc(void *arg)
 {
 	BaseType_t preProcMsgRcvd = pdFALSE;
-	int16_t Qdata[NR_OF_AXES];
+	int16_t QData[NR_OF_AXES];
 	
 	while(1)
 	{
 		/*Receive frame for converting*/
 		while(preProcMsgRcvd == pdFALSE){
-			preProcMsgRcvd = xQueueReceive(simpleProcFramReadyMsgQ, (void*)Qdata, portMAX_DELAY);
+			preProcMsgRcvd = xQueueReceive(simpleProcFramReadyMsgQ, (void*)QData, portMAX_DELAY);
 		}
 		/* reset flag */
 		preProcMsgRcvd = pdFALSE;	
+		
+		/*process data*/
+		simpleProcessing(QData);
 	}
 }
 
