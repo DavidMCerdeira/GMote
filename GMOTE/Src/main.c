@@ -100,7 +100,6 @@ int main(void)
 
   /* USER CODE BEGIN 2 */
 	ORANGE(1);
-	
   /* USER CODE END 2 */
 
   /* USER CODE BEGIN RTOS_MUTEX */

@@ -5,7 +5,6 @@ gesture = {'pictures'; 'video';  'music'; 'settings'; 'play_pause'; 'next'; 'pre
 number_of_samples = 9;
 number_of_gestures = 7;
 
-
 sample = cell(number_of_gestures, number_of_samples);
 
 codebookData = [];
@@ -24,6 +23,8 @@ end
 [m, ~, ~] = vqsplit(codebookData', codebookSize);
 
 codebook = KDTreeSearcher(m');
+
+idx = cell(7, 9) ;
 
 for k = 1 : 7
     for i = 1 : number_of_samples

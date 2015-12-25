@@ -304,7 +304,7 @@ classdef HMM < handle
             for i = 1 : self.N
                 den = 0;
                 for j = 1 : self.N
-                    num = 0;                    
+                    num = 0;
                     for t = 1 : T - 1
                         num = num + fw(t,i) * self.A(i,j) * self.B(j, O(t+1)) * bw(t+1, j);
                         if j == 1
@@ -324,7 +324,7 @@ classdef HMM < handle
                     for t = 1 : T
                         if O(t) == l
                             num = num + fw(t, i) * bw(t, i);
-                        end                        
+                        end
                         if l == 1
                             den = den + fw(t, i) * bw(t, i);
                         end
@@ -401,6 +401,29 @@ classdef HMM < handle
             fprintf(fileID, '}');
         end
         
+        function printAT(self, fileID)
+            
+            At = self.A';
+            
+            fprintf(fileID, '{');
+            for i = 1 : self.N
+                fprintf(fileID, '{');
+                for j = 1 : self.N
+                    fprintf(fileID, '%6.6f', At(i,j));
+                    if j ~= self.N
+                        fprintf(fileID, ', ');
+                    end
+                end
+                
+                if i == self.N
+                    fprintf(fileID, '}');
+                else
+                    fprintf(fileID, '},\n');
+                end
+            end
+            fprintf(fileID, '}');
+        end
+        
         function printB(self, fileID)
             fprintf(fileID, '{');
             for i = 1 : self.N
@@ -413,6 +436,28 @@ classdef HMM < handle
                 end
                 
                 if i == self.N
+                    fprintf(fileID, '}');
+                else
+                    fprintf(fileID, '},\n');
+                end
+            end
+            fprintf(fileID, '}');
+        end
+        
+        function printBT(self, fileID)
+            bt = self.b';
+            
+            fprintf(fileID, '{');
+            for i = 1 : self.M
+                fprintf(fileID, '{');
+                for j = 1 : self.N
+                    fprintf(fileID, '%6.6f', bt(i,j));
+                    if j ~= self.N
+                        fprintf(fileID, ', ');
+                    end
+                end
+                
+                if i == self.M
                     fprintf(fileID, '}');
                 else
                     fprintf(fileID, '},\n');

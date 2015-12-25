@@ -3,6 +3,7 @@ fileID = fopen('.//GMOTE//Src//HMM_param.c', 'wt');
 fprintf(fileID, '#include "HMM_param.h"\n');
 
 fprintf(fileID, '\n\n');
+%{
 fprintf(fileID, 'const float A[NUM_GEST][NR_OF_STATES][NR_OF_STATES]={\n');
 for i = 1 : number_of_gestures
     h{i}.printA(fileID);
@@ -10,8 +11,19 @@ for i = 1 : number_of_gestures
         fprintf(fileID, ',\n\n');
     end
 end
+%}
+% %{
+fprintf(fileID, 'const float AT[NUM_GEST][NR_OF_STATES][NR_OF_STATES]={\n');
+for i = 1 : number_of_gestures
+    h{i}.printAT(fileID);
+    if i ~= number_of_gestures
+        fprintf(fileID, ',\n\n');
+    end
+end
+%}
 fprintf(fileID, '\n};\n\n');
 
+%{
 fprintf(fileID, 'const float B[NUM_GEST][NR_OF_STATES][CDBK_SIZE]={\n');
 for i = 1 : number_of_gestures
     h{i}.printB(fileID);
@@ -19,6 +31,16 @@ for i = 1 : number_of_gestures
         fprintf(fileID, ',\n\n');
     end
 end
+%}
+% %{
+fprintf(fileID, 'const float BT[NUM_GEST][CDBK_SIZE][NR_OF_STATES]={\n');
+for i = 1 : number_of_gestures
+    h{i}.printBT(fileID);
+    if i ~= number_of_gestures
+        fprintf(fileID, ',\n\n');
+    end
+end
+%}
 fprintf(fileID, '\n};\n\n');
  
 fprintf(fileID, 'const float Pi[NUM_GEST][NR_OF_STATES]={\n');
