@@ -126,7 +126,6 @@ void gPress(void)
 			else{
 				/* deal with it */
 				nFrames++;
-				
 				xQueueSend(preProcFramReadyMsgQ, &accelRes, 10);
 				//printFrame(accelRes);
 				printf("Frame Received!\n");
