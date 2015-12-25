@@ -55,6 +55,8 @@ void simpleProc(void *arg)
 {
 	BaseType_t preProcMsgRcvd = pdFALSE;
 	int16_t QData[NR_OF_AXES];
+	int simpleRes;
+	int send;
 	
 	while(1)
 	{
@@ -66,7 +68,28 @@ void simpleProc(void *arg)
 		preProcMsgRcvd = pdFALSE;	
 		
 		/*process data*/
-		simpleProcessing(QData);
+		simpleRes = simpleProcessing(QData);
+		
+		if(simpleRes == RESXp)
+		{
+			send = NAV_L;
+			xQueueSend(framesRdy, &send, 10);
+		}
+		else if(simpleRes == RESXm)
+		{
+			send = NAV_R;
+			xQueueSend(framesRdy, &send, 10);
+		}
+		else if(simpleRes == RESYp)
+		{
+			send = NAV_UP;
+			xQueueSend(framesRdy, &send, 10);
+		}
+		else if(simpleRes == RESYm)
+		{
+			send = NAV_DWN;
+			xQueueSend(framesRdy, &send, 10);
+		}
 	}
 }
 

@@ -1,4 +1,8 @@
+#ifndef _SIMPLE_PROC_
+#define _SIMPLE_PROC_
+
 #include "stdint.h"
+#include "comunication.h"
 
 /* outputs */
 #define RESND  0 /* not define */
@@ -8,3 +12,5 @@
 #define RESYm  4 /* y- */
 
 int simpleProcessing(int16_t input[3]);
+
+#endif

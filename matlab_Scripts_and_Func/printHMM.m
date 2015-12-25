@@ -47,7 +47,7 @@ end
 %}
 fprintf(fileIDc, '\n};\n\n');
 
-% %{
+%{
 fprintf(fileIDh, 'extern const float B[NUM_GEST][NR_OF_STATES][CDBK_SIZE];\n');
 fprintf(fileIDc, 'const float B[NUM_GEST][NR_OF_STATES][CDBK_SIZE]={\n');
 for i = 1 : number_of_gestures
@@ -57,7 +57,7 @@ for i = 1 : number_of_gestures
     end
 end
 %}
-%{
+% %{
 fprintf(fileIDh, 'extern const float BT[NUM_GEST][CDBK_SIZE][NR_OF_STATES];\n');
 fprintf(fileIDc, 'const float BT[NUM_GEST][CDBK_SIZE][NR_OF_STATES]={\n');
 for i = 1 : number_of_gestures
