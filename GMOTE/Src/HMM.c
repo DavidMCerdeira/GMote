@@ -48,7 +48,7 @@ void HMM_Init_models(){
 	 * prepared in HMM_Parm.h */
 	for(i = 0; i < (int)NUM_GEST; i++){
 		alphabet_Models[i].A = (float**)AT[i];
-		alphabet_Models[i].B = (float**)BT[i];
+		alphabet_Models[i].B = (float**)B[i];
 		alphabet_Models[i].N = NR_OF_STATES;
 		alphabet_Models[i].M = CDBK_SIZE;
 

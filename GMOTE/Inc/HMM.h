@@ -1,6 +1,7 @@
 #include "codebook.h"
 
 #include "cmsis_os.h"
+#define ARM_MATH_CM4
 #include "arm_math.h"
 #include "HMM_param.h"
 #include "string.h"
