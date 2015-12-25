@@ -47,12 +47,12 @@ void HMM_Init_models(){
 	/* prepares each model's matrixes, with the respectives ones 
 	 * prepared in HMM_Parm.h */
 	for(i = 0; i < (int)NUM_GEST; i++){
-		alphabet_Models[i].A = (float**)A[i];
-		alphabet_Models[i].B = (float**)B[i];
-		alphabet_Models[i].pi = (float*)Pi[i];
-		alphabet_Models[i].gest = (gest)i;
+		alphabet_Models[i].A = (float32_t**)A[i];
+		alphabet_Models[i].B = (float32_t**)B[i];
 		alphabet_Models[i].N = NR_OF_STATES;
 		alphabet_Models[i].M = CDBK_SIZE;
+		alphabet_Models[i].pi = (float*)Pi[i];
+		alphabet_Models[i].gest = (gest)i;
 	}
 }
 
@@ -77,7 +77,6 @@ void HMM_ControlTsk(void *arg){
 		if(buff != NULL){
 			
 			/* notify forward tasks */
-			//for(i = 0; i < (int)NUM_GEST; i++)
 			xEventGroupSetBits(goForward, fwSetMask);
 			
 			/* check if all the forward algorithms ran */
@@ -108,9 +107,6 @@ void HMM_ForwardTsk(void* rModel){
 	EventBits_t waitingBits = 0;
 	forward ownFw;
 	int fwIndex = ownModel->gest;
-	arm_matrix_instance_f32 **Atrans;
-	
-	//arm_mat_init_f32(Atrans, ownModel->N, ownModel->N,  (ownModel->A));
 	
 	/* init respetive forward struct */
 	fwData[fwIndex].firstTime = 1;
