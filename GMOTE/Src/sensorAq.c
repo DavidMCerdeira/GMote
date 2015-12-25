@@ -1,19 +1,21 @@
 #include "sensorAq.h"
-#include "pre_processing.h"
+
 
 void gPress(void);
+void gEquilib(void);
 void printFrame(int idx);
+
 
 QueueHandle_t accelFrameReadyMsgQ;
 QueueHandle_t accelSampleReadyMsgQ;
 QueueHandle_t gyroFrameReadyMsgQ;
-QueueHandle_t preProcFramReadyMsgQ;
+
+extern QueueHandle_t preProcFramReadyMsgQ;
+extern QueueHandle_t simpleProcFramReadyMsgQ;
 
 TaskHandle_t accelGestThreadHandle;
 TaskHandle_t accelSimpleThreadHandle;
-
 TaskHandle_t gyroThreadHandle;
-TaskHandle_t preProcThreadHandle;
 
 void aqManager(void* argument)
 {
@@ -25,8 +27,6 @@ void aqManager(void* argument)
 	accelSampleReadyMsgQ = xQueueCreate(30, sizeof(int16_t)*3); /* initialize accelerometer sampleQ */
 	gyroFrameReadyMsgQ   = xQueueCreate(30, sizeof(uint32_t)); /* initialize gyroScope msgQ */
 	
-	preProcFramReadyMsgQ = xQueueCreate(30, sizeof(uint32_t)); /* initialize pre proc msgQ */
-	
 	/* init aquisitors */
 	initAccelAq();
 	initGyroAq();
@@ -35,9 +35,6 @@ void aqManager(void* argument)
 	xTaskCreate(runAccelGest,   "AccelGest",   128, NULL, 0, &accelGestThreadHandle);
 	xTaskCreate(runGyroGest,    "GyroGest",    128, NULL, 0, &gyroThreadHandle);
 	xTaskCreate(runAccelSimple, "AccelSimple", 128, NULL, 0, &accelSimpleThreadHandle);
-	
-	/* initiate pre processing thread; empirically 128 bytes is not enough */
-	xTaskCreate(preprocessing, "PreProcessing", 512, NULL, 1, &preProcThreadHandle);
 	
 	/*suspend lowered priority threads*/
 	vTaskSuspend(accelGestThreadHandle);
@@ -49,6 +46,7 @@ void aqManager(void* argument)
 	vTaskPrioritySet(gyroThreadHandle, 2);
 	vTaskPrioritySet(accelSimpleThreadHandle, 2);
 	
+	gEquilib();
 	/* infinite cycle */
 	while(1)
 	{
@@ -90,7 +88,6 @@ void gPress(void)
 	
 	ORANGE(1);
 	while(1){
-		
 		/* wait for frames */
 		accelMsgQRcvd = xQueueReceive(accelFrameReadyMsgQ, (void*)&accelRes, portMAX_DELAY);
 		gyroMsgQRcvd =  xQueueReceive(gyroFrameReadyMsgQ,  (void*)&gyroRes,  portMAX_DELAY);
@@ -98,7 +95,6 @@ void gPress(void)
 		/* check if user stopped gesture */
 		notifRcvd = xTaskNotifyWait(GStop, 0, &notification, 0);
 		
-
 		/* user gesture ended?*/
 		if(notifRcvd && (notification & GStop))
 		{
@@ -130,9 +126,9 @@ void gPress(void)
 			else{
 				/* deal with it */
 				nFrames++;
-				printFrame(accelRes);
 				xQueueSend(preProcFramReadyMsgQ, &accelRes, 10);
-				//printf("Frame Received!\n");
+				//printFrame(accelRes);
+				printf("Frame Received!\n");
 			}
 		}
 	}	
@@ -157,4 +153,45 @@ void printFrame(int idx)
 	}
 	
 	last += idx;
+}
+
+void gEquilib(void)
+{
+	BaseType_t accelMsgQRcvd = pdFALSE;
+	int16_t Qdata[NR_OF_AXES];
+	BaseType_t notifRcvd = pdFALSE;
+	uint32_t notification;
+	
+	/* garantee that thread is suspended */
+	while(eTaskGetState(accelSimpleThreadHandle) != eSuspended){}
+		
+	/* resume task */
+	vTaskResume(accelSimpleThreadHandle);
+		
+	ORANGE(1);
+	while(1)
+	{
+		while((accelMsgQRcvd == pdFALSE) && (notifRcvd == pdFALSE))
+		{
+			/* wait for data */
+			accelMsgQRcvd = xQueueReceive(accelFrameReadyMsgQ, (void*)data, portMAX_DELAY);
+			/* stop? */
+			notifRcvd = xTaskNotifyWait(EqOFF, 0, &notification, 0);
+		}
+		
+		/* No more equilib? */
+		if((notifRcvd == pdTRUE) && (notification & EqOFF))
+		{
+			/* order aquisition thread to stop */;
+			xTaskNotify(runAccelSimple, STOP, eSetBits);
+			break;
+		}
+		/* Data received? */
+		else if(accelMsgQRcvd == pdTRUE){
+			/* reset flag */
+			accelMsgQRcvd = pdFALSE;	
+
+			xQueueSend(simpleProcFramReadyMsgQ, Qdata, 10);			
+		}	
+	}
 }

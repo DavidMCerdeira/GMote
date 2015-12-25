@@ -6,7 +6,7 @@ for j = 1 : number_of_gestures
     
     h{j} = HMM(gesture{j}, states, codebookSize);
     
-    for i = 1 : number_of_samples
+    for i = 1 : 9
         seqx{i} = idx{j, i}';
     end
     
