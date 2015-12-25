@@ -599,11 +599,6 @@
               <FilePath>..\Middlewares\Third_Party\FreeRTOS\Source\tasks.c</FilePath>
             </File>
             <File>
-              <FileName>cmsis_os.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS\cmsis_os.c</FilePath>
-            </File>
-            <File>
               <FileName>list.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Middlewares\Third_Party\FreeRTOS\Source\list.c</FilePath>
@@ -677,6 +672,11 @@
               <FileName>HMM_param.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\HMM_param.c</FilePath>
+            </File>
+            <File>
+              <FileName>simpleProcessing.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\simpleProcessing.c</FilePath>
             </File>
           </Files>
         </Group>
