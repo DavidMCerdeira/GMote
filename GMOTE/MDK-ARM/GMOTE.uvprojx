@@ -10,6 +10,7 @@
       <TargetName>GMOTE Configuration</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
+      <pCCUsed>5060020::V5.06 (build 20)::ARMCC</pCCUsed>
       <TargetOption>
         <TargetCommonOption>
           <Device>STM32F407VGTx</Device>
@@ -470,6 +471,11 @@
               <FileType>1</FileType>
               <FilePath>..\Src\comunication.c</FilePath>
             </File>
+            <File>
+              <FileName>boias.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\boias.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -699,6 +705,16 @@
               <FileName>nrf24l01.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\nrf24l01.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>DSP</GroupName>
+          <Files>
+            <File>
+              <FileName>arm_cortexM4lf_math.lib</FileName>
+              <FileType>4</FileType>
+              <FilePath>..\Drivers\CMSIS\DSP_Lib\Lib\arm_cortexM4lf_math.lib</FilePath>
             </File>
           </Files>
         </Group>
