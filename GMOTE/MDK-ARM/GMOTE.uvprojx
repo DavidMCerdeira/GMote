@@ -10,7 +10,6 @@
       <TargetName>GMOTE Configuration</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
-      <pCCUsed>5060020::V5.06 (build 20)::ARMCC</pCCUsed>
       <TargetOption>
         <TargetCommonOption>
           <Device>STM32F407VGTx</Device>
@@ -607,11 +606,6 @@
               <FilePath>..\Middlewares\Third_Party\FreeRTOS\Source\tasks.c</FilePath>
             </File>
             <File>
-              <FileName>cmsis_os.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS\cmsis_os.c</FilePath>
-            </File>
-            <File>
               <FileName>list.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Middlewares\Third_Party\FreeRTOS\Source\list.c</FilePath>
@@ -685,6 +679,11 @@
               <FileName>HMM_param.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\HMM_param.c</FilePath>
+            </File>
+            <File>
+              <FileName>simpleProcessing.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\simpleProcessing.c</FilePath>
             </File>
           </Files>
         </Group>

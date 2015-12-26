@@ -48,12 +48,19 @@ void HMM_Init_models(){
 	int i;
 	/* prepares each model's matrixes, with the respectives ones 
 	 * prepared in HMM_Parm.h */
+<<<<<<< HEAD
 	for(i = 0; i < (int)NUM_GEST; i++)
 	{
 		alphabet_Models[i].At = (float32_t**)AT[i];
 		alphabet_Models[i].Bt = (float32_t**)BT[i];
+=======
+	for(i = 0; i < (int)NUM_GEST; i++){
+		alphabet_Models[i].A = (float**)AT[i];
+		alphabet_Models[i].B = (float**)BT[i];
+>>>>>>> 6f3f2ab556abe4f13620f957d20556e3289ffe75
 		alphabet_Models[i].N = NR_OF_STATES;
 		alphabet_Models[i].M = CDBK_SIZE;
+
 		alphabet_Models[i].pi = (float*)Pi[i];
 		alphabet_Models[i].gest = (gest)i;
 	}

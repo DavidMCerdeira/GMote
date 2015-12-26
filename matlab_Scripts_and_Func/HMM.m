@@ -369,11 +369,12 @@ classdef HMM < handle
             T = length(O);
             
             [~, c] = self.forward(O);
-            %             P = 0;
-            %             for i = 1 : self.N
-            %                 P = P + fw(T, i);
-            %             end
             P = 0;
+            
+%             for i = 1 : self.N
+%                 P = P + fw(T, i);
+%             end
+
             for t = 1 : T
                 P = P + log10(c(t));
             end
