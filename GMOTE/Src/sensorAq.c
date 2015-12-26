@@ -23,9 +23,9 @@ void aqManager(void* argument)
 	BaseType_t notifRcvd = pdFALSE;
 	uint32_t notification;	
 	
-	accelFrameReadyMsgQ  = xQueueCreate(30, sizeof(uint32_t)); /* initialize accelerometer frame ready queue */
-	accelSampleReadyMsgQ = xQueueCreate(30, sizeof(int16_t)*3); /* initialize accelerometer sampleQ */
-	gyroFrameReadyMsgQ   = xQueueCreate(30, sizeof(uint32_t)); /* initialize gyroScope msgQ */
+	accelFrameReadyMsgQ  = xQueueCreate(15, sizeof(uint32_t)); /* initialize accelerometer frame ready queue */
+	accelSampleReadyMsgQ = xQueueCreate(6, sizeof(int16_t)*3); /* initialize accelerometer sampleQ */
+	gyroFrameReadyMsgQ   = xQueueCreate(15, sizeof(uint32_t)); /* initialize gyroScope msgQ */
 	
 	/* init aquisitors */
 	initAccelAq();
@@ -46,7 +46,7 @@ void aqManager(void* argument)
 	vTaskPrioritySet(gyroThreadHandle, 2);
 	vTaskPrioritySet(accelSimpleThreadHandle, 2);
 	
-	gEquilib();
+	//gPress();
 	/* infinite cycle */
 	while(1)
 	{
@@ -62,7 +62,8 @@ void aqManager(void* argument)
 			}
 			/* start equilib? */
 			else if(notification & EqON){
-				/* equilibrium mode */			
+				/* equilibrium mode */
+				gEquilib();			
 			}
 		}
 	}

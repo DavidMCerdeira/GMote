@@ -32,18 +32,18 @@ void HMM_Init(){
 	fwComplete = xEventGroupCreate();
 	
 	/* whenever the a frame is ready this will store it */
-	framesRdy = xQueueCreate( FRAME_SIZE, sizeof(int*));		
+	framesRdy = xQueueCreate(15, sizeof(int*));		
 	
 	/* creating the HMM main task */
-	xTaskCreate(HMM_ControlTsk, "HMM_CTRL", 128, NULL, 0, &hmmCtrlTsk);
+	xTaskCreate(HMM_ControlTsk, "HMM_CTRL", 256, NULL, 0, &hmmCtrlTsk);
 	
 	/* creating a forward task for each model */
 	for(i = 0; i < NUM_GEST; i++)
 	{
 		temp[0] = '0' + i;
-		strcat(hmm_frwrd, temp);
-		xTaskCreate(HMM_ForwardTsk, hmm_frwrd, 128,(void*)&alphabet_Models[i], 0, &forwardTsks[i]);
-		vTaskSuspend(forwardTsks[i]);
+		hmm_frwrd[10] = temp[0];
+		xTaskCreate(HMM_ForwardTsk, hmm_frwrd, 256,(void*)&alphabet_Models[i], 0, &forwardTsks[i]);
+		//vTaskSuspend(forwardTsks[i]);
 	}	
 }
 
@@ -67,19 +67,23 @@ void HMM_ControlTsk(void *arg){
 	int i, most_likely = 0;
 	EventBits_t fwFinished = 0;
 	EventBits_t fwSetMask = 0;
+	UBaseType_t QMsgW8 = pdFALSE;
+	
 	/* initializing the expected mask for the events that
 	 * notify the end of a fw function*/
 	for(i=0; i<NUM_GEST; i++)
-			fwSetMask |= (0x01 << alphabet_Models[i].gest); 
+			fwSetMask |= (0x01 << (int)alphabet_Models[i].gest); 
 	
 	while(1)
 	{
 		/* waiting for frames */
-		uxQueueMessagesWaitingFromISR(framesRdy);
+		while(QMsgW8 == pdFALSE){
+			QMsgW8 = xQueuePeek(framesRdy, buff, 1);
+		}
+		QMsgW8 = pdFALSE;
 		
 		/* if what was inserted on the queue isn't null,
-		 * the aquisition hasn't finished */
-		xQueuePeek(framesRdy, buff, 1);
+		 * the aquisition hasn't finished */		
 		if(buff != NULL)
 		{
 			/* notify forward tasks */
@@ -184,7 +188,7 @@ void HMM_ForwardTsk(void* rModel){
 				arm_mult_f32(temp2, ownModel->Bt[O], (fwData[fwIndex].fw[t]), fwData[fwIndex].N);
 			}
 			
-			fwData[fwIndex].C[t] = (1.0/vec_content_sum(fwData[fwIndex].fw[t], fwData[fwIndex].N));
+			fwData[fwIndex].C[t] = ((float)1.0/vec_content_sum(fwData[fwIndex].fw[t], fwData[fwIndex].N));
 			arm_mult_f32(fwData[fwIndex].C, fwData[fwIndex].fw[t], temp2, fwData[fwIndex].N);
 			arm_copy_f32(temp2, fwData[fwIndex].fw[t], fwData[fwIndex].N);
 			

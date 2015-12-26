@@ -119,11 +119,11 @@ int main(void)
 
   /* USER CODE BEGIN RTOS_THREADS */
 	/* initiate aquisition manager */
-	xTaskCreate(aqManager,     "AqManager",    512, NULL, 1, &aqManagerHandle);	
+	xTaskCreate(aqManager,     "AqManager",    1024, NULL, 1, &aqManagerHandle);	
 	/* initiate pre processing thread; empirically 128 bytes is not enough */
-	xTaskCreate(preprocessing, "PreProcessing", 256, NULL, 2, &preProcThreadHandle);
+	xTaskCreate(preprocessing, "PreProcessing", 2048, NULL, 2, &preProcThreadHandle);
 	/* initiate comunication module */
-	xTaskCreate(communication_run, "Comunication", 128, NULL, 0, &communicationThreadHandle);
+	//xTaskCreate(communication_run, "Comunication", 512, NULL, 0, &communicationThreadHandle);
   /* USER CODE END RTOS_THREADS */
 
   /* USER CODE BEGIN RTOS_QUEUES */
