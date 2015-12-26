@@ -113,6 +113,9 @@ classdef HMM < handle
             % compute fw(t, i)
             % 20!
             for t = 2 : T
+                if ~(mod(t,20))
+                    lol = 0;
+                end
                 c(t) = 0;
                 for j = 1 : self.N
                     fw(t, j) = 0;
