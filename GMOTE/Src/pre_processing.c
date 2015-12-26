@@ -13,6 +13,10 @@ void printIdx(unsigned int* idx);
 void simpleProc(void *arg);
 void gestReconResult(void *arg);
 
+extern float deita[120][6];
+
+#define buffer_that_holds_the_data deita
+
 #define gest_processing_init() HMM_Init()
 
 void processing_init()
@@ -28,7 +32,7 @@ void processing_init()
 	gest_processing_init();
 	
 	/* create thread to deal with equilibrium mode */
-	xTaskCreate(simpleProc, "SimpleProcessing", 128, NULL, 3, &simpleProcTaskHandle);
+	xTaskCreate(simpleProc, "SimpleProcessing", 128, NULL, SimpleProcPrioity, &simpleProcTaskHandle);
 }
 
 void preprocessing(void *arg)
@@ -49,13 +53,21 @@ void preprocessing(void *arg)
 		/* reset flag */
 		preProcMsgRcvd = pdFALSE;
 		
-		/*convert data matrix*/
-		idx = codebook_vecToIdx((float**)&data[begin],  begin + aqSensorRes, 6);
-		/*save last value*/
-		begin += aqSensorRes;
-		/*send decoded data*/
-		printIdx(idx);
-		//xQueueSend(framesRdy, &idx, 10);
+		if(aqSensorRes != 0)
+		{
+			/*convert data matrix*/
+			idx = codebook_vecToIdx((float**)&buffer_that_holds_the_data[begin],  begin + aqSensorRes, 6);
+			/*save last value*/
+			begin += aqSensorRes;
+			/*send decoded data*/
+			printIdx(idx);
+		}
+		else
+		{
+			idx = NULL;
+		}
+		
+		xQueueSend(framesRdy, &idx, 10);
 	}
 }
 
@@ -94,6 +106,8 @@ void gestReconResult(void *arg)
 	else{
 		cmd = 0;
 	}
+	
+	printf("%d ", Gesture);
 	
 	xQueueSend(communicationMsgQ, &cmd, 10);
 }
@@ -159,7 +173,7 @@ void printIdx(unsigned int* idx)
 	printf("Idx:\n");
 	for(i = 0; i < 20; i++)
 	{
-			printf("%d ", idx[i]);
+			printf("%2d ", idx[i]);
 	}
 	printf("\nend\n");
 	

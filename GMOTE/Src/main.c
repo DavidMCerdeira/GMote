@@ -38,6 +38,7 @@
 #include "sensorAq.h"
 #include "pre_processing.h"
 #include "comunication.h"
+#include "boias.h"
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
@@ -119,11 +120,13 @@ int main(void)
 
   /* USER CODE BEGIN RTOS_THREADS */
 	/* initiate aquisition manager */
-	xTaskCreate(aqManager,     "AqManager",    1024, NULL, 1, &aqManagerHandle);	
+	xTaskCreate(aqManager,     "AqManager",    1024, NULL, AqManagerPriority, &aqManagerHandle);	
+	
+	xTaskCreate(boias,     "boias",    1024, NULL, AqManagerPriority, &aqManagerHandle);
 	/* initiate pre processing thread; empirically 128 bytes is not enough */
-	xTaskCreate(preprocessing, "PreProcessing", 2048, NULL, 2, &preProcThreadHandle);
+	xTaskCreate(preprocessing, "PreProcessing", 2048, NULL, PreProcPriority, &preProcThreadHandle);
 	/* initiate comunication module */
-	//xTaskCreate(communication_run, "Comunication", 512, NULL, 0, &communicationThreadHandle);
+	//xTaskCreate(communication_run, "Comunication", 512, NULL, ComPriority, &communicationThreadHandle);
   /* USER CODE END RTOS_THREADS */
 
   /* USER CODE BEGIN RTOS_QUEUES */

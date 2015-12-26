@@ -7,6 +7,7 @@
 #include "string.h"
 #include "HMM_param.h"
 #include "math.h"
+#include "priorities.h"
 
 #define FRAME_SIZE 20
 
@@ -29,9 +30,9 @@ struct HMM
 {
 	unsigned int N; //number of states
 	unsigned int M; //codebook size
-	float32_t** At; //transition matrix
-	float32_t** Bt;
-	float32_t *pi;
+	float32_t (*At)[NR_OF_STATES][NR_OF_STATES]; //transition matrix
+	float32_t (*Bt)[CDBK_SIZE][NR_OF_STATES];
+	float32_t (*pi)[NR_OF_STATES];
 	//!Probabilidade referencia do modelo;
 	gest gest;
 };

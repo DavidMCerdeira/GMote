@@ -42,9 +42,9 @@ void aqManager(void* argument)
 	vTaskSuspend(accelSimpleThreadHandle);
 	
 	/*Now that they are suspended we can raise their priority*/
-	vTaskPrioritySet(runAccelGest, 2);
-	vTaskPrioritySet(gyroThreadHandle, 2);
-	vTaskPrioritySet(accelSimpleThreadHandle, 2);
+	vTaskPrioritySet(runAccelGest, AqSensorPriority);
+	vTaskPrioritySet(gyroThreadHandle, AqSensorPriority);
+	vTaskPrioritySet(accelSimpleThreadHandle, AqSensorPriority);
 	
 	//gPress();
 	/* infinite cycle */
@@ -74,6 +74,7 @@ void gPress(void)
 	static int nFrames = 0;
 	uint32_t accelRes;
 	uint32_t gyroRes;
+	uint32_t end = NULL;
 	BaseType_t accelMsgQRcvd = pdFALSE;
 	BaseType_t gyroMsgQRcvd = pdFALSE;
 	BaseType_t notifRcvd = pdFALSE;
@@ -127,12 +128,13 @@ void gPress(void)
 			else{
 				/* deal with it */
 				nFrames++;
-				xQueueSend(preProcFramReadyMsgQ, &accelRes, 10);
+				//xQueueSend(preProcFramReadyMsgQ, &accelRes, 10);
 				//printFrame(accelRes);
 				printf("Frame Received!\n");
 			}
 		}
 	}	
+	//xQueueSend(preProcFramReadyMsgQ, &gyroRes, 10);
 	//printf("Received a total of %d frames\n", nFrames);
 	nFrames = 0;
 	ORANGE(0);

@@ -35,14 +35,14 @@ void HMM_Init(){
 	framesRdy = xQueueCreate(15, sizeof(int*));		
 	
 	/* creating the HMM main task */
-	xTaskCreate(HMM_ControlTsk, "HMM_CTRL", 256, NULL, 0, &hmmCtrlTsk);
+	xTaskCreate(HMM_ControlTsk, "HMM_CTRL", 256, NULL, GestProcManPriority, &hmmCtrlTsk);
 	
 	/* creating a forward task for each model */
 	for(i = 0; i < NUM_GEST; i++)
 	{
 		temp[0] = '0' + i;
 		hmm_frwrd[10] = temp[0];
-		xTaskCreate(HMM_ForwardTsk, hmm_frwrd, 256,(void*)&alphabet_Models[i], 0, &forwardTsks[i]);
+		xTaskCreate(HMM_ForwardTsk, hmm_frwrd, 256,(void*)&alphabet_Models[i], GestProcPriority, &forwardTsks[i]);
 		//vTaskSuspend(forwardTsks[i]);
 	}	
 }
@@ -52,19 +52,20 @@ void HMM_Init_models(){
 	/* prepares each model's matrixes, with the respectives ones 
 	 * prepared in HMM_Parm.h */
 	for(i = 0; i < (int)NUM_GEST; i++){
-		alphabet_Models[i].At = (float**)AT[i];
-		alphabet_Models[i].Bt = (float**)BT[i];
+		alphabet_Models[i].At = (float32_t (*)[NR_OF_STATES][NR_OF_STATES])&AT[i];
+		alphabet_Models[i].Bt = (float32_t (*)[CDBK_SIZE][NR_OF_STATES])&BT[i];
 		alphabet_Models[i].N  = NR_OF_STATES;
 		alphabet_Models[i].M  = CDBK_SIZE;
 
-		alphabet_Models[i].pi   = (float*)Pi[i];
+		alphabet_Models[i].pi   = (float32_t (*)[NR_OF_STATES])&Pi[i];
 		alphabet_Models[i].gest = (gest)i;
 	}
 }
 
 void HMM_ControlTsk(void *arg){
 	int *buff;
-	int i, most_likely = 0;
+	int i;
+	gest most_likely = 0;
 	EventBits_t fwFinished = 0;
 	EventBits_t fwSetMask = 0;
 	UBaseType_t QMsgW8 = pdFALSE;
@@ -78,7 +79,7 @@ void HMM_ControlTsk(void *arg){
 	{
 		/* waiting for frames */
 		while(QMsgW8 == pdFALSE){
-			QMsgW8 = xQueuePeek(framesRdy, buff, 1);
+			QMsgW8 = xQueuePeek(framesRdy, (void*)&buff, portMAX_DELAY);
 		}
 		QMsgW8 = pdFALSE;
 		
@@ -96,11 +97,6 @@ void HMM_ControlTsk(void *arg){
 			}
 			/* Reset waiting for forward algorithm */
 			fwFinished = 0;
-	
-			/* once every forward of every model has performed,
-			 * the resource is consumed */
-			xQueueReceive(framesRdy, buff, 1);
-			buff = NULL;
 		}
 		/* otherwise sends the ID of the most likely gesture */ 
 		else 
@@ -108,20 +104,31 @@ void HMM_ControlTsk(void *arg){
 			/* notify interpret results function */
 			for(i = 0; i < NUM_GEST; i++)
 			{
-				if(fwData[i].prob > fwData[most_likely].prob && fwData[i].prob == fwData[i].prob)
+				if((fwData[i].prob == fwData[i].prob) && (fwData[i].prob > fwData[most_likely].prob))
 				{
 					most_likely = i;
 				}
 				/* reset algorithm structures */
 				fwData[i].firstTime = 1;
-				fwData[i].prob = 0;
+				
 			}
 			
-			if(most_likely == 0 && fwData[0].prob != fwData[0].prob)
+			if(fwData[most_likely].prob != fwData[most_likely].prob)
 				most_likely = NOT_RECOGNIZED;
 						
 			xQueueSendToBack(likelyGest, (void*)&most_likely, 10);
-		}
+			
+			printf("Gesture %d with P = %f\n", most_likely, fwData[most_likely].prob);
+			
+			for(i = 0; i < NUM_GEST; i++)
+			{
+				fwData[i].prob = 0;
+			}
+		}	
+		/* once every forward of every model has performed,
+		* the resource is consumed */
+		xQueueReceive(framesRdy, buff, 1);
+		buff = NULL;
 	}
 }
 
@@ -130,9 +137,11 @@ void HMM_ForwardTsk(void* rModel){
 	HMM *ownModel = (HMM*) rModel; // var with the content of the respective model
 	EventBits_t waitingBits = 0;   // communication with the control task
 	int fwIndex = ownModel->gest;  // to specify an index in the fwData	 
-	int frame[FRAME_SIZE];				 // frame in each iteration
+	int (*frame)[FRAME_SIZE];				 // frame in each iteration
 	int t, j, O;									 // indexation vars used in the algorithm
-	float32_t *curLastFw;					 // stores fw(t-1)
+	float32_t (*curLastFw)[ownModel->N];					 // stores fw(t-1)
+	
+	BaseType_t semRes = pdFALSE;
 	
 	/* temporary vars, used to store data between calculations */
 	float32_t temp1[ownModel->N];
@@ -153,7 +162,10 @@ void HMM_ForwardTsk(void* rModel){
 		}
 		
 		/* get frames values */
-		xQueuePeek(framesRdy, frame, 10);
+		while(semRes == pdFALSE){
+			semRes = xQueuePeek(framesRdy, (void*)&frame, 10);
+		}
+		semRes = pdFALSE;
 		
 		/* prepares factor of scale vector */
 		arm_fill_f32(0, fwData[fwIndex].C, FRAME_SIZE);
@@ -161,7 +173,7 @@ void HMM_ForwardTsk(void* rModel){
 		for(t = 0; t < FRAME_SIZE; t++)
 		{
 			arm_fill_f32(0, temp2, ownModel->N);		// preparing temp2 var for calculations
-			O = frame[t]; 													// sets current observation
+			O = (*frame)[t]; 													// sets current observation
 			
 			/* resets the fw[t] vector */
 			arm_fill_f32(0, fwData[fwIndex].fw[t], FRAME_SIZE);
@@ -169,27 +181,28 @@ void HMM_ForwardTsk(void* rModel){
 			/* being the first time, it requires a diferent calculation */
 			if(fwData[fwIndex].firstTime)
 			{
-				arm_mult_f32(ownModel->pi, ownModel->Bt[O], (fwData[fwIndex].fw[t]), fwData[fwIndex].N);
+				arm_mult_f32(*ownModel->pi, *ownModel->Bt[O], (fwData[fwIndex].fw[t]), fwData[fwIndex].N);
+				fwData[fwIndex].firstTime = 0;
 			}
 			else
 			{
 				if(t == 0) 
-					curLastFw = fwData[fwIndex].last_fw;
+					curLastFw = &fwData[fwIndex].last_fw;
 				else
-					curLastFw = fwData[fwIndex].fw[t-1];
+					curLastFw = &(fwData[fwIndex].fw[t-1]);
 				
 				for(j = 0; j < ownModel->N; j++)
 				{
-					arm_mult_f32(ownModel->At[j], curLastFw, temp1, ownModel->N);
+					arm_mult_f32(*ownModel->At[j], (float32_t*)(*curLastFw), temp1, ownModel->N);
 					
 					/* stores the sum of each line of temp1 */
 					temp2[j] = vec_content_sum(temp1, ownModel->N);
 				}
-				arm_mult_f32(temp2, ownModel->Bt[O], (fwData[fwIndex].fw[t]), fwData[fwIndex].N);
+				arm_mult_f32(temp2, *ownModel->Bt[O], (fwData[fwIndex].fw[t]), fwData[fwIndex].N);
 			}
 			
 			fwData[fwIndex].C[t] = ((float)1.0/vec_content_sum(fwData[fwIndex].fw[t], fwData[fwIndex].N));
-			arm_mult_f32(fwData[fwIndex].C, fwData[fwIndex].fw[t], temp2, fwData[fwIndex].N);
+			arm_scale_f32(fwData[fwIndex].fw[t], fwData[fwIndex].C[t], temp2, fwData[fwIndex].N);
 			arm_copy_f32(temp2, fwData[fwIndex].fw[t], fwData[fwIndex].N);
 			
 			/* probability calculation for the respetive model */

@@ -11,8 +11,6 @@
 #define myalloc(__SIZE__) pvPortMalloc(__SIZE__)
 #define myfree(ptr)       vPortFree(ptr)
 
-#define CODE_BOOK_SIZE 16
-
 void codeBook_init(void);
 
 int codebook_idx(float *pos);

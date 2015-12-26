@@ -2,7 +2,6 @@
 #define _ACCEL_H
 
 #include "stm32f4xx_hal.h"
-#include "cmsis_os.h"
 #include "error.h"
 #include "discoLeds.h"
 #include "sensors.h"

@@ -133,7 +133,7 @@ void accelInit(void)
 	/* give time to reboot */
 	HAL_Delay(10);
 	
-	//accel_fifoEnable();
+	accel_fifoEnable();
 }
 
 void read_sample(uint8_t* buff)
