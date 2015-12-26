@@ -27,7 +27,7 @@ void runAccelGest(void* argument)
 		
 		/*mutex? i think so*/		
 		accel_fifoEnable();
-		start_accel(HZ_100);	
+		start_accel(NORMAL_SPEED);	
 		
 		/* continue sampling until condition */
 		while((sampleCount < AQ_SIZE)){
@@ -95,7 +95,7 @@ void runAccelSimple(void* argument)
 	while(1){
 		/*mutex? i think so*/
 		accel_byteByByte();
-		start_accel(HZ_6_25);
+		start_accel(LOW_SPEED);
 		
 		while(!leave){
 			/* wait for data or notfication*/

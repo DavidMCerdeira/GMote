@@ -1,6 +1,6 @@
 #include "comunication.h"
 
-QueueHandle_t comunicationMsgQ;
+QueueHandle_t communicationMsgQ;
 
 int communication_validate(int8_t byte);
 #define comunication_hw_init() nrf24l01_Init()
@@ -9,7 +9,7 @@ int communication_validate(int8_t byte);
 void communication_init(void)
 {
 	/* init comunicationQ`*/
-	comunicationMsgQ  = xQueueCreate(30, sizeof(int8_t));
+	communicationMsgQ  = xQueueCreate(30, sizeof(int8_t));
 	/*init comunication hardware*/
 	comunication_hw_init();
 }
@@ -25,7 +25,7 @@ void communication_run(void *arg)
 	{
 		while(msgQrcvd == pdFALSE)
 		{
-			msgQrcvd = xQueueReceive(comunicationMsgQ, &byte, portMAX_DELAY);
+			msgQrcvd = xQueueReceive(communicationMsgQ, &byte, portMAX_DELAY);
 		}
 		msgQrcvd = pdFALSE;
 		
