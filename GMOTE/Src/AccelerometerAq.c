@@ -106,6 +106,7 @@ void runAccelSimple(void* argument)
 			/* data? */
 			if(receivedSem == pdTRUE)
 			{
+				receivedSem = pdFALSE;
 				/* read sample */
 				read_sample((uint8_t*)(&sample));				
 				/* send sample in Q */

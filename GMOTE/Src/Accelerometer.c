@@ -105,16 +105,18 @@ inline void accel_byteByByte(void)
 
 inline void start_accel(int speed)
 {
-	volatile int tempSpeed = speed;
 	
-	tempSpeed = tempSpeed >> 4;
-	
-	if((tempSpeed < 1) || (tempSpeed > 9)){
+	if((speed < 0x10) || (speed > 0x90)){
 		error("Accel invalid frequency", 1);
 		return;
 	}
 	
 	accel_write(ACCEL_CTRL_REG4, speed | EN_ALL_AX );
+	
+	if(accel_read(ACCEL_CTRL_REG4) != (speed | EN_ALL_AX ))
+	{
+		error("Error configuring speed", 3);
+	}
 }
 
 inline void pause_accel(void)
@@ -131,7 +133,7 @@ void accelInit(void)
 	/* give time to reboot */
 	HAL_Delay(10);
 	
-	accel_fifoEnable();
+	//accel_fifoEnable();
 }
 
 void read_sample(uint8_t* buff)
