@@ -5,6 +5,7 @@
 
 #include "codebook.h"
 #include "simpleProcessing.h"
+#include "HMM.h"
 #include "comunication.h"
 
 void preprocessing(void*);

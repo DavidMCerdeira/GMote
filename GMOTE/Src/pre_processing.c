@@ -13,12 +13,19 @@ void printIdx(unsigned int* idx);
 void simpleProc(void *arg);
 void gestReconResult(void *arg);
 
+#define gest_processing_init() HMM_Init()
+
 void processing_init()
 {
 	/* initialize pre proc msgQ */
 	preProcFramReadyMsgQ  = xQueueCreate(30, sizeof(uint32_t)); 
 	/* initialize simple proc msgQ */
 	simpleProcFramReadyMsgQ = xQueueCreate(30, sizeof(int32_t)*3); 
+	
+	/* init codebook */
+	codeBook_init();
+	/* init HMM */
+	gest_processing_init();
 	
 	/* create thread to deal with equilibrium mode */
 	xTaskCreate(simpleProc, "SimpleProcessing", 128, NULL, 3, &simpleProcTaskHandle);
@@ -33,8 +40,6 @@ void preprocessing(void *arg)
 	
 	/* init */
 	processing_init();
-	/* init codebook */
-	codeBook_init();
 	
 	while(1){
 		/*Receive frame for converting*/
@@ -117,13 +122,13 @@ void simpleProc(void *arg)
 		if(simpleRes == RESXp)
 		{
 			send = NAV_R;	
-			c = 'x';
+			c = 'X';
 			printf("%c", c);
 		}
 		else if(simpleRes == RESXm)
 		{
 			send = NAV_L;
-			c = 'X';
+			c = 'x';
 			printf("%c", c);
 		}
 		else if(simpleRes == RESYp)

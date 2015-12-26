@@ -5,6 +5,9 @@ forward fwData[NUM_GEST];
 
 QueueHandle_t framesRdy;
 
+TaskHandle_t forwardTsks[NUM_GEST];
+TaskHandle_t hmmCtrlTsk;
+
 EventGroupHandle_t goForward;
 EventGroupHandle_t fwComplete;
 
@@ -13,7 +16,7 @@ QueueHandle_t likelyGest;
 float32_t vec_content_sum(const float32_t* vector, const int size);
 
 void HMM_Init(){
-	TaskHandle_t forwardTsks[NUM_GEST], hmmCtrlTsk;
+	
 	int i;
 	char hmm_frwrd[] = {'H','M','M','_','F','R','W','R','D', 0, 0};
 	char temp[1];
@@ -51,10 +54,10 @@ void HMM_Init_models(){
 	for(i = 0; i < (int)NUM_GEST; i++){
 		alphabet_Models[i].At = (float**)AT[i];
 		alphabet_Models[i].Bt = (float**)BT[i];
-		alphabet_Models[i].N = NR_OF_STATES;
-		alphabet_Models[i].M = CDBK_SIZE;
+		alphabet_Models[i].N  = NR_OF_STATES;
+		alphabet_Models[i].M  = CDBK_SIZE;
 
-		alphabet_Models[i].pi = (float*)Pi[i];
+		alphabet_Models[i].pi   = (float*)Pi[i];
 		alphabet_Models[i].gest = (gest)i;
 	}
 }
@@ -120,79 +123,79 @@ void HMM_ControlTsk(void *arg){
 
 void HMM_ForwardTsk(void* rModel){
 	
-//	HMM *ownModel = (HMM*) rModel; // var with the content of the respective model
-//	EventBits_t waitingBits = 0;   // communication with the control task
-//	int fwIndex = ownModel->gest;  // to specify an index in the fwData	 
-//	int frame[FRAME_SIZE];				 // frame in each iteration
-//	int t, j, O;									 // indexation vars used in the algorithm
-//	float32_t *curLastFw;					 // stores fw(t-1)
-//	
-//	/* temporary vars, used to store data between calculations */
-//	float32_t temp1[ownModel->N];
-//	float32_t temp2[ownModel->N];
-//	
-//	/* init respetive forward struct */
-//	fwData[fwIndex].firstTime = 1;
-//	fwData[fwIndex].Cur_gest = ownModel->gest;
-//	fwData[fwIndex].N = ownModel->N;
-//	fwData[fwIndex].T = FRAME_SIZE;
-//	
-//	while(1)
-//	{
-//		/* waiting for frame */
-//		while(!(waitingBits & (0x01 << ownModel->gest)))
-//		{
-//		 waitingBits = xEventGroupWaitBits(goForward,(0x01 << ownModel->gest), pdTRUE, pdTRUE, portMAX_DELAY); 	
-//		}
-//		
-//		/* get frames values */
-//		xQueuePeek(framesRdy, frame, 10);
-//		
-//		/* prepares factor of scale vector */
-//		arm_fill_f32(0, fwData[fwIndex].C, FRAME_SIZE);
-//		
-//		for(t = 0; t < FRAME_SIZE; t++)
-//		{
-//			arm_fill_f32(0, temp2, ownModel->N);		// preparing temp2 var for calculations
-//			O = frame[t]; 													// sets current observation
-//			
-//			/* resets the fw[t] vector */
-//			arm_fill_f32(0, fwData[fwIndex].fw[t], FRAME_SIZE);
-//			
-//			/* being the first time, it requires a diferent calculation */
-//			if(fwData[fwIndex].firstTime)
-//			{
-//				arm_mult_f32(ownModel->pi, ownModel->Bt[O], (fwData[fwIndex].fw[t]), fwData[fwIndex].N);
-//			}
-//			else
-//			{
-//				if(t == 0) 
-//					curLastFw = fwData[fwIndex].last_fw;
-//				else
-//					curLastFw = fwData[fwIndex].fw[t-1];
-//				
-//				for(j = 0; j < ownModel->N; j++)
-//				{
-//					arm_mult_f32(ownModel->At[j], curLastFw, temp1, ownModel->N);
-//					
-//					/* stores the sum of each line of temp1 */
-//					temp2[j] = vec_content_sum(temp1, ownModel->N);
-//				}
-//				arm_mult_f32(temp2, ownModel->Bt[O], (fwData[fwIndex].fw[t]), fwData[fwIndex].N);
-//			}
-//			
-//			fwData[fwIndex].C[t] = (1.0/vec_content_sum(fwData[fwIndex].fw[t], fwData[fwIndex].N));
-//			arm_mult_f32(fwData[fwIndex].C, fwData[fwIndex].fw[t], temp2, fwData[fwIndex].N);
-//			arm_copy_f32(temp2, fwData[fwIndex].fw[t], fwData[fwIndex].N);
-//			
-//			/* probability calculation for the respetive model */
-//			fwData[fwIndex].prob += log10(fwData[fwIndex].C[t]);
-//		}
-//		
-//		/* notifies control task, that the frame's forward algorithm has finished */
-//		xEventGroupSetBits(fwComplete, (0x01 << ownModel->gest));
-//		arm_copy_f32(fwData[fwIndex].fw[FRAME_SIZE - 1], fwData[fwIndex].last_fw, fwData[fwIndex].N); 
-//	}	
+	HMM *ownModel = (HMM*) rModel; // var with the content of the respective model
+	EventBits_t waitingBits = 0;   // communication with the control task
+	int fwIndex = ownModel->gest;  // to specify an index in the fwData	 
+	int frame[FRAME_SIZE];				 // frame in each iteration
+	int t, j, O;									 // indexation vars used in the algorithm
+	float32_t *curLastFw;					 // stores fw(t-1)
+	
+	/* temporary vars, used to store data between calculations */
+	float32_t temp1[ownModel->N];
+	float32_t temp2[ownModel->N];
+	
+	/* init respetive forward struct */
+	fwData[fwIndex].firstTime = 1;
+	fwData[fwIndex].Cur_gest = ownModel->gest;
+	fwData[fwIndex].N = ownModel->N;
+	fwData[fwIndex].T = FRAME_SIZE;
+	
+	while(1)
+	{
+		/* waiting for frame */
+		while(!(waitingBits & (0x01 << ownModel->gest)))
+		{
+		 waitingBits = xEventGroupWaitBits(goForward,(0x01 << ownModel->gest), pdTRUE, pdTRUE, portMAX_DELAY); 	
+		}
+		
+		/* get frames values */
+		xQueuePeek(framesRdy, frame, 10);
+		
+		/* prepares factor of scale vector */
+		arm_fill_f32(0, fwData[fwIndex].C, FRAME_SIZE);
+		
+		for(t = 0; t < FRAME_SIZE; t++)
+		{
+			arm_fill_f32(0, temp2, ownModel->N);		// preparing temp2 var for calculations
+			O = frame[t]; 													// sets current observation
+			
+			/* resets the fw[t] vector */
+			arm_fill_f32(0, fwData[fwIndex].fw[t], FRAME_SIZE);
+			
+			/* being the first time, it requires a diferent calculation */
+			if(fwData[fwIndex].firstTime)
+			{
+				arm_mult_f32(ownModel->pi, ownModel->Bt[O], (fwData[fwIndex].fw[t]), fwData[fwIndex].N);
+			}
+			else
+			{
+				if(t == 0) 
+					curLastFw = fwData[fwIndex].last_fw;
+				else
+					curLastFw = fwData[fwIndex].fw[t-1];
+				
+				for(j = 0; j < ownModel->N; j++)
+				{
+					arm_mult_f32(ownModel->At[j], curLastFw, temp1, ownModel->N);
+					
+					/* stores the sum of each line of temp1 */
+					temp2[j] = vec_content_sum(temp1, ownModel->N);
+				}
+				arm_mult_f32(temp2, ownModel->Bt[O], (fwData[fwIndex].fw[t]), fwData[fwIndex].N);
+			}
+			
+			fwData[fwIndex].C[t] = (1.0/vec_content_sum(fwData[fwIndex].fw[t], fwData[fwIndex].N));
+			arm_mult_f32(fwData[fwIndex].C, fwData[fwIndex].fw[t], temp2, fwData[fwIndex].N);
+			arm_copy_f32(temp2, fwData[fwIndex].fw[t], fwData[fwIndex].N);
+			
+			/* probability calculation for the respetive model */
+			fwData[fwIndex].prob += log10(fwData[fwIndex].C[t]);
+		}
+		
+		/* notifies control task, that the frame's forward algorithm has finished */
+		xEventGroupSetBits(fwComplete, (0x01 << ownModel->gest));
+		arm_copy_f32(fwData[fwIndex].fw[FRAME_SIZE - 1], fwData[fwIndex].last_fw, fwData[fwIndex].N); 
+	}	
 }
 
 float32_t vec_content_sum(const float32_t* vector, const int size){

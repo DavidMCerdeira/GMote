@@ -25,7 +25,9 @@ void runAccelGest(void* argument)
 		/* start aquisition */
 		BLUE(1);
 		
-		/*mutex? i think so*/		
+		/*mutex? i think so*/
+
+		/* accelerometer aquisition mode and speed */
 		accel_fifoEnable();
 		start_accel(NORMAL_SPEED);	
 		
@@ -106,6 +108,7 @@ void runAccelSimple(void* argument)
 			/* data? */
 			if(receivedSem == pdTRUE)
 			{
+				/* reset flAG */
 				receivedSem = pdFALSE;
 				/* read sample */
 				read_sample((uint8_t*)(&sample));				
