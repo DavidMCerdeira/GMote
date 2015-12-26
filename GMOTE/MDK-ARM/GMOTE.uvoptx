@@ -164,22 +164,80 @@
         <SetRegEntry>
           <Number>0</Number>
           <Key>UL2CM3</Key>
+<<<<<<< HEAD
           <Name>UL2CM3(-S0 -C0 -P0 -FD20000000 -FC1000 -FN1 -FF0STM32F4xx_1024 -FS08000000 -FL0100000 -FP0($$Device:STM32F407VGTx$CMSIS\Flash\STM32F4xx_1024.FLM))</Name>
+=======
+          <Name>UL2CM3(-S0 -C0 -P0 -FD20000000 -FC1000 -FN1 -FF0STM32F4xx_1024 -FS08000000 -FL0100000 -FP0($$Device:STM32F407VGTx$CMSIS/Flash/STM32F4xx_1024.FLM))</Name>
+        </SetRegEntry>
+        <SetRegEntry>
+          <Number>0</Number>
+          <Key>ST-LINKIII-KEIL_SWO</Key>
+<<<<<<< HEAD
+          <Name>-U303030303030303030303031 -I0 -O10446 -S0 -C0 -A0 -N00("ARM CoreSight SW-DP") -D00(2BA01477) -L00(0) -TO18 -TC10000000 -TP21 -TDS8004 -TDT0 -TDC1F -TIEFFFFFFFF -TIP8 -FO15 -FD20000000 -FC800 -FN1 -FF0STM32F4xx_1024.FLM -FS08000000 -FL0100000 -FP0($$Device:STM32F407VG$CMSIS\Flash\STM32F4xx_1024.FLM)</Name>
+=======
+          <Name>-U-O142 -O10446 -S0 -C0 -A0 -N00("ARM CoreSight SW-DP") -D00(2BA01477) -L00(0) -TO18 -TC10000000 -TP21 -TDS8007 -TDT0 -TDC1F -TIEFFFFFFFF -TIP8 -FO7 -FD20000000 -FC800 -FN1 -FF0STM32F4xx_1024.FLM -FS08000000 -FL0100000 -FP0($$Device:STM32F407VG$CMSIS\Flash\STM32F4xx_1024.FLM)</Name>
+>>>>>>> 1c566d3395135c27e7a4cfd6b15f26cf02d324aa
+>>>>>>> ac05e53c5da8212a6a9ebaaaa963411fa5e44992
         </SetRegEntry>
       </TargetDriverDllRegistry>
       <Breakpoint>
         <Bp>
           <Number>0</Number>
           <Type>0</Type>
+<<<<<<< HEAD
           <LineNumber>123</LineNumber>
           <EnabledFlag>1</EnabledFlag>
           <Address>0</Address>
+=======
+<<<<<<< HEAD
+          <LineNumber>67</LineNumber>
+          <EnabledFlag>1</EnabledFlag>
+          <Address>0</Address>
+=======
+<<<<<<< HEAD
+          <LineNumber>112</LineNumber>
+          <EnabledFlag>1</EnabledFlag>
+          <Address>134245430</Address>
+=======
+          <LineNumber>13</LineNumber>
+          <EnabledFlag>1</EnabledFlag>
+          <Address>134238890</Address>
+>>>>>>> 118dc4133a8dcbbcea7db803c848239ac1c97b5e
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
+          <BreakIfRCount>1</BreakIfRCount>
+<<<<<<< HEAD
+          <Filename>..\Src\AccelerometerAq.c</Filename>
+          <ExecCommand></ExecCommand>
+          <Expression>\\GMOTE_Configuration\../Src/AccelerometerAq.c\112</Expression>
+        </Bp>
+        <Bp>
+          <Number>1</Number>
+          <Type>0</Type>
+          <LineNumber>123</LineNumber>
+          <EnabledFlag>1</EnabledFlag>
+          <Address>134228558</Address>
+>>>>>>> 1c566d3395135c27e7a4cfd6b15f26cf02d324aa
+>>>>>>> ac05e53c5da8212a6a9ebaaaa963411fa5e44992
+          <ByteObject>0</ByteObject>
+          <HtxType>0</HtxType>
+          <ManyObjects>0</ManyObjects>
+          <SizeOfObject>0</SizeOfObject>
+          <BreakByAccess>0</BreakByAccess>
+<<<<<<< HEAD
           <BreakIfRCount>0</BreakIfRCount>
+=======
+<<<<<<< HEAD
+          <BreakIfRCount>0</BreakIfRCount>
+          <Filename>..\Src\pre_processing.c</Filename>
+          <ExecCommand></ExecCommand>
+          <Expression></Expression>
+=======
+          <BreakIfRCount>1</BreakIfRCount>
+>>>>>>> ac05e53c5da8212a6a9ebaaaa963411fa5e44992
           <Filename>..\Src\HMM.c</Filename>
           <ExecCommand></ExecCommand>
           <Expression></Expression>
@@ -199,8 +257,107 @@
           <Filename>..\Src\HMM.c</Filename>
           <ExecCommand></ExecCommand>
           <Expression></Expression>
+<<<<<<< HEAD
         </Bp>
       </Breakpoint>
+=======
+>>>>>>> 118dc4133a8dcbbcea7db803c848239ac1c97b5e
+>>>>>>> 1c566d3395135c27e7a4cfd6b15f26cf02d324aa
+        </Bp>
+      </Breakpoint>
+      <WatchWindow1>
+        <Ww>
+          <count>0</count>
+          <WinNumber>1</WinNumber>
+<<<<<<< HEAD
+          <ItemText>fwData</ItemText>
+=======
+<<<<<<< HEAD
+          <ItemText>fwData</ItemText>
+=======
+          <ItemText>ownModel</ItemText>
+>>>>>>> 118dc4133a8dcbbcea7db803c848239ac1c97b5e
+>>>>>>> 1c566d3395135c27e7a4cfd6b15f26cf02d324aa
+        </Ww>
+        <Ww>
+          <count>1</count>
+          <WinNumber>1</WinNumber>
+<<<<<<< HEAD
+          <ItemText>fwIndex</ItemText>
+=======
+<<<<<<< HEAD
+          <ItemText>alphabet_Models</ItemText>
+=======
+          <ItemText>fwData</ItemText>
+>>>>>>> 1c566d3395135c27e7a4cfd6b15f26cf02d324aa
+        </Ww>
+        <Ww>
+          <count>2</count>
+          <WinNumber>1</WinNumber>
+<<<<<<< HEAD
+          <ItemText>t</ItemText>
+=======
+          <ItemText>fwData[fwIndex].fw[0]</ItemText>
+>>>>>>> 1c566d3395135c27e7a4cfd6b15f26cf02d324aa
+        </Ww>
+        <Ww>
+          <count>3</count>
+          <WinNumber>1</WinNumber>
+<<<<<<< HEAD
+          <ItemText>O</ItemText>
+=======
+          <ItemText>sum</ItemText>
+>>>>>>> 1c566d3395135c27e7a4cfd6b15f26cf02d324aa
+        </Ww>
+        <Ww>
+          <count>4</count>
+          <WinNumber>1</WinNumber>
+<<<<<<< HEAD
+          <ItemText>*ownModel-&gt;pi</ItemText>
+=======
+          <ItemText>t</ItemText>
+>>>>>>> 1c566d3395135c27e7a4cfd6b15f26cf02d324aa
+        </Ww>
+        <Ww>
+          <count>5</count>
+          <WinNumber>1</WinNumber>
+<<<<<<< HEAD
+          <ItemText>*(ownModel-&gt;Bt)[O]</ItemText>
+=======
+          <ItemText>curLastFw</ItemText>
+        </Ww>
+        <Ww>
+          <count>6</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>most_likely</ItemText>
+        </Ww>
+        <Ww>
+          <count>7</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>buff</ItemText>
+        </Ww>
+        <Ww>
+          <count>8</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>framesRdy</ItemText>
+        </Ww>
+        <Ww>
+          <count>9</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>QMsgW8</ItemText>
+>>>>>>> 118dc4133a8dcbbcea7db803c848239ac1c97b5e
+>>>>>>> 1c566d3395135c27e7a4cfd6b15f26cf02d324aa
+        </Ww>
+      </WatchWindow1>
+      <MemoryWindow1>
+        <Mm>
+          <WinNumber>1</WinNumber>
+          <SubType>0</SubType>
+          <ItemText>0x20000F8</ItemText>
+          <AccSizeX>0</AccSizeX>
+        </Mm>
+      </MemoryWindow1>
+>>>>>>> ac05e53c5da8212a6a9ebaaaa963411fa5e44992
       <Tracepoint>
         <THDelay>0</THDelay>
       </Tracepoint>
@@ -900,7 +1057,7 @@
       <GroupNumber>8</GroupNumber>
       <FileNumber>47</FileNumber>
       <FileType>1</FileType>
-      <tvExp>0</tvExp>
+      <tvExp>1</tvExp>
       <Focus>0</Focus>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
@@ -960,7 +1117,19 @@
 
   <Group>
     <GroupName>DSP</GroupName>
+<<<<<<< HEAD
     <tvExp>0</tvExp>
+=======
+<<<<<<< HEAD
+    <tvExp>1</tvExp>
+=======
+<<<<<<< HEAD
+    <tvExp>1</tvExp>
+=======
+    <tvExp>0</tvExp>
+>>>>>>> 118dc4133a8dcbbcea7db803c848239ac1c97b5e
+>>>>>>> 1c566d3395135c27e7a4cfd6b15f26cf02d324aa
+>>>>>>> ac05e53c5da8212a6a9ebaaaa963411fa5e44992
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>

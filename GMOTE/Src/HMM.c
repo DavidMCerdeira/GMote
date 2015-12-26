@@ -146,6 +146,7 @@ void HMM_ForwardTsk(void* rModel){
 	float32_t (*curLastFw)[ownModel->N];					 // stores fw(t-1)
 		
 	BaseType_t semRes = pdFALSE;
+	float32_t (*curFw)[ownModel->N];
 	
 	/* temporary vars, used to store data between calculations */
 	float32_t temp1[ownModel->N];
@@ -204,11 +205,8 @@ void HMM_ForwardTsk(void* rModel){
 				arm_mult_f32(temp2, (*(ownModel->Bt))[O], (fwData[fwIndex].fw[t]), fwData[fwIndex].N);
 			}
 			fwData[fwIndex].C[t] = ((float)1.0/vec_content_sum(fwData[fwIndex].fw[t], fwData[fwIndex].N));
-			
-			test_DSP_scale((float32_t*)fwData[fwIndex].fw[t], fwData[fwIndex].C[t], fwData[fwIndex].N); //TESTE
-			
 			arm_scale_f32((float32_t*)fwData[fwIndex].fw[t], fwData[fwIndex].C[t], temp2, fwData[fwIndex].N);
-			arm_copy_f32(temp2, fwData[fwIndex].fw[t], fwData[fwIndex].N);
+			arm_copy_f32(temp2, (float32_t*)fwData[fwIndex].fw[t], fwData[fwIndex].N);
 			
 			/* probability calculation for the respetive model */
 			fwData[fwIndex].prob += log10(fwData[fwIndex].C[t]);
