@@ -181,7 +181,7 @@ void HMM_ForwardTsk(void* rModel){
 			/* being the first time, it requires a diferent calculation */
 			if(fwData[fwIndex].firstTime)
 			{
-				arm_mult_f32(*(ownModel->pi), *(ownModel->Bt)[O], (fwData[fwIndex].fw[t]), fwData[fwIndex].N);
+				arm_mult_f32(*(ownModel->pi), (*(ownModel->Bt))[O], (fwData[fwIndex].fw[t]), fwData[fwIndex].N);
 				fwData[fwIndex].firstTime = 0;
 			}
 			else
@@ -193,17 +193,17 @@ void HMM_ForwardTsk(void* rModel){
 				
 				for(j = 0; j < ownModel->N; j++)
 				{
-					arm_mult_f32(*(ownModel->At)[j], (float32_t*)(*curLastFw), temp1, ownModel->N);
+					arm_mult_f32((*(ownModel->At))[j], (float32_t*)(*curLastFw), temp1, ownModel->N);
 					
 					/* stores the sum of each line of temp1 */
 					temp2[j] = vec_content_sum(temp1, ownModel->N);
 				}
-				arm_mult_f32(temp2, *(ownModel->Bt)[O], (fwData[fwIndex].fw[t]), fwData[fwIndex].N);
+				arm_mult_f32(temp2, (*(ownModel->Bt))[O], (fwData[fwIndex].fw[t]), fwData[fwIndex].N);
 			}
 			
 			fwData[fwIndex].C[t] = ((float)1.0/vec_content_sum(fwData[fwIndex].fw[t], fwData[fwIndex].N));
-			arm_scale_f32(fwData[fwIndex].fw[t], fwData[fwIndex].C[t], temp2, fwData[fwIndex].N);
-			arm_copy_f32(temp2, fwData[fwIndex].fw[t], fwData[fwIndex].N);
+			arm_scale_f32((float32_t*)fwData[fwIndex].fw[t], fwData[fwIndex].C[t], temp2, fwData[fwIndex].N);
+			arm_copy_f32(temp2, (float32_t*)fwData[fwIndex].fw[t], fwData[fwIndex].N);
 			
 			/* probability calculation for the respetive model */
 			fwData[fwIndex].prob += log10(fwData[fwIndex].C[t]);
