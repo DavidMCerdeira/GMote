@@ -14,6 +14,11 @@ EventGroupHandle_t fwComplete;
 QueueHandle_t likelyGest;
 
 float32_t vec_content_sum(const float32_t* vector, const int size);
+<<<<<<< HEAD
+=======
+void test_DSP_mult(float32_t *src1, float32_t *src2, int size);
+void test_DSP_scale(float32_t *src1, float32_t scale, int size);
+>>>>>>> 9fc6b14da820c9561502c8e7642811e40a67e3fc
 
 void HMM_Init(){
 	
@@ -134,14 +139,25 @@ void HMM_ControlTsk(void *arg){
 
 void HMM_ForwardTsk(void* rModel){
 	
+<<<<<<< HEAD
+=======
+	/**TESTE APAGGAR QUANDO não precisarmos ->*/// float32_t *TESTE; 
+	
+>>>>>>> 9fc6b14da820c9561502c8e7642811e40a67e3fc
 	HMM *ownModel = (HMM*) rModel; // var with the content of the respective model
 	EventBits_t waitingBits = 0;   // communication with the control task
 	int fwIndex = ownModel->gest;  // to specify an index in the fwData	 
 	int (*frame)[FRAME_SIZE];				 // frame in each iteration
 	int t, j, O;									 // indexation vars used in the algorithm
 	float32_t (*curLastFw)[ownModel->N];					 // stores fw(t-1)
+<<<<<<< HEAD
 	
 	BaseType_t semRes = pdFALSE;
+=======
+		
+	BaseType_t semRes = pdFALSE;
+	float32_t (*curFw)[ownModel->N];
+>>>>>>> 9fc6b14da820c9561502c8e7642811e40a67e3fc
 	
 	/* temporary vars, used to store data between calculations */
 	float32_t temp1[ownModel->N];
@@ -194,13 +210,19 @@ void HMM_ForwardTsk(void* rModel){
 				for(j = 0; j < ownModel->N; j++)
 				{
 					arm_mult_f32((*(ownModel->At))[j], (float32_t*)(*curLastFw), temp1, ownModel->N);
+<<<<<<< HEAD
 					
+=======
+>>>>>>> 9fc6b14da820c9561502c8e7642811e40a67e3fc
 					/* stores the sum of each line of temp1 */
 					temp2[j] = vec_content_sum(temp1, ownModel->N);
 				}
 				arm_mult_f32(temp2, (*(ownModel->Bt))[O], (fwData[fwIndex].fw[t]), fwData[fwIndex].N);
 			}
+<<<<<<< HEAD
 			
+=======
+>>>>>>> 9fc6b14da820c9561502c8e7642811e40a67e3fc
 			fwData[fwIndex].C[t] = ((float)1.0/vec_content_sum(fwData[fwIndex].fw[t], fwData[fwIndex].N));
 			arm_scale_f32((float32_t*)fwData[fwIndex].fw[t], fwData[fwIndex].C[t], temp2, fwData[fwIndex].N);
 			arm_copy_f32(temp2, (float32_t*)fwData[fwIndex].fw[t], fwData[fwIndex].N);
@@ -224,3 +246,19 @@ float32_t vec_content_sum(const float32_t* vector, const int size){
 
 	return sum;
 }
+<<<<<<< HEAD
+=======
+
+void test_DSP_mult(float32_t *src1, float32_t *src2, int size){
+	//float32_t src1[] = {1.0,2.0,3.0,4.0,5.0,6.0,7.0,8.0,9.0};
+	//float32_t src2[] = {2.0,2.0,2.0,2.0,2.0,2.0,2.0,2.0,2.0};
+	float32_t dest[8];
+	arm_mult_f32(src1,src2,dest, size);
+}
+
+void test_DSP_scale(float32_t *src1, float32_t scale, int size){
+	float32_t dest[8];
+
+	arm_scale_f32(src1, (float32_t)scale, dest, size);
+}
+>>>>>>> 9fc6b14da820c9561502c8e7642811e40a67e3fc

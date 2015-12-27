@@ -130,6 +130,7 @@ void gPress(void)
 				nFrames++;
 				xQueueSend(preProcFramReadyMsgQ, &accelRes, 10);
 				//printFrame(accelRes);
+<<<<<<< HEAD
 				printf("Frame Received!\n");
 			}
 		}
@@ -137,6 +138,14 @@ void gPress(void)
 	gyroRes = 0;
 	printf("Received a total of %d frames\n", nFrames);
 	xQueueSend(preProcFramReadyMsgQ, &gyroRes, 10);
+=======
+				//printf("Frame Received!\n");
+			}
+		}
+	}	
+	xQueueSend(preProcFramReadyMsgQ, &gyroRes, 10);
+	//printf("Received a total of %d frames\n", nFrames);
+>>>>>>> 9fc6b14da820c9561502c8e7642811e40a67e3fc
 	nFrames = 0;
 	ORANGE(0);
 }

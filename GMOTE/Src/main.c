@@ -120,7 +120,11 @@ int main(void)
 
   /* USER CODE BEGIN RTOS_THREADS */
 	/* initiate aquisition manager */
+<<<<<<< HEAD
 	//xTaskCreate(aqManager,     "AqManager",    1024, NULL, AqManagerPriority, &aqManagerHandle);	
+=======
+	xTaskCreate(aqManager, "AqManager", 1024, NULL, AqManagerPriority, &aqManagerHandle);	
+>>>>>>> 9fc6b14da820c9561502c8e7642811e40a67e3fc
 	
 	xTaskCreate(boias,     "boias",    1024, NULL, AqManagerPriority, &aqManagerHandle);
 	/* initiate pre processing thread; empirically 128 bytes is not enough */

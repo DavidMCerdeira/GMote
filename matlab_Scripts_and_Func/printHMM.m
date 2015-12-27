@@ -18,7 +18,11 @@ for i = 1 : number_of_gestures
     end
 end
 
+<<<<<<< HEAD
 fprintf(fileIDh, 'NUM_GEST};\n');
+=======
+fprintf(fileIDh, 'NUM_GEST, NOT_RECOGNIZED};\n');
+>>>>>>> 9fc6b14da820c9561502c8e7642811e40a67e3fc
 fprintf(fileIDh, 'typedef enum gest gest;\n\n');
 
 

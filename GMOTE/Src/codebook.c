@@ -25,7 +25,11 @@ void codeBook_init(void)
 			error("Error finding near", 3);
 		}
 		
+<<<<<<< HEAD
 		if((int)kd_res_item_data(res) != i){
+=======
+		if((int)kd_res_item_data(res) != (i)){
+>>>>>>> 9fc6b14da820c9561502c8e7642811e40a67e3fc
 			error("Error confirming", 3);
 		}
 		
