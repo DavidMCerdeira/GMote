@@ -15,6 +15,10 @@ QueueHandle_t likelyGest;
 
 float32_t vec_content_sum(const float32_t* vector, const int size);
 
+/* Debug purposes only */
+void test_DSP_mult(float32_t *src1, float32_t *src2, int size);
+void test_DSP_scale(float32_t *src1, float32_t scale, int size);
+
 void HMM_Init(){
 	
 	int i;
@@ -134,14 +138,17 @@ void HMM_ControlTsk(void *arg){
 
 void HMM_ForwardTsk(void* rModel){
 	
+	/**TESTE APAGGAR QUANDO não precisarmos ->*/// float32_t *TESTE; 
+	
 	HMM *ownModel = (HMM*) rModel; // var with the content of the respective model
 	EventBits_t waitingBits = 0;   // communication with the control task
 	int fwIndex = ownModel->gest;  // to specify an index in the fwData	 
 	int (*frame)[FRAME_SIZE];				 // frame in each iteration
 	int t, j, O;									 // indexation vars used in the algorithm
 	float32_t (*curLastFw)[ownModel->N];					 // stores fw(t-1)
-	
+		
 	BaseType_t semRes = pdFALSE;
+	float32_t (*curFw)[ownModel->N];
 	
 	/* temporary vars, used to store data between calculations */
 	float32_t temp1[ownModel->N];
@@ -174,7 +181,7 @@ void HMM_ForwardTsk(void* rModel){
 		for(t = 0; t < FRAME_SIZE; t++)
 		{
 			arm_fill_f32(0, temp2, ownModel->N);		// preparing temp2 var for calculations
-			O = (*frame)[t]; 													// sets current observation
+			O = (*frame)[t]; 												// sets current observation
 			
 			/* resets the fw[t] vector */
 			arm_fill_f32(0, fwData[fwIndex].fw[t], FRAME_SIZE);
@@ -182,11 +189,13 @@ void HMM_ForwardTsk(void* rModel){
 			/* being the first time, it requires a diferent calculation */
 			if(fwData[fwIndex].firstTime)
 			{
-				arm_mult_f32(*(ownModel->pi), *(ownModel->Bt)[O], (fwData[fwIndex].fw[t]), fwData[fwIndex].N);
+				test_DSP_mult((*(ownModel->Bt))[O], *(ownModel->pi), fwData[fwIndex].N);  													//DEBUG
+				arm_mult_f32(*(ownModel->pi), (*(ownModel->Bt))[O], (float32_t*)(fwData[fwIndex].fw[t]), fwData[fwIndex].N);
 				fwData[fwIndex].firstTime = 0;
 			}
 			else
 			{
+				/* defines which vec should be use in the calculation */
 				if(t == 0) 
 					curLastFw = &fwData[fwIndex].last_fw;
 				else
@@ -194,20 +203,23 @@ void HMM_ForwardTsk(void* rModel){
 				
 				for(j = 0; j < ownModel->N; j++)
 				{
-					arm_mult_f32(*(ownModel->At)[j], (float32_t*)(*curLastFw), temp1, ownModel->N);
 					
+					test_DSP_mult((*(ownModel->At))[j], (float32_t*)(*curLastFw), fwData[fwIndex].N);										//DEBUG
+					arm_mult_f32((*(ownModel->At))[j], (float32_t*)(*curLastFw), temp1, ownModel->N);
 					/* stores the sum of each line of temp1 */
 					temp2[j] = vec_content_sum(temp1, ownModel->N);
 				}
-				arm_mult_f32(temp2, *(ownModel->Bt)[O], (fwData[fwIndex].fw[t]), fwData[fwIndex].N);
+				test_DSP_mult(temp2, (*(ownModel->Bt))[O],fwData[fwIndex].N);																					//DEBUG
+				arm_mult_f32(temp2, (*(ownModel->Bt))[O], (fwData[fwIndex].fw[t]), fwData[fwIndex].N);
 			}
-			
 			fwData[fwIndex].C[t] = ((float)1.0/vec_content_sum(fwData[fwIndex].fw[t], fwData[fwIndex].N));
-			arm_scale_f32(fwData[fwIndex].fw[t], fwData[fwIndex].C[t], temp2, fwData[fwIndex].N);
-			arm_copy_f32(temp2, fwData[fwIndex].fw[t], fwData[fwIndex].N);
+			
+			test_DSP_scale((float32_t*)fwData[fwIndex].fw[t],fwData[fwIndex].C[t], fwData[fwIndex].N);							//DEBUG
+			arm_scale_f32((float32_t*)fwData[fwIndex].fw[t], fwData[fwIndex].C[t], temp2, fwData[fwIndex].N);
+			arm_copy_f32(temp2, (float32_t*)fwData[fwIndex].fw[t], fwData[fwIndex].N);
 			
 			/* probability calculation for the respetive model */
-			fwData[fwIndex].prob += log10(fwData[fwIndex].C[t]);
+			fwData[fwIndex].prob -= log10(fwData[fwIndex].C[t]);
 		}
 		
 		/* notifies control task, that the frame's forward algorithm has finished */
@@ -224,4 +236,19 @@ float32_t vec_content_sum(const float32_t* vector, const int size){
 		sum = sum + vector[i];
 
 	return sum;
+}
+
+void test_DSP_mult(float32_t *src1, float32_t *src2, int size){
+	float32_t dest[8];
+	float32_t check1[8];
+	float32_t check2[8];
+	
+	arm_copy_f32(src1,check1,size);
+	arm_copy_f32(src2,check2,size);
+	arm_mult_f32(src1,src2,dest, size);
+}
+
+void test_DSP_scale(float32_t *src1, float32_t scale, int size){
+	float32_t dest[8];
+	arm_scale_f32(src1, (float32_t)scale, dest, size);
 }
