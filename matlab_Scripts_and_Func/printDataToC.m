@@ -24,7 +24,7 @@ while i <= 120
     fprintf('{');
     save = i;
     for j = i : save + 19
-        fprintf('%+3.0f', ix(j));
+        fprintf('%+3.0f', ix(j)-1);
         if j ~= (save+19)
             fprintf(', ');
         end

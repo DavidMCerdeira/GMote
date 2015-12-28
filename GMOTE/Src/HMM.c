@@ -95,7 +95,7 @@ void HMM_ControlTsk(void *arg){
 			/* check if all the forward algorithms ran */
 			while(!(fwFinished & fwSetMask))
 			{
-				fwFinished = xEventGroupWaitBits(fwComplete, fwSetMask, pdTRUE, pdTRUE, portMAX_DELAY );
+				fwFinished = xEventGroupWaitBits(fwComplete, fwSetMask, pdTRUE, pdTRUE, portMAX_DELAY);
 			}
 			/* Reset waiting for forward algorithm */
 			fwFinished = 0;
@@ -167,7 +167,7 @@ void HMM_ForwardTsk(void* rModel){
 		/* waiting for frame */
 		while(!(waitingBits & (0x01 << ownModel->gest)))
 		{
-		 waitingBits = xEventGroupWaitBits(goForward,(0x01 << ownModel->gest), pdTRUE, pdTRUE, portMAX_DELAY); 	
+		 waitingBits = xEventGroupWaitBits(goForward,(0x01 << (int)ownModel->gest), pdTRUE, pdTRUE, portMAX_DELAY); 	
 		}
 		waitingBits = 0;
 		
@@ -219,7 +219,7 @@ void HMM_ForwardTsk(void* rModel){
 		}
 		
 		/* notifies control task, that the frame's forward algorithm has finished */
-		xEventGroupSetBits(fwComplete, (0x01 << ownModel->gest));
+		xEventGroupSetBits(fwComplete, (0x01 << (int)ownModel->gest));
 		arm_copy_f32(fwData[fwIndex].fw[FRAME_SIZE - 1], fwData[fwIndex].last_fw, fwData[fwIndex].N); 
 		frameCounter++;
 	}
