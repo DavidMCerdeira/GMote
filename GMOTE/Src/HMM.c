@@ -14,8 +14,6 @@ EventGroupHandle_t fwComplete;
 QueueHandle_t likelyGest;
 
 float32_t vec_content_sum(const float32_t* vector, const int size);
-void test_DSP_mult(float32_t *src1, float32_t *src2, int size);
-void test_DSP_scale(float32_t *src1, float32_t scale, int size);
 
 void HMM_Init(){
 	
@@ -44,7 +42,7 @@ void HMM_Init(){
 	{
 		temp[0] = '0' + i;
 		hmm_frwrd[10] = temp[0];
-		xTaskCreate(HMM_ForwardTsk, hmm_frwrd, 512,(void*)&alphabet_Models[i], GestProcPriority, &forwardTsks[i]);
+		xTaskCreate(HMM_ForwardTsk, hmm_frwrd, 256,(void*)&alphabet_Models[i], GestProcPriority, &forwardTsks[i]);
 		//vTaskSuspend(forwardTsks[i]);
 	}	
 }
@@ -95,7 +93,7 @@ void HMM_ControlTsk(void *arg){
 			/* check if all the forward algorithms ran */
 			while(!(fwFinished & fwSetMask))
 			{
-				fwFinished = xEventGroupWaitBits(fwComplete, fwSetMask, pdTRUE, pdTRUE, portMAX_DELAY);
+				fwFinished = xEventGroupWaitBits(fwComplete, fwSetMask, pdTRUE, pdTRUE, portMAX_DELAY );
 			}
 			/* Reset waiting for forward algorithm */
 			fwFinished = 0;
@@ -106,7 +104,7 @@ void HMM_ControlTsk(void *arg){
 			/* notify interpret results function */
 			for(i = 0; i < NUM_GEST; i++)
 			{
-				if((fwData[i].prob == fwData[i].prob) && (fwData[i].prob < fwData[most_likely].prob))
+				if((fwData[i].prob == fwData[i].prob) && (fwData[i].prob > fwData[most_likely].prob))
 				{
 					most_likely = i;
 				}
@@ -129,25 +127,20 @@ void HMM_ControlTsk(void *arg){
 		}	
 		/* once every forward of every model has performed,
 		* the resource is consumed */
-		while(QMsgW8 == pdFALSE){
-			QMsgW8 = xQueueReceive(framesRdy, buff, 1);
-		}
-		QMsgW8 = pdFALSE;
+		xQueueReceive(framesRdy, buff, 100);
 		buff = NULL;
 	}
 }
 
 void HMM_ForwardTsk(void* rModel){
 	
-	/**TESTE APAGGAR QUANDO não precisarmos ->*/// float32_t *TESTE; 
-	
 	HMM *ownModel = (HMM*) rModel; // var with the content of the respective model
 	EventBits_t waitingBits = 0;   // communication with the control task
 	int fwIndex = ownModel->gest;  // to specify an index in the fwData	 
 	int (*frame)[FRAME_SIZE];				 // frame in each iteration
 	int t, j, O;									 // indexation vars used in the algorithm
-	float32_t (*curLastFw)[ownModel->N];	// stores fw(t-1)
-		
+	float32_t (*curLastFw)[ownModel->N];					 // stores fw(t-1)
+	
 	BaseType_t semRes = pdFALSE;
 	
 	/* temporary vars, used to store data between calculations */
@@ -160,14 +153,12 @@ void HMM_ForwardTsk(void* rModel){
 	fwData[fwIndex].N = ownModel->N;
 	fwData[fwIndex].T = FRAME_SIZE;
 	
-	int frameCounter = 0;
-	
 	while(1)
 	{
 		/* waiting for frame */
 		while(!(waitingBits & (0x01 << ownModel->gest)))
 		{
-		 waitingBits = xEventGroupWaitBits(goForward,(0x01 << (int)ownModel->gest), pdTRUE, pdTRUE, portMAX_DELAY); 	
+		 waitingBits = xEventGroupWaitBits(goForward,(0x01 << ownModel->gest), pdTRUE, pdTRUE, portMAX_DELAY); 	
 		}
 		waitingBits = 0;
 		
@@ -191,7 +182,7 @@ void HMM_ForwardTsk(void* rModel){
 			/* being the first time, it requires a diferent calculation */
 			if(fwData[fwIndex].firstTime)
 			{
-				arm_mult_f32(*(ownModel->pi), (*(ownModel->Bt))[O], (fwData[fwIndex].fw[t]), fwData[fwIndex].N);
+				arm_mult_f32(*(ownModel->pi), *(ownModel->Bt)[O], (fwData[fwIndex].fw[t]), fwData[fwIndex].N);
 				fwData[fwIndex].firstTime = 0;
 			}
 			else
@@ -203,26 +194,26 @@ void HMM_ForwardTsk(void* rModel){
 				
 				for(j = 0; j < ownModel->N; j++)
 				{
-					arm_mult_f32((*(ownModel->At))[j], (float32_t*)(*curLastFw), temp1, ownModel->N);
+					arm_mult_f32(*(ownModel->At)[j], (float32_t*)(*curLastFw), temp1, ownModel->N);
+					
 					/* stores the sum of each line of temp1 */
 					temp2[j] = vec_content_sum(temp1, ownModel->N);
 				}
-				arm_mult_f32(temp2, (*(ownModel->Bt))[O], (fwData[fwIndex].fw[t]), fwData[fwIndex].N);
+				arm_mult_f32(temp2, *(ownModel->Bt)[O], (fwData[fwIndex].fw[t]), fwData[fwIndex].N);
 			}
 			
-			fwData[fwIndex].C[t] = ((float32_t)1.0 / vec_content_sum(fwData[fwIndex].fw[t], fwData[fwIndex].N)); //??
-			arm_scale_f32((float32_t*)fwData[fwIndex].fw[t], fwData[fwIndex].C[t], temp2, fwData[fwIndex].N);
-			arm_copy_f32(temp2, (float32_t*)fwData[fwIndex].fw[t], fwData[fwIndex].N);
+			fwData[fwIndex].C[t] = ((float)1.0/vec_content_sum(fwData[fwIndex].fw[t], fwData[fwIndex].N));
+			arm_scale_f32(fwData[fwIndex].fw[t], fwData[fwIndex].C[t], temp2, fwData[fwIndex].N);
+			arm_copy_f32(temp2, fwData[fwIndex].fw[t], fwData[fwIndex].N);
 			
 			/* probability calculation for the respetive model */
-			fwData[fwIndex].prob += (float32_t)log10(fwData[fwIndex].C[t]);
+			fwData[fwIndex].prob += log10(fwData[fwIndex].C[t]);
 		}
 		
 		/* notifies control task, that the frame's forward algorithm has finished */
-		xEventGroupSetBits(fwComplete, (0x01 << (int)ownModel->gest));
+		xEventGroupSetBits(fwComplete, (0x01 << ownModel->gest));
 		arm_copy_f32(fwData[fwIndex].fw[FRAME_SIZE - 1], fwData[fwIndex].last_fw, fwData[fwIndex].N); 
-		frameCounter++;
-	}
+	}	
 }
 
 float32_t vec_content_sum(const float32_t* vector, const int size){
@@ -233,17 +224,4 @@ float32_t vec_content_sum(const float32_t* vector, const int size){
 		sum = sum + vector[i];
 
 	return sum;
-}
-
-void test_DSP_mult(float32_t *src1, float32_t *src2, int size){
-	//float32_t src1[] = {1.0,2.0,3.0,4.0,5.0,6.0,7.0,8.0,9.0};
-	//float32_t src2[] = {2.0,2.0,2.0,2.0,2.0,2.0,2.0,2.0,2.0};
-	float32_t dest[8];
-	arm_mult_f32(src1,src2,dest, size);
-}
-
-void test_DSP_scale(float32_t *src1, float32_t scale, int size){
-	float32_t dest[8];
-
-	arm_scale_f32(src1, (float32_t)scale, dest, size);
 }

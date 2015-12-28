@@ -13,7 +13,7 @@ void codeBook_init(void)
 	
 	for(i = 0; i < CDBK_SIZE; i++)
 	{
-		data = i;
+		data = i+1;
 		if(kd_insertf(codebook, codeBookData[i], (void*)data) < 0){
 			error("Error building tree", 3);
 		}
@@ -25,7 +25,7 @@ void codeBook_init(void)
 			error("Error finding near", 3);
 		}
 		
-		if((int)kd_res_item_data(res) != i){
+		if((int)kd_res_item_data(res) != (i+1)){
 			error("Error confirming", 3);
 		}
 		
@@ -43,7 +43,7 @@ int codebook_idx(float *pos)
 	/*get nearest point*/
 	res = kd_nearestf(codebook, pos);
 	if(!res){
-		error("Error finding near in function", 3);
+		error("Error finding near", 3);
 	}
 	
 	/*get nearest point's index*/

@@ -170,10 +170,12 @@ void printIdx(unsigned int* idx)
 {
 	int i = 0;
 	
+	printf("Idx:\n");
 	for(i = 0; i < 20; i++)
 	{
-			printf("%2d\n", idx[i]);
+			printf("%2d ", idx[i]);
 	}
+	printf("\nend\n");
 	
 	myfree(idx);
 }
