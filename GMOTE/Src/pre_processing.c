@@ -15,7 +15,7 @@ void gestReconResult(void *arg);
 
 extern float deita[120][6];
 
-#define buffer_that_holds_the_data deita
+#define buffer_that_holds_the_data data
 
 #define gest_processing_init() HMM_Init()
 

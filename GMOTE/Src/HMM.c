@@ -102,6 +102,8 @@ void HMM_ControlTsk(void *arg){
 			}
 			/* Reset waiting for forward algorithm */
 			fwFinished = 0;
+			/* once every forward of every model has performed,
+			* the resource is consumed */
 		}
 		/* otherwise sends the ID of the most likely gesture */ 
 		else 
@@ -130,15 +132,11 @@ void HMM_ControlTsk(void *arg){
 			{
 				fwData[i].prob = 0;
 			}
-		}	
-		/* once every forward of every model has performed,
-		* the resource is consumed */
-		while(QMsgW8 == pdFALSE){
-			QMsgW8 = xQueueReceive(framesRdy, (void*)&buff, 100);
 		}
-		arm_fill_f32(0, (float32_t*)&buff, FRAME_SIZE);
-		buff = NULL;
-		QMsgW8 = pdFALSE;
+		while(QMsgW8 == pdFALSE){
+				QMsgW8 = xQueueReceive(framesRdy, (void*)&buff, 100);
+			}
+			QMsgW8 = pdFALSE;
 	}
 }
 
@@ -162,6 +160,8 @@ void HMM_ForwardTsk(void* rModel){
 	fwData[fwIndex].N = ownModel->N;
 	fwData[fwIndex].T = FRAME_SIZE;
 	fwData[fwIndex].prob = 0;
+	
+	int frameCounter = 0;
 	
 	while(1)
 	{
@@ -187,7 +187,7 @@ void HMM_ForwardTsk(void* rModel){
 			O = (*frame)[t]; 												// sets current observation
 			
 			/* resets the fw[t] vector */
-			arm_fill_f32(0, fwData[fwIndex].fw[t], FRAME_SIZE);
+			//arm_fill_f32(0, fwData[fwIndex].fw[t], FRAME_SIZE);
 			
 			/* being the first time, it requires a diferent calculation */
 			if(fwData[fwIndex].firstTime)
@@ -226,7 +226,8 @@ void HMM_ForwardTsk(void* rModel){
 		
 		/* notifies control task, that the frame's forward algorithm has finished */
 		xEventGroupSetBits(fwComplete, (0x01 << ownModel->gest));
-		arm_copy_f32(fwData[fwIndex].fw[FRAME_SIZE - 1], fwData[fwIndex].last_fw, fwData[fwIndex].N); 
+		arm_copy_f32(fwData[fwIndex].fw[FRAME_SIZE - 1], fwData[fwIndex].last_fw, fwData[fwIndex].N);
+		frameCounter++;		
 	}	
 }
 
