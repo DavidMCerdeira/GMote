@@ -43,7 +43,7 @@ int codebook_idx(float *pos)
 	/*get nearest point*/
 	res = kd_nearestf(codebook, pos);
 	if(!res){
-		error("Error finding near", 3);
+		error("Error finding near in function", 3);
 	}
 	
 	/*get nearest point's index*/

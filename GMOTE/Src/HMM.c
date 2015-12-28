@@ -129,7 +129,10 @@ void HMM_ControlTsk(void *arg){
 		}	
 		/* once every forward of every model has performed,
 		* the resource is consumed */
-		xQueueReceive(framesRdy, buff, 1);
+		while(QMsgW8 == pdFALSE){
+			QMsgW8 = xQueueReceive(framesRdy, buff, 1);
+		}
+		QMsgW8 = pdFALSE;
 		buff = NULL;
 	}
 }
@@ -166,6 +169,7 @@ void HMM_ForwardTsk(void* rModel){
 		{
 		 waitingBits = xEventGroupWaitBits(goForward,(0x01 << ownModel->gest), pdTRUE, pdTRUE, portMAX_DELAY); 	
 		}
+		waitingBits = 0;
 		
 		/* get frames values */
 		while(semRes == pdFALSE){

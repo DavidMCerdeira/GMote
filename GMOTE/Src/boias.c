@@ -145,11 +145,11 @@ void boias(void *arg)
 	{
 		HAL_Delay(10);
 		b = id[count];
-		//xQueueSend(framesRdy, &b, 10);
-		xQueueSend(preProcFramReadyMsgQ, &a, 10);
+		xQueueSend(framesRdy, &b, 10);
+		//xQueueSend(preProcFramReadyMsgQ, &a, 10);
 		count++;
 	}
 	a = 0;
-	//xQueueSend(framesRdy, &a, 10);
-	xQueueSend(preProcFramReadyMsgQ, &a, 10);
+	xQueueSend(framesRdy, &a, 10);
+	//xQueueSend(preProcFramReadyMsgQ, &a, 10);
 }

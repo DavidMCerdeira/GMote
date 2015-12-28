@@ -1,0 +1,13 @@
+*.[aod]
+*.crf
+*.lst
+*.axf
+*.htm
+*.dep
+.~*
+GMOTE/MDK-ARM/
+!GMOTE/MDK-ARM/GMOTE.uvprojx
+test/
+
+#matlab temp
+*.asv
