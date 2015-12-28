@@ -4,7 +4,7 @@ classdef HMM < handle
         %Main properties
         N     = [];  % number of states
         M     = []; % number of features
-        A     = []; % NxN transition probability matrixgit co
+        A     = []; % NxN transition probability matrix
         b     = []; % NxM mean vector (D = number of features)
         pi    = []; % Nx1 initial state distribution vector
         
@@ -96,7 +96,7 @@ classdef HMM < handle
             % 19
             c(1) = 0;
             for i = 1 : self.N
-                fw(1, i) = self.pi(i) * self.B(i, O(1));
+                fw(1, i) = self.pi(i) * single(self.B(i, O(1)));
                 if(self.scaling)
                     c(1) = c(1) + fw(1, i);
                 end
@@ -106,7 +106,7 @@ classdef HMM < handle
             if(self.scaling)
                 c(1) = 1 / c(1);
                 for i = 1 : self.N
-                    fw(1, i) = c(1) * fw(1, i);
+                    fw(1, i) = c(1) * single(fw(1, i));
                 end
             end
             
@@ -120,9 +120,9 @@ classdef HMM < handle
                 for j = 1 : self.N
                     fw(t, j) = 0;
                     for i = 1 : self.N
-                        fw(t, j) = fw(t, j) + fw(t-1, i) * self.A(i, j);
+                        fw(t, j) = fw(t, j) + fw(t-1, i) * single(self.A(i, j));
                     end
-                    fw(t, j) = fw(t, j)*self.B(j, O(t));
+                    fw(t, j) = single(fw(t, j))*single(self.B(j, O(t)));
                     if(self.scaling)
                         c(t) = c(t) + fw(t, j);
                     end
@@ -132,7 +132,7 @@ classdef HMM < handle
                     %scale fw(t, i)
                     c(t) = 1 / c(t);
                     for i = 1 : self.N
-                        fw(t, i) = c(t) * fw(t, i);
+                        fw(t, i) = c(t) * single(fw(t, i));
                     end
                 end
             end

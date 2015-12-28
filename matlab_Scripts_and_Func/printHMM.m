@@ -18,7 +18,7 @@ for i = 1 : number_of_gestures
     end
 end
 
-fprintf(fileIDh, 'NUM_GEST};\n');
+fprintf(fileIDh, 'NUM_GEST, NOT_RECOGNIZED};\n');
 fprintf(fileIDh, 'typedef enum gest gest;\n\n');
 
 
