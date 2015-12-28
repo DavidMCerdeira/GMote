@@ -32,7 +32,7 @@
   */
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f4xx_hal.h"
-#include "FreeRTOS.h"
+#include "cmsis_os.h"
 
 /* USER CODE BEGIN Includes */
 #include "sensorAq.h"
@@ -50,6 +50,8 @@ SPI_HandleTypeDef hspi3;
 TIM_HandleTypeDef htim6;
 
 UART_HandleTypeDef huart2;
+
+osThreadId defaultTaskHandle;
 
 /* USER CODE BEGIN PV */
 /* Private variables ---------------------------------------------------------*/
@@ -79,6 +81,7 @@ void StartDefaultTask(void const * argument);
 
 int main(void)
 {
+
   /* USER CODE BEGIN 1 */
 	// don't forget to turn off external interrupt 0 at first
   /* USER CODE END 1 */
@@ -116,7 +119,6 @@ int main(void)
   /* USER CODE END RTOS_TIMERS */
 
   /* Create the thread(s) */
-  /* definition and creation of defaultTask */
 
   /* USER CODE BEGIN RTOS_THREADS */
 	/* initiate aquisition manager */
@@ -136,7 +138,7 @@ int main(void)
  
 
   /* Start scheduler */
-  
+  osKernelStart();
   
   /* We should never get here as control is now taken by the scheduler */
 
