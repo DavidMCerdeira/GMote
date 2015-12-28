@@ -64,6 +64,7 @@ void HMM_Init_models(){
 		alphabet_Models[i].pi   = (float32_t (*)[NR_OF_STATES])&Pi[i];
 		alphabet_Models[i].gest = (gest)i;
 	}
+	
 }
 
 void HMM_ControlTsk(void *arg){
@@ -110,14 +111,15 @@ void HMM_ControlTsk(void *arg){
 			{
 				if((fwData[i].prob == fwData[i].prob) && (fwData[i].prob > fwData[most_likely].prob))
 				{
-					most_likely = i;
+					if(i != most_likely)
+						most_likely = i;
 				}
 				/* reset algorithm structures */
 				fwData[i].firstTime = 1;
 				
 			}
 			
-			if(fwData[most_likely].prob != fwData[most_likely].prob)
+			if((fwData[most_likely].prob != fwData[most_likely].prob) || (isinf(fwData[most_likely].prob)))
 				most_likely = NOT_RECOGNIZED;
 						
 			xQueueSendToBack(likelyGest, (void*)&most_likely, 10);
@@ -131,8 +133,12 @@ void HMM_ControlTsk(void *arg){
 		}	
 		/* once every forward of every model has performed,
 		* the resource is consumed */
-		xQueueReceive(framesRdy, buff, 100);
+		while(QMsgW8 == pdFALSE){
+			QMsgW8 = xQueueReceive(framesRdy, (void*)&buff, 100);
+		}
+		arm_fill_f32(0, (float32_t*)&buff, FRAME_SIZE);
 		buff = NULL;
+		QMsgW8 = pdFALSE;
 	}
 }
 
@@ -159,6 +165,7 @@ void HMM_ForwardTsk(void* rModel){
 	fwData[fwIndex].Cur_gest = ownModel->gest;
 	fwData[fwIndex].N = ownModel->N;
 	fwData[fwIndex].T = FRAME_SIZE;
+	fwData[fwIndex].prob = 0;
 	
 	while(1)
 	{
@@ -203,7 +210,6 @@ void HMM_ForwardTsk(void* rModel){
 				
 				for(j = 0; j < ownModel->N; j++)
 				{
-					
 					test_DSP_mult((*(ownModel->At))[j], (float32_t*)(*curLastFw), fwData[fwIndex].N);										//DEBUG
 					arm_mult_f32((*(ownModel->At))[j], (float32_t*)(*curLastFw), temp1, ownModel->N);
 					/* stores the sum of each line of temp1 */
@@ -243,8 +249,8 @@ void test_DSP_mult(float32_t *src1, float32_t *src2, int size){
 	float32_t check1[8];
 	float32_t check2[8];
 	
-	arm_copy_f32(src1,check1,size);
-	arm_copy_f32(src2,check2,size);
+	arm_copy_f32(src1,check1,size);	//allow us to see the content of src1 in the watch window
+	arm_copy_f32(src2,check2,size); //allow us to see the content of src2 in the watch window
 	arm_mult_f32(src1,src2,dest, size);
 }
 
