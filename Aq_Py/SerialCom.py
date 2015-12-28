@@ -5,7 +5,7 @@ class Aquisition():
         self.ser = ps.Serial()
         self.Aqs = {}
 
-    def serialPortInit(self, i_baudrate = 2000000, i_port = 4, i_datasize = 8, i_stopbits = 1, i_parity = 'N'):
+    def serialPortInit(self, i_baudrate = 2000000, i_port = 2, i_datasize = 8, i_stopbits = 1, i_parity = 'N'):
         self.ser.baudrate = i_baudrate
         self.ser.port = i_port
         self.ser.bytesize = i_datasize
