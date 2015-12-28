@@ -143,18 +143,14 @@ void HMM_ControlTsk(void *arg){
 }
 
 void HMM_ForwardTsk(void* rModel){
-	
-	/**TESTE APAGGAR QUANDO não precisarmos ->*/// float32_t *TESTE; 
-	
+		
 	HMM *ownModel = (HMM*) rModel; // var with the content of the respective model
 	EventBits_t waitingBits = 0;   // communication with the control task
 	int fwIndex = ownModel->gest;  // to specify an index in the fwData	 
 	int (*frame)[FRAME_SIZE];				 // frame in each iteration
 	int t, j, O;									 // indexation vars used in the algorithm
 	float32_t (*curLastFw)[ownModel->N];					 // stores fw(t-1)
-		
-	BaseType_t semRes = pdFALSE;
-	float32_t (*curFw)[ownModel->N];
+	BaseType_t semRes = pdFALSE;						//used to check the return value of 
 	
 	/* temporary vars, used to store data between calculations */
 	float32_t temp1[ownModel->N];
