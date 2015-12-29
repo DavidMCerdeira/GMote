@@ -1,4 +1,5 @@
 import serial as ps
+import sys
 
 class Aquisition():
     def __init__(self):
@@ -10,6 +11,9 @@ class Aquisition():
         self.ser.port = i_port
         self.ser.bytesize = i_datasize
         self.ser.parity = i_parity
+        self.ser.open()
+		#self.ser.write("ati")
+		#self.ser.close()
 
     def make_an_aquisition(self, number_of_lines = 1):
         aqDataInt = []
@@ -19,12 +23,12 @@ class Aquisition():
             aqDataInt.append([])
 
         received = ' '
-        while received is not '\n':
-            received = self.ser.readline()
-            aqDataStr += received
+        while received is not '\r':
+            received = self.ser.read()
+            aqDataStr += received[]
 
-        print(aqData)
+        print(aqDataStr)
 
 a = Aquisition()
-
+a.serialPortInit()
 a.make_an_aquisition()

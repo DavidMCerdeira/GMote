@@ -17,6 +17,8 @@ TaskHandle_t accelGestThreadHandle;
 TaskHandle_t accelSimpleThreadHandle;
 TaskHandle_t gyroThreadHandle;
 
+int last = 0;
+
 void aqManager(void* argument)
 {
 	volatile osEvent event;
@@ -101,7 +103,7 @@ void gPress(void)
 		if(notifRcvd && (notification & GStop))
 		{
 			/* order aquisition thread to stop */;
-			xTaskNotify(runAccelGest,      STOP, eSetBits);
+			xTaskNotify(accelGestThreadHandle,      STOP, eSetBits);
 			xTaskNotify(gyroThreadHandle,  STOP, eSetBits);
 			break;
 		}
@@ -120,7 +122,7 @@ void gPress(void)
 			/*something went wrong just cancel everything*/
 			else if((gyroRes) != (accelRes)){
 				xTaskNotify(accelGestThreadHandle, STOP, eSetBits);
-				xTaskNotify(gyroThreadHandle,      STOP, eSetBits);
+				xTaskNotify(gyroThreadHandle, STOP, eSetBits);
 				printf("Accel %d - Gyro %d\n", accelRes, gyroRes);
 				error("Error aquiring: different Lenghts", 3);
 			}
@@ -134,6 +136,7 @@ void gPress(void)
 			}
 		}
 	}	
+	last = 0;
 	gyroRes = 0;
 	xQueueSend(preProcFramReadyMsgQ, &gyroRes, 10);
 	//printf("Received a total of %d frames\n", nFrames);
@@ -143,7 +146,6 @@ void gPress(void)
 
 void printFrame(int idx)
 {
-	static int last = 0;	
 	int i = 0;
 	for(; i < (last + idx); i++)
 	{

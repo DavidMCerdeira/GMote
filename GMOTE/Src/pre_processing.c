@@ -64,6 +64,7 @@ void preprocessing(void *arg)
 		}
 		else
 		{
+			begin = 0;
 			idx = NULL;
 		}
 		
