@@ -12,6 +12,7 @@ uint8_t writeStrInc[] = { ACCEL_OUT_XL | 0x80, 0, 0, 0, 0, 0, 0};
 /***************************************/
 
 extern SPI_HandleTypeDef hspi1;
+SemaphoreHandle_t accelMutex;
 
 void accelConfig(void);
 void read_sample(uint8_t* buff);
@@ -134,6 +135,8 @@ void accelInit(void)
 	HAL_Delay(10);
 	
 	accel_fifoEnable();
+	
+	accelMutex = xSemaphoreCreateMutex();
 }
 
 void read_sample(uint8_t* buff)

@@ -5,6 +5,8 @@
 #include "error.h"
 #include "discoLeds.h"
 #include "sensor.h"
+#include "FreeRTOS.h"
+#include "semphr.h"
 
 //LIS3DSH
 
@@ -38,6 +40,8 @@
 #define HZ_800 			0x80
 #define HZ_1600			0x90
 #define EN_ALL_AX 	0x07
+
+extern SemaphoreHandle_t accelMutex;
 
 void start_accel(int speed);  
 void pause_accel(void);
