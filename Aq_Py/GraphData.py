@@ -41,6 +41,7 @@ class graph():
         direcPlusFile = directory + file_name
         graphCsvFile = open(directory + file_name + ".csv",'w')
         if self.figure is not None:
+
             self.figure.savefig(direcPlusFile)
             self.figure = None
         else:

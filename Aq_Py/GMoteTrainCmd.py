@@ -35,6 +35,8 @@ class GMoteCmd():
         self.gestures = (g_pictures, g_video, g_music, g_system_settings, g_play_pause, g_fullscreen, g_next, g_previous, g_none)
         self.On = True
 
+
+
     def print_gestures(self, args):
         print("\n**These are the GMote's moves:\n")
         print("\n\t  <name> - <ID>")
