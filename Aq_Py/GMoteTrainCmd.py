@@ -1,6 +1,7 @@
 import GraphData as gp
 import SerialCom as sc
 from enum import Enum
+from PIL import Image
 
 def findFirstNonAlph(str):
     for i in range(0,len(str)):
@@ -20,43 +21,20 @@ class GMoteCmd():
         g_previous = {"name":"previous", "ID":7}
         g_none = {"name":"none", "ID":8}
 
-        g_MA = {"name":"Make Aquisition","ID":"MA","Handler": self.MA_command, "Help":"MA <starting sample number>" }
-        g_SG = {"name":"Set Gesture","ID":"SG", "Handler": self.SG_command, "Help":"SG <gesture name>"}
-        g_WG = {"name":"What Gesture?","ID":"WG", "Handler": self.WG_command, "Help":"WG"}
-        #g_SSG = {"name":"Show Sample Graph","ID":"SSG", "Handler":self.SSG_command, "Help":"SSG <gesture name> <sample number>"}
-        g_FS = {"name": "Finish Session", "ID":"FS", "Handler":self.FS_command, "Help": "FS"}
-        g_PC = {"name": "Print commands", "ID":"PC", "Handler":self.print_commands,"Help":"PC"}
-        g_PG = {"name": "Print gestures", "ID":"PG", "Handler":self.print_gestures,"Help":"PG"}
-        g_HLP = {"name": "Help", "ID":"HLP", "Handler":self.print_help,"Help":"HLP"}
+        c_MA = {"name":"Make Aquisition","ID":"MA","Handler": self.MA_command, "Help":"MA <starting sample number>" }
+        c_SG = {"name":"Set Gesture","ID":"SG", "Handler": self.SG_command, "Help":"SG <gesture name>"}
+        c_WG = {"name":"What Gesture?","ID":"WG", "Handler": self.WG_command, "Help":"WG"}
+        c_SSG = {"name":"Show Sample Graph","ID":"SSG", "Handler":self.SSG_command, "Help":"SSG <gesture name> <sample number>"}
+        c_FS = {"name": "Finish Session", "ID":"FS", "Handler":self.FS_command, "Help": "FS"}
+        c_PC = {"name": "Print commands", "ID":"PC", "Handler":self.print_commands,"Help":"PC"}
+        c_PG = {"name": "Print gestures", "ID":"PG", "Handler":self.print_gestures,"Help":"PG"}
+        c_HLP = {"name": "Help", "ID":"HLP", "Handler":self.print_help,"Help":"HLP"}
 
         self.saveSamplesDirectory = ".\\..\\TrainingData\\%s\\"
         self.curGest = g_none["name"]
-        self.commands = (g_MA, g_SG, g_WG, g_FS, g_PC, g_PG, g_HLP)
+        self.commands = (c_MA, c_SG, c_WG, c_FS, c_SSG, c_PC, c_PG, c_HLP)
         self.gestures = (g_pictures, g_video, g_music, g_system_settings, g_play_pause, g_fullscreen, g_next, g_previous, g_none)
         self.On = True
-
-
-
-    def print_gestures(self, args):
-        print("\n**These are the GMote's moves:\n")
-        print("\n\t  <name> - <ID>")
-        for i in range(0,len(self.gestures)):
-            temp_str = "\t$ %(name)s - %(ID)s" % self.gestures[i]
-            print(temp_str)
-
-    def print_commands(self, args):
-        print("\n**These are the GMote's Command line commands:\n")
-        print("\n\t  <name> - <ID>")
-        for i in range(0,len(self.commands)):
-            temp_str = "\t$ %(name)s - %(ID)s" % self.commands[i]
-            print(temp_str)
-
-    def print_help(self,args):
-        print("\n**This is the Help for GMOTE Command Line")
-        print("\n\t  <command name> - <input cmd>")
-        for i in range(0,len(self.commands)):
-            temp_str = "\t$ %(name)s - '%(Help)s'" % self.commands[i]
-            print(temp_str)
 
     def Run_cmdLine(self):
         print("--------------------GMOTE Training Command Line--------------------\nTry 'HLP' for help\n")
@@ -140,14 +118,47 @@ class GMoteCmd():
         temp_str = "\t$ Current Gesture : %s" % self.curGest
         print(temp_str)
 
-    #def SSG_command(self, in_command):
-    #    print("** Show Sample Graph:")
-    #    print("\t Showing Graph...")
+    def SSG_command(self, in_command):
+        print("** Show Sample Graph:")
+        arg = self.getArguments(in_command)
+        if not arg["ints"]:
+            print("# ERROR: Sample number is missing\n")
+            return
+        sample = arg["ints"][0]
+        if self.curGest == "none":
+            print("# ERROR: Current gesture is not defined\n")
+            return
+        print("\t Showing Graph...")
+        tempdir = self.saveSamplesDirectory % self.curGest
+        f = Image.open(tempdir + str(sample) + ".png")
+        f.show()
 
     def FS_command(self, in_command):
         print("** Finish Session\n")
         print("\tTraining Session is finished...")
         self.On = False
+
+    def print_gestures(self, args):
+        print("\n**These are the GMote's moves:\n")
+        print("\n\t  <name> - <ID>")
+        for i in range(0,len(self.gestures)):
+            temp_str = "\t$ %(name)s - %(ID)s" % self.gestures[i]
+            print(temp_str)
+
+    def print_commands(self, args):
+        print("\n**These are the GMote's Command line commands:\n")
+        print("\n\t  <name> - <ID>")
+        for i in range(0,len(self.commands)):
+            temp_str = "\t$ %(name)s - %(ID)s" % self.commands[i]
+            print(temp_str)
+
+    def print_help(self,args):
+        print("\n**This is the Help for GMOTE Command Line")
+        print("\n\t  <command name> - <input cmd>")
+        for i in range(0,len(self.commands)):
+            temp_str = "\t$ %(name)s - '%(Help)s'" % self.commands[i]
+            print(temp_str)
+
 
 g = GMoteCmd()
 g.Run_cmdLine()
