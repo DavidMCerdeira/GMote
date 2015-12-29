@@ -6,8 +6,8 @@
 *.dep
 *~
 GMOTE/MDK-ARM/
-!GMOTE/MDK-ARM/*.uvprojx
-!GMOTE/MDK-ARM/*.uvoptx
+!*.uvprojx
+!*.uvoptx
 
 #matlab temp
 *.asv
