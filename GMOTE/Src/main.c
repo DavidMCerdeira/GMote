@@ -32,12 +32,12 @@
   */
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f4xx_hal.h"
-#include "FreeRTOS.h"
 
 /* USER CODE BEGIN Includes */
 #include "sensorAq.h"
 #include "pre_processing.h"
 #include "comunication.h"
+#include "keypad.h"
 #include "boias.h"
 /* USER CODE END Includes */
 
@@ -51,11 +51,14 @@ TIM_HandleTypeDef htim6;
 
 UART_HandleTypeDef huart2;
 
+osThreadId defaultTaskHandle;
+
 /* USER CODE BEGIN PV */
 /* Private variables ---------------------------------------------------------*/
 TaskHandle_t aqManagerHandle = NULL;
 TaskHandle_t preProcThreadHandle = NULL;
 TaskHandle_t communicationThreadHandle = NULL;
+TaskHandle_t keypadThreadHandle = NULL;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -79,6 +82,7 @@ void StartDefaultTask(void const * argument);
 
 int main(void)
 {
+
   /* USER CODE BEGIN 1 */
 	// don't forget to turn off external interrupt 0 at first
   /* USER CODE END 1 */
@@ -120,11 +124,15 @@ int main(void)
 
   /* USER CODE BEGIN RTOS_THREADS */
 	/* initiate aquisition manager */
-	xTaskCreate(aqManager, "AqManager",    1024, NULL, AqManagerPriority, &aqManagerHandle);	
-	
+	xTaskCreate(aqManager, "AqManager",    1024, NULL, AqManagerPriority, &aqManagerHandle);		
 	//xTaskCreate(boias,     "boias",    1024, NULL, AqManagerPriority, &aqManagerHandle);
-	/* initiate pre processing thread; empirically 128 bytes is not enough */
+	
+	/* initiate pre processing thread; */
 	xTaskCreate(preprocessing, "PreProcessing", 2048, NULL, PreProcPriority, &preProcThreadHandle);
+	
+	/* initiate keypad module */
+	xTaskCreate(keypad_run, "Keypad", 128, NULL, KeypadPriority, &keypadThreadHandle);
+	
 	/* initiate comunication module */
 	//xTaskCreate(communication_run, "Comunication", 512, NULL, ComPriority, &communicationThreadHandle);
   /* USER CODE END RTOS_THREADS */
@@ -136,8 +144,7 @@ int main(void)
  
 
   /* Start scheduler */
-  
-  
+
   /* We should never get here as control is now taken by the scheduler */
 
   /* Infinite loop */
@@ -304,13 +311,9 @@ void MX_GPIO_Init(void)
   __GPIOD_CLK_ENABLE();
 
   /*Configure GPIO pins : PE2 PE4 PE5 PE6 
-                           PE7 PE8 PE9 PE10 
-                           PE11 PE12 PE13 PE14 
-                           PE15 PE1 */
+                           PE1 */
   GPIO_InitStruct.Pin = GPIO_PIN_2|GPIO_PIN_4|GPIO_PIN_5|GPIO_PIN_6 
-                          |GPIO_PIN_7|GPIO_PIN_8|GPIO_PIN_9|GPIO_PIN_10 
-                          |GPIO_PIN_11|GPIO_PIN_12|GPIO_PIN_13|GPIO_PIN_14 
-                          |GPIO_PIN_15|GPIO_PIN_1;
+                          |GPIO_PIN_1;
   GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
@@ -322,15 +325,19 @@ void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_LOW;
   HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : PC13 PC0 PC1 PC2 
-                           PC3 PC4 PC5 PC6 
+  /*Configure GPIO pins : PC13 PC0 PC1 PC6 
                            PC7 PC8 PC9 PC10 
                            PC11 */
-  GPIO_InitStruct.Pin = GPIO_PIN_13|GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_2 
-                          |GPIO_PIN_3|GPIO_PIN_4|GPIO_PIN_5|GPIO_PIN_6 
+  GPIO_InitStruct.Pin = GPIO_PIN_13|GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_6 
                           |GPIO_PIN_7|GPIO_PIN_8|GPIO_PIN_9|GPIO_PIN_10 
                           |GPIO_PIN_11;
   GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : PC2 PC3 PC4 PC5 */
+  GPIO_InitStruct.Pin = GPIO_PIN_2|GPIO_PIN_3|GPIO_PIN_4|GPIO_PIN_5;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
@@ -369,6 +376,16 @@ void MX_GPIO_Init(void)
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : PE7 PE8 PE9 PE10 
+                           PE11 PE12 PE13 PE14 
+                           PE15 */
+  GPIO_InitStruct.Pin = GPIO_PIN_7|GPIO_PIN_8|GPIO_PIN_9|GPIO_PIN_10 
+                          |GPIO_PIN_11|GPIO_PIN_12|GPIO_PIN_13|GPIO_PIN_14 
+                          |GPIO_PIN_15;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
 
   /*Configure GPIO pins : PD8 PD9 PD10 PD11 
                            PD0 PD1 PD2 PD3 
@@ -436,7 +453,6 @@ void MX_GPIO_Init(void)
 
   HAL_NVIC_SetPriority(EXTI9_5_IRQn, 5, 0);
   //HAL_NVIC_EnableIRQ(EXTI9_5_IRQn);
-
 }
 
 /* USER CODE BEGIN 4 */

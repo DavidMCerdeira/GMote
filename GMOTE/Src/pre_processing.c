@@ -64,6 +64,7 @@ void preprocessing(void *arg)
 		}
 		else
 		{
+			printf("#\n");
 			begin = 0;
 			idx = NULL;
 		}
@@ -173,7 +174,7 @@ void printIdx(unsigned int* idx)
 	
 	for(i = 0; i < 20; i++)
 	{
-			printf("%2d\n", idx[i]);
+			printf("%2d ", idx[i]);
 	}
 		
 	myfree(idx);

@@ -11,4 +11,6 @@
 
 #define CommunicationPriority 1
 
+#define KeypadPriority 8
+
 #endif

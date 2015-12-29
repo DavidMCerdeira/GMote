@@ -5,7 +5,6 @@ QueueHandle_t communicationMsgQ;
 int communication_validate(int8_t byte);
 #define comunication_hw_init() nrf24l01_Init()
 
-
 void communication_init(void)
 {
 	/* init comunicationQ`*/

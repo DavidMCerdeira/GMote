@@ -18,6 +18,7 @@ void runAccelGest(void* argument)
 	BaseType_t notifRcvd = pdFALSE;
 	uint32_t notification;
 	BaseType_t received = pdFALSE;
+	BaseType_t mutextHold = pdFALSE;
 	
 	/* infinite cycle */
 	while(1)
@@ -25,7 +26,11 @@ void runAccelGest(void* argument)
 		/* start aquisition */
 		BLUE(1);
 		
-		/*mutex? i think so*/
+		/*take hold of mutex*/
+		while(mutextHold == pdFALSE){
+			mutextHold = xSemaphoreTake(accelMutex, portMAX_DELAY);
+		}
+		mutextHold = pdFALSE;
 
 		/* accelerometer aquisition mode and speed */
 		accel_fifoEnable();
@@ -76,6 +81,11 @@ void runAccelGest(void* argument)
 	EXIT:
 		/*pause accelerometer*/
 		pause_accel();
+		/*release mutex*/
+		mutextHold = pdFALSE;
+		while(mutextHold == pdFALSE){
+			mutextHold = xSemaphoreGive(accelMutex);
+		}
 		/* reset variables */
 		sampleCount = 0;
 		frameCount = 0;		
@@ -93,9 +103,16 @@ void runAccelSimple(void* argument)
 	BaseType_t receivedNotify = pdFALSE;
 	uint32_t notification;
 	int16_t sample[NR_OF_AXES];
+	BaseType_t mutextHold = pdFALSE;
 	
 	while(1){
-		/*mutex? i think so*/
+		
+		/*take hold of mutex*/
+		mutextHold = pdFALSE;
+		while(mutextHold == pdFALSE){
+			mutextHold = xSemaphoreTake(accelMutex, portMAX_DELAY);
+		}
+		
 		accel_byteByByte();
 		start_accel(LOW_SPEED);
 		
@@ -122,10 +139,15 @@ void runAccelSimple(void* argument)
 				leave = 1;
 			}			
 		}
-		/* reset flag */
-		leave = 0;
 		/* pause accel */
 		pause_accel();
+		/*release mutex*/
+		mutextHold = pdFALSE;
+		while(mutextHold == pdFALSE){
+			mutextHold = xSemaphoreGive(accelMutex);
+		}
+		/* reset flag */
+		leave = 0;
 		/* go to sleep, sweet dreams */
 		vTaskSuspend(NULL);		
 	}

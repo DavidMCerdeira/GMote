@@ -108,11 +108,10 @@ void HMM_ControlTsk(void *arg){
 		/* otherwise sends the ID of the most likely gesture */ 
 		else 
 		{
-			printf("-1");
 			/* notify interpret results function */
 			for(i = 0; i < NUM_GEST; i++)
 			{
-				printf("Gesture %d with P = %f\n", i, fwData[i].prob);
+				//printf("Gesture %d with P = %f\n", i, fwData[i].prob);
 				
 				if((fwData[i].prob == fwData[i].prob) && (fwData[i].prob > fwData[most_likely].prob))
 				{
