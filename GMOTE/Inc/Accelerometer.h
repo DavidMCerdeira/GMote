@@ -4,7 +4,7 @@
 #include "stm32f4xx_hal.h"
 #include "error.h"
 #include "discoLeds.h"
-#include "sensors.h"
+#include "sensor.h"
 
 //LIS3DSH
 

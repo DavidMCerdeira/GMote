@@ -365,7 +365,7 @@
               <MiscControls>--C99</MiscControls>
               <Define>USE_HAL_DRIVER,STM32F407xx</Define>
               <Undefine></Undefine>
-              <IncludePath>..\Inc;..\Drivers\STM32F4xx_HAL_Driver\Inc;..\Drivers\STM32F4xx_HAL_Driver\Inc\Legacy;..\Middlewares\Third_Party\FreeRTOS\Source\portable\RVDS\ARM_CM4F;..\Middlewares\Third_Party\FreeRTOS\Source\include;..\Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS;..\Drivers\CMSIS\Include;..\Drivers\CMSIS\Device\ST\STM32F4xx\Include</IncludePath>
+              <IncludePath>..\Inc;   ..\Drivers\STM32F4xx_HAL_Driver\Inc;   ..\Drivers\STM32F4xx_HAL_Driver\Inc\Legacy;   ..\Middlewares\Third_Party\FreeRTOS\Source\portable\RVDS\ARM_CM4F;   ..\Middlewares\Third_Party\FreeRTOS\Source\include;   ..\Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS;   ..\Drivers\CMSIS\Include;   ..\Drivers\CMSIS\Device\ST\STM32F4xx\Include</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -596,37 +596,12 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>New Group</GroupName>
+          <GroupName>GMote</GroupName>
           <Files>
             <File>
-              <FileName>Accelerometer.c</FileName>
+              <FileName>pre_processing.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Src\Accelerometer.c</FilePath>
-            </File>
-            <File>
-              <FileName>AccelerometerAq.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Src\AccelerometerAq.c</FilePath>
-            </File>
-            <File>
-              <FileName>boias.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Src\boias.c</FilePath>
-            </File>
-            <File>
-              <FileName>codebook.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Src\codebook.c</FilePath>
-            </File>
-            <File>
-              <FileName>comunication.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Src\comunication.c</FilePath>
-            </File>
-            <File>
-              <FileName>error.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Src\error.c</FilePath>
+              <FilePath>..\Src\pre_processing.c</FilePath>
             </File>
             <File>
               <FileName>GMoteISR.c</FileName>
@@ -634,24 +609,24 @@
               <FilePath>..\Src\GMoteISR.c</FilePath>
             </File>
             <File>
-              <FileName>GyroAq.c</FileName>
+              <FileName>sensorAq.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Src\GyroAq.c</FilePath>
+              <FilePath>..\Src\sensorAq.c</FilePath>
             </File>
             <File>
-              <FileName>HMM.c</FileName>
+              <FileName>keypad.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Src\HMM.c</FilePath>
+              <FilePath>..\Src\keypad.c</FilePath>
             </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Sensors</GroupName>
+          <Files>
             <File>
-              <FileName>HMM_param.c</FileName>
+              <FileName>sensor.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Src\HMM_param.c</FilePath>
-            </File>
-            <File>
-              <FileName>kdtree.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Src\kdtree.c</FilePath>
+              <FilePath>..\Src\sensor.c</FilePath>
             </File>
             <File>
               <FileName>mpu6050_gyro.c</FileName>
@@ -659,44 +634,99 @@
               <FilePath>..\Src\mpu6050_gyro.c</FilePath>
             </File>
             <File>
-              <FileName>nrf24l01.c</FileName>
+              <FileName>GyroAq.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Src\nrf24l01.c</FilePath>
+              <FilePath>..\Src\GyroAq.c</FilePath>
             </File>
             <File>
-              <FileName>pre_processing.c</FileName>
+              <FileName>AccelerometerAq.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Src\pre_processing.c</FilePath>
+              <FilePath>..\Src\AccelerometerAq.c</FilePath>
             </File>
             <File>
-              <FileName>retarget.c</FileName>
+              <FileName>Accelerometer.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Src\retarget.c</FilePath>
+              <FilePath>..\Src\Accelerometer.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Processing</GroupName>
+          <Files>
+            <File>
+              <FileName>codebook.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\codebook.c</FilePath>
             </File>
             <File>
-              <FileName>sensor.c</FileName>
+              <FileName>HMM_param.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Src\sensor.c</FilePath>
+              <FilePath>..\Src\HMM_param.c</FilePath>
             </File>
             <File>
-              <FileName>sensorAq.c</FileName>
+              <FileName>HMM.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Src\sensorAq.c</FilePath>
+              <FilePath>..\Src\HMM.c</FilePath>
+            </File>
+            <File>
+              <FileName>kdtree.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\kdtree.c</FilePath>
+            </File>
+            <File>
+              <FileName>boias.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\boias.c</FilePath>
             </File>
             <File>
               <FileName>simpleProcessing.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\simpleProcessing.c</FilePath>
             </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Comunication</GroupName>
+          <Files>
             <File>
-              <FileName>usDelay.c</FileName>
+              <FileName>retarget.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Src\usDelay.c</FilePath>
+              <FilePath>..\Src\retarget.c</FilePath>
             </File>
+            <File>
+              <FileName>nrf24l01.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\nrf24l01.c</FilePath>
+            </File>
+            <File>
+              <FileName>comunication.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\comunication.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>DSP</GroupName>
+          <Files>
             <File>
               <FileName>arm_cortexM4lf_math.lib</FileName>
               <FileType>4</FileType>
               <FilePath>..\Drivers\CMSIS\DSP_Lib\Lib\arm_cortexM4lf_math.lib</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Tools</GroupName>
+          <Files>
+            <File>
+              <FileName>error.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\error.c</FilePath>
+            </File>
+            <File>
+              <FileName>usDelay.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\usDelay.c</FilePath>
             </File>
           </Files>
         </Group>

@@ -143,7 +143,7 @@ void boias(void *arg)
 	int *b;
 	while(count < 6)
 	{
-		HAL_Delay(10);
+		vTaskDelay(10);
 		b = id[count];
 		xQueueSend(framesRdy, &b, 10);
 		//xQueueSend(preProcFramReadyMsgQ, &a, 10);

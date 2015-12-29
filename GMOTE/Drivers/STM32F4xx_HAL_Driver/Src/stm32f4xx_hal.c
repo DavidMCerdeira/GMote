@@ -326,7 +326,7 @@ __weak uint32_t HAL_GetTick(void)
 
 /**
   * @brief This function provides accurate delay (in milliseconds) based 
-  *        on 3variable incremented.
+  *        on variable incremented.
   * @note In the default implementation , SysTick timer is the source of time base.
   *       It is used to generate interrupts at regular time intervals where uwTick
   *       is incremented.

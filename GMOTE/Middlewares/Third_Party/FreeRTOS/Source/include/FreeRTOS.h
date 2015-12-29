@@ -172,7 +172,7 @@ extern "C" {
 #endif
 
 #ifndef INCLUDE_xTaskGetIdleTaskHandle
-	#define INCLUDE_xTaskGetIdleTaskHandle 1
+	#define INCLUDE_xTaskGetIdleTaskHandle 0
 #endif
 
 #ifndef INCLUDE_xTimerGetTimerDaemonTaskHandle
@@ -204,7 +204,7 @@ extern "C" {
 #endif
 
 #ifndef INCLUDE_eTaskGetState
-	#define INCLUDE_eTaskGetState 1
+	#define INCLUDE_eTaskGetState 0
 #endif
 
 #ifndef configUSE_RECURSIVE_MUTEXES
