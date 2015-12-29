@@ -4,10 +4,11 @@
 *.axf
 *.htm
 *.dep
-.~*
+*~
+!GMOTE/MDK-ARM/*.uvprojx
+!GMOTE/MDK-ARM/*.uvoptx
 GMOTE/MDK-ARM/
-!GMOTE/MDK-ARM/GMOTE.uvprojx
-test/
+
 
 #matlab temp
 *.asv
