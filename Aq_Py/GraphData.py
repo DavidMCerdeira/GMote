@@ -3,7 +3,7 @@ import numpy as np
 from PIL import Image
 
 class line():
-    def __init__(self,iLabel,iLine_color,iData = []):
+    def __init__(self,iLabel="Aquired data",iLine_color="r",iData = []):
         self.label = iLabel
         self.color = iLine_color
         self.data  = iData
@@ -12,7 +12,7 @@ class line():
         self.plot,= plt.plot(self.data,self.color,label = self.label)
 
 class graph():
-    def __init__(self,iTitle,iXLabel,iYLabel,iLines_set = []):
+    def __init__(self,iTitle = "Sample",iXLabel="t",iYLabel="Idx",iLines_set = []):
         self.title  = iTitle
         self.xlabel = iXLabel
         self.ylabel = iYLabel
