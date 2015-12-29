@@ -149,6 +149,8 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+	printf("A");
+	
 	vTaskStartScheduler();
   while (1)
   {

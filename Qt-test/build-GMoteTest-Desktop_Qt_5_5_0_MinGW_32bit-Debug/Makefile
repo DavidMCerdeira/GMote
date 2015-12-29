@@ -191,6 +191,7 @@ Makefile: ../GMoteTest/GMoteTest.pro C:/Qt/5.5/mingw492_32/mkspecs/win32-g++/qma
 		C:/Qt/5.5/mingw492_32/lib/qtmaind.prl \
 		C:/Qt/5.5/mingw492_32/lib/Qt5Widgets.prl \
 		C:/Qt/5.5/mingw492_32/lib/Qt5Gui.prl \
+		C:/Qt/5.5/mingw492_32/lib/Qt5SerialPort.prl \
 		C:/Qt/5.5/mingw492_32/lib/Qt5Core.prl
 	$(QMAKE) -spec win32-g++ "CONFIG+=debug" -o Makefile ..\GMoteTest\GMoteTest.pro
 C:/Qt/5.5/mingw492_32/mkspecs/features/spec_pre.prf:
@@ -325,6 +326,7 @@ C:/Qt/5.5/mingw492_32/mkspecs/features/lex.prf:
 C:/Qt/5.5/mingw492_32/lib/qtmaind.prl:
 C:/Qt/5.5/mingw492_32/lib/Qt5Widgets.prl:
 C:/Qt/5.5/mingw492_32/lib/Qt5Gui.prl:
+C:/Qt/5.5/mingw492_32/lib/Qt5SerialPort.prl:
 C:/Qt/5.5/mingw492_32/lib/Qt5Core.prl:
 qmake: FORCE
 	@$(QMAKE) -spec win32-g++ "CONFIG+=debug" -o Makefile ..\GMoteTest\GMoteTest.pro
