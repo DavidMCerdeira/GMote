@@ -5,10 +5,9 @@
 *.htm
 *.dep
 *~
+GMOTE/MDK-ARM/
 !GMOTE/MDK-ARM/*.uvprojx
 !GMOTE/MDK-ARM/*.uvoptx
-GMOTE/MDK-ARM/
-
 
 #matlab temp
 *.asv
