@@ -21,14 +21,14 @@ class GMoteCmd():
         g_previous = {"name":"previous", "ID":7}
         g_none = {"name":"none", "ID":8}
 
-        c_MA = {"name":"Make Aquisition","ID":"ma","Handler": self.MA_command, "Help":"MA <starting sample number>" }
-        c_SG = {"name":"Set Gesture","ID":"sg", "Handler": self.SG_command, "Help":"SG <gesture name>"}
-        c_WG = {"name":"What Gesture?","ID":"wg", "Handler": self.WG_command, "Help":"WG"}
-        c_SSG = {"name":"Show Sample Graph","ID":"ssg", "Handler":self.SSG_command, "Help":"SSG <gesture name> <sample number>"}
-        c_FS = {"name": "Finish Session", "ID":"fs", "Handler":self.FS_command, "Help": "FS"}
-        c_PC = {"name": "Print commands", "ID":"pc", "Handler":self.print_commands,"Help":"PC"}
-        c_PG = {"name": "Print gestures", "ID":"pg", "Handler":self.print_gestures,"Help":"PG"}
-        c_HLP = {"name": "Help", "ID":"hlp", "Handler":self.print_help,"Help":"HLP"}
+        c_MA = {"name":"Make Aquisition","ID":"ma","Handler": self.MA_command, "Help":"ma <starting sample number>" }
+        c_SG = {"name":"Set Gesture","ID":"sg", "Handler": self.SG_command, "Help":"sg <gesture name>"}
+        c_WG = {"name":"What Gesture?","ID":"wg", "Handler": self.WG_command, "Help":"wg"}
+        c_SSG = {"name":"Show Sample Graph","ID":"ssg", "Handler":self.SSG_command, "Help":"ssg <gesture name> <sample number>"}
+        c_FS = {"name": "Finish Session", "ID":"fs", "Handler":self.FS_command, "Help": "fs"}
+        c_PC = {"name": "Print commands", "ID":"pc", "Handler":self.print_commands,"Help":"pc"}
+        c_PG = {"name": "Print gestures", "ID":"pg", "Handler":self.print_gestures,"Help":"pg"}
+        c_HLP = {"name": "Help", "ID":"hlp", "Handler":self.print_help,"Help":"hlp"}
 
         self.saveSamplesDirectory = ".\\..\\TrainingData\\%s\\"
         self.curGest = g_none["name"]

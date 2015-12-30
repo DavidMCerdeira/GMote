@@ -12,7 +12,7 @@ class line():
         self.plot,= plt.plot(self.data,self.color,label = self.label)
 
 class graph():
-    def __init__(self,iTitle = "Sample",iXLabel="t",iYLabel="Idx",iLines_set = []):
+    def __init__(self, iTitle = "Sample", iXLabel="t", iYLabel="Idx", iLines_set = []):
         self.title  = iTitle
         self.xlabel = iXLabel
         self.ylabel = iYLabel
@@ -41,7 +41,6 @@ class graph():
         direcPlusFile = directory + file_name
         graphCsvFile = open(directory + file_name + ".csv",'w')
         if self.figure is not None:
-
             self.figure.savefig(direcPlusFile)
             self.figure = None
         else:
@@ -55,6 +54,7 @@ class graph():
                     writeLine  = ", "
             writeLine = writeLine + "\n"
         graphCsvFile.write(writeLine)
+        self.plot.clf()
 '''
 #Making some tests
 y2 = [7,6,5,4,3,2,1]
