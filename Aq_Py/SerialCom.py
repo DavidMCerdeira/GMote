@@ -6,7 +6,7 @@ class Aquisition():
         self.ser = ps.Serial()
         self.Aqs = {}
 
-    def serialPortInit(self, i_baudrate = 2000000, i_port = "/dev/ttyUSB0", i_datasize = 8, i_stopbits = 1, i_parity = 'N'):
+    def serialPortInit(self, i_baudrate = 2000000, i_port = "COM3", i_datasize = 8, i_stopbits = 1, i_parity = 'N'):
         self.ser.baudrate = i_baudrate
         self.ser.port = i_port
         self.ser.bytesize = i_datasize
@@ -18,7 +18,7 @@ class Aquisition():
         self.serialPortInit()
         aqDataInt = []
         aqDataChars = []
-        aqDataChars = self.ser.readline().split(" ")
+        aqDataChars = self.ser.readline().decode("utf-8").rsplit(" ")
         #print(aqDataChars)
         for val in aqDataChars:
             if val.isdigit():
@@ -26,5 +26,5 @@ class Aquisition():
         self.ser.close()
         return aqDataInt
 
-a = Aquisition()
-a.make_an_aquisition()
+#a = Aquisition()
+#a.make_an_aquisition()

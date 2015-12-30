@@ -68,7 +68,9 @@ for i = 1 : number_of_gestures
 end
 %}
 fprintf(fileIDc, '\n};\n\n');
- 
+ fprintf(fileIDh, 'extern const float Pi[NUM_GEST][NR_OF_STATES];\n');
+
+fprintf(fileIDh, '\n#endif\n');
 fprintf(fileIDc, 'const float Pi[NUM_GEST][NR_OF_STATES]={\n');
 for i = 1 : number_of_gestures
     h{i}.printPi(fileIDc);
@@ -78,27 +80,28 @@ for i = 1 : number_of_gestures
 end
 fprintf(fileIDc, '\n};\n\n');
 
-fprintf(fileIDc, 'const float codeBookData[CDBK_SIZE][NR_OF_DIM]={\n');
-for i = 1 : codebookSize
-    fprintf(fileIDc, '{');
-    for j = 1 : 6
-        fprintf(fileIDc, '%012f', m(j, i));
-        if j ~= 6
-            fprintf(fileIDc, ', ');
-        end
-    end
-    
-    if i ~= codebookSize
-        fprintf(fileIDc, '},\n');
-    else
-        fprintf(fileIDc, '}');
-    end
-end
-fprintf(fileIDc, '\n};\n\n');
+fprintf(fileIDh, 'extern const float codeBookData[CDBK_SIZE][NR_OF_DIM];\n');
+fclose(fileIDh);
+
+% fprintf(fileIDc, 'const float codeBookData[CDBK_SIZE][NR_OF_DIM]={\n');
+% for i = 1 : codebookSize
+%     fprintf(fileIDc, '{');
+%     for j = 1 : 6
+%         fprintf(fileIDc, '%012f', m(j, i));
+%         if j ~= 6
+%             fprintf(fileIDc, ', ');
+%         end
+%     end
+%     
+%     if i ~= codebookSize
+%         fprintf(fileIDc, '},\n');
+%     else
+%         fprintf(fileIDc, '}');
+%     end
+% end
+%fprintf(fileIDc, '\n};\n\n');
 fclose(fileIDc);
 
 
-fprintf(fileIDh, 'extern const float Pi[NUM_GEST][NR_OF_STATES];\n');
-fprintf(fileIDh, 'extern const float codeBookData[CDBK_SIZE][NR_OF_DIM];\n');
-fprintf(fileIDh, '\n#endif\n');
-fclose(fileIDh);
+
+

@@ -7,6 +7,7 @@
 #include "sensor.h"
 #include "error.h"
 
+#define CDBK_SIZE 32
 
 #define myalloc(__SIZE__) pvPortMalloc(__SIZE__)
 #define myfree(ptr)       vPortFree(ptr)

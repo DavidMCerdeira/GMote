@@ -4,7 +4,6 @@ results = zeros(number_of_samples, number_of_gestures, length(h));
 
 threshold = -400;
 
-
 %%{
 for pk = 1 : 2
     tmax = 0;
@@ -13,9 +12,9 @@ for pk = 1 : 2
     else
         fprintf('GMote:\n');
     end
-    for i = 1 : length(h)
+    for i = 1 : number_of_gestures
         %fprintf('HMM: %s\n', h{i}.name);
-        for j = 1 : 7
+        for j = 1 : number_of_gestures
             %fprintf('\t')
             if j == i
                 %fprintf('*');
@@ -48,7 +47,7 @@ for pk = 1 : 2
     
     avg = zeros(length(h), length(h));
     for i = 1 : length(h)
-        for j = 1 : 7
+        for j = 1 : length(h)
             avg(i,j) = nanmean(results(:,j,i));
         end
     end

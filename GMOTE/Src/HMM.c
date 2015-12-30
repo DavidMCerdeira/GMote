@@ -244,9 +244,9 @@ float32_t vec_content_sum(const float32_t* vector, const int size){
 }
 
 void test_DSP_mult(float32_t *src1, float32_t *src2, int size){
-	float32_t dest[8];
-	float32_t check1[8];
-	float32_t check2[8];
+	float32_t dest[NR_OF_STATES];
+	float32_t check1[NR_OF_STATES];
+	float32_t check2[NR_OF_STATES];
 	
 	arm_copy_f32(src1,check1,size);	//allow us to see the content of src1 in the watch window
 	arm_copy_f32(src2,check2,size); //allow us to see the content of src2 in the watch window
@@ -254,6 +254,6 @@ void test_DSP_mult(float32_t *src1, float32_t *src2, int size){
 }
 
 void test_DSP_scale(float32_t *src1, float32_t scale, int size){
-	float32_t dest[8];
+	float32_t dest[NR_OF_STATES];
 	arm_scale_f32(src1, (float32_t)scale, dest, size);
 }

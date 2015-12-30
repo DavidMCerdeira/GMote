@@ -15,20 +15,20 @@ class GMoteCmd():
         g_video =  {"name":"video", "ID":1}
         g_music =  {"name":"music", "ID":2}
         g_system_settings = {"name":"settings", "ID":3}
-        g_play_pause = {"name":"play/pause", "ID":4}
+        g_play_pause = {"name":"play_pause", "ID":4}
         g_fullscreen = {"name":"fullscreen", "ID":5}
         g_next = {"name":"next", "ID":6}
         g_previous = {"name":"previous", "ID":7}
         g_none = {"name":"none", "ID":8}
 
-        c_MA = {"name":"Make Aquisition","ID":"MA","Handler": self.MA_command, "Help":"MA <starting sample number>" }
-        c_SG = {"name":"Set Gesture","ID":"SG", "Handler": self.SG_command, "Help":"SG <gesture name>"}
-        c_WG = {"name":"What Gesture?","ID":"WG", "Handler": self.WG_command, "Help":"WG"}
-        c_SSG = {"name":"Show Sample Graph","ID":"SSG", "Handler":self.SSG_command, "Help":"SSG <gesture name> <sample number>"}
-        c_FS = {"name": "Finish Session", "ID":"FS", "Handler":self.FS_command, "Help": "FS"}
-        c_PC = {"name": "Print commands", "ID":"PC", "Handler":self.print_commands,"Help":"PC"}
-        c_PG = {"name": "Print gestures", "ID":"PG", "Handler":self.print_gestures,"Help":"PG"}
-        c_HLP = {"name": "Help", "ID":"HLP", "Handler":self.print_help,"Help":"HLP"}
+        c_MA = {"name":"Make Aquisition","ID":"ma","Handler": self.MA_command, "Help":"MA <starting sample number>" }
+        c_SG = {"name":"Set Gesture","ID":"sg", "Handler": self.SG_command, "Help":"SG <gesture name>"}
+        c_WG = {"name":"What Gesture?","ID":"wg", "Handler": self.WG_command, "Help":"WG"}
+        c_SSG = {"name":"Show Sample Graph","ID":"ssg", "Handler":self.SSG_command, "Help":"SSG <gesture name> <sample number>"}
+        c_FS = {"name": "Finish Session", "ID":"fs", "Handler":self.FS_command, "Help": "FS"}
+        c_PC = {"name": "Print commands", "ID":"pc", "Handler":self.print_commands,"Help":"PC"}
+        c_PG = {"name": "Print gestures", "ID":"pg", "Handler":self.print_gestures,"Help":"PG"}
+        c_HLP = {"name": "Help", "ID":"hlp", "Handler":self.print_help,"Help":"HLP"}
 
         self.saveSamplesDirectory = ".\\..\\TrainingData\\%s\\"
         self.curGest = g_none["name"]
@@ -88,7 +88,7 @@ class GMoteCmd():
             graph = gp.graph(iLines_set = [aline])
             print("\t$ Aquired data: ")
             print(data)
-            graph.show()
+            #graph.show()
             response = " "
             while response != 'y' and response !='n':
                 response = input("\t$ Do you want to save this sample?(y/n) ")

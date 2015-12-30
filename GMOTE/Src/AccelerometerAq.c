@@ -27,10 +27,10 @@ void runAccelGest(void* argument)
 		BLUE(1);
 		
 		/*take hold of mutex*/
+		mutextHold = pdFALSE;
 		while(mutextHold == pdFALSE){
 			mutextHold = xSemaphoreTake(accelMutex, portMAX_DELAY);
 		}
-		mutextHold = pdFALSE;
 
 		/* accelerometer aquisition mode and speed */
 		accel_fifoEnable();
