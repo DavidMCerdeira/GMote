@@ -14,7 +14,6 @@ TaskHandle_t dummy;
 
 void HAL_GPIO_EXTI_Callback(uint16_t pin)
 {
-	static int state = 0;
 	static BaseType_t woke;
 
 	if(pin == GBUTTON_PIN)

@@ -95,7 +95,7 @@ inline bool MPU_Get_FIFOCount(int *count)
 HAL_StatusTypeDef MPU_Register_Write(const uint8_t regAdd, const uint8_t regVal)
 {
 	uint8_t d[]={regAdd, regVal};
-	return (HAL_I2C_Master_Transmit(&_HI2C,  MPU_CUR_ADDRESS, d, 2, 100) == HAL_OK);
+	return HAL_I2C_Master_Transmit(&_HI2C,  MPU_CUR_ADDRESS, d, 2, 100);
 }
  
 HAL_StatusTypeDef MPU_Register_Read(const uint8_t regAdd, uint8_t* retValue)

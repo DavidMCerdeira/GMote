@@ -21,7 +21,6 @@ const int GBUTTON = 0;
 void keypad_run(void *arg)
 {
 	int button;
-	int idx;
 	int before;
 	int after;
 	BaseType_t QRes = pdFALSE;
@@ -94,11 +93,13 @@ void keypad_actionPressed(int button)
 		/* signal aqManager to start aquiring gesture */ //osSignalSet(aqManagerId, GStart);
 		xTaskNotify(aqManagerHandle, GStart, eSetBits);
 	}
+	else{
 	
-//	while(QRes == pdFALSE){
-//		cmd = keypad_getCMD(button);
-//		//QRes = xQueueSend(communicationMsgQ, &cmd, 10);
-//	}
+	while(QRes == pdFALSE){
+		cmd = keypad_getCMD(button);
+		QRes = xQueueSend(communicationMsgQ, &cmd, 10);
+	}
+	}
 }
 
 int keypad_getCMD(int button)
@@ -124,8 +125,7 @@ void enableInterrupt(int button)
 
 int keypad_debounceButton(int i)
 {
-	int counter = 0;
-	int buttonCounter = {0};
+	int buttonCounter = 0;
 	int input = 0;
 	int output = 0;
 	TickType_t start = xTaskGetTickCount();

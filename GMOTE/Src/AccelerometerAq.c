@@ -120,6 +120,13 @@ void runAccelSimple(void* argument)
 			/* wait for data or notfication*/
 			while((receivedSem == pdFALSE) && (receivedNotify == pdFALSE)){
 				receivedSem = xSemaphoreTake(accelDrdySemaph, portMAX_DELAY);
+				/* stop listening? */
+				receivedNotify = xTaskNotifyWait(STOP, 0, &notification, 0);
+			}
+			
+			/* stop aquiring? */
+			if(receivedNotify && (notification & STOP)){
+				break;
 			}
 			
 			/* data? */

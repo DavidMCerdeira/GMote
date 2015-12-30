@@ -16,20 +16,23 @@ void error(char* msg, int severity)
 	ERROR1:
 		while(1)
 		{
-			ORANGE(state = !state);
+			state = !state;
+			ORANGE(state);
 			HAL_Delay(500);
 		}
 	ERROR2:
 		while(1)
 		{
-			RED(state = !state);
+			state = !state;
+			RED(state);
 			HAL_Delay(500);
 		}
 	
 	ERROR3:
 		while(1)
 		{
-			RED(state = !state);
+			state = !state;
+			RED(state);
 			ORANGE(state);
 			GREEN(state);
 			BLUE(state);

@@ -76,7 +76,6 @@ void gPress(void)
 	static int nFrames = 0;
 	uint32_t accelRes;
 	uint32_t gyroRes;
-	uint32_t end = NULL;
 	BaseType_t accelMsgQRcvd = pdFALSE;
 	BaseType_t gyroMsgQRcvd = pdFALSE;
 	BaseType_t notifRcvd = pdFALSE;

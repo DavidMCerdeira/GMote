@@ -70,7 +70,7 @@ void HMM_Init_models(){
 void HMM_ControlTsk(void *arg){
 	int *buff;
 	int i;
-	gest most_likely = 0;
+	int most_likely = 0;
 	EventBits_t fwFinished = 0;
 	EventBits_t fwSetMask = 0;
 	UBaseType_t QMsgW8 = pdFALSE;
@@ -208,17 +208,17 @@ void HMM_ForwardTsk(void* rModel){
 				
 				for(j = 0; j < ownModel->N; j++)
 				{
-					test_DSP_mult((*(ownModel->At))[j], (float32_t*)(*curLastFw), fwData[fwIndex].N);										//DEBUG
+					//test_DSP_mult((*(ownModel->At))[j], (float32_t*)(*curLastFw), fwData[fwIndex].N);										//DEBUG
 					arm_mult_f32((*(ownModel->At))[j], (float32_t*)(*curLastFw), temp1, ownModel->N);
 					/* stores the sum of each line of temp1 */
 					temp2[j] = vec_content_sum(temp1, ownModel->N);
 				}
-				test_DSP_mult(temp2, (*(ownModel->Bt))[O],fwData[fwIndex].N);																					//DEBUG
+				//test_DSP_mult(temp2, (*(ownModel->Bt))[O],fwData[fwIndex].N);																					//DEBUG
 				arm_mult_f32(temp2, (*(ownModel->Bt))[O], (fwData[fwIndex].fw[t]), fwData[fwIndex].N);
 			}
 			fwData[fwIndex].C[t] = ((float)1.0/vec_content_sum(fwData[fwIndex].fw[t], fwData[fwIndex].N));
 			
-			test_DSP_scale((float32_t*)fwData[fwIndex].fw[t],fwData[fwIndex].C[t], fwData[fwIndex].N);							//DEBUG
+			//test_DSP_scale((float32_t*)fwData[fwIndex].fw[t],fwData[fwIndex].C[t], fwData[fwIndex].N);							//DEBUG
 			arm_scale_f32((float32_t*)fwData[fwIndex].fw[t], fwData[fwIndex].C[t], temp2, fwData[fwIndex].N);
 			arm_copy_f32(temp2, (float32_t*)fwData[fwIndex].fw[t], fwData[fwIndex].N);
 			
