@@ -12,7 +12,7 @@ class line():
         self.plot,= plt.plot(self.data,self.color,label = self.label)
 
 class graph():
-    def __init__(self,iTitle = "Sample",iXLabel="t",iYLabel="Idx",iLines_set = []):
+    def __init__(self, iTitle = "Sample", iXLabel="t", iYLabel="Idx", iLines_set = []):
         self.title  = iTitle
         self.xlabel = iXLabel
         self.ylabel = iYLabel
@@ -26,6 +26,10 @@ class graph():
 
     def lines_set_insert(line):
         self.lines_set.append(line)
+
+
+    def plot_flush(self):
+        plt.clf()
 
     def plot_lines(self):
         plt.xlabel(self.xlabel)
@@ -41,20 +45,22 @@ class graph():
         direcPlusFile = directory + file_name
         graphCsvFile = open(directory + file_name + ".csv",'w')
         if self.figure is not None:
-
             self.figure.savefig(direcPlusFile)
             self.figure = None
         else:
             self.plot_lines()
             plt.savefig(direcPlusFile)
-        writeLine = ""
+
         for i in range( 0,len(self.lines_set[0].data)):
+            writeLine = ""
             for j in range( 0,len(self.lines_set)):
                 writeLine = writeLine + str(self.lines_set[j].data[i])
                 if j != len(self.lines_set) - 1 :
-                    writeLine  = ", "
+                    writeLine  += ", "
             writeLine = writeLine + "\n"
-        graphCsvFile.write(writeLine)
+            graphCsvFile.write(writeLine)
+        self.plot_flush()
+
 '''
 #Making some tests
 y2 = [7,6,5,4,3,2,1]

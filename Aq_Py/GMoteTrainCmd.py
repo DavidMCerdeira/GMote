@@ -9,6 +9,8 @@ def findFirstNonAlph(str):
             return i
     return len(str)
 
+def convertToLineArray(data):
+    pass
 class GMoteCmd():
     def __init__(self):
         g_pictures = {"name":"pictures", "ID":0}
@@ -21,18 +23,23 @@ class GMoteCmd():
         g_previous = {"name":"previous", "ID":7}
         g_none = {"name":"none", "ID":8}
 
-        c_MA = {"name":"Make Aquisition","ID":"ma","Handler": self.MA_command, "Help":"MA <starting sample number>" }
-        c_SG = {"name":"Set Gesture","ID":"sg", "Handler": self.SG_command, "Help":"SG <gesture name>"}
-        c_WG = {"name":"What Gesture?","ID":"wg", "Handler": self.WG_command, "Help":"WG"}
-        c_SSG = {"name":"Show Sample Graph","ID":"ssg", "Handler":self.SSG_command, "Help":"SSG <gesture name> <sample number>"}
-        c_FS = {"name": "Finish Session", "ID":"fs", "Handler":self.FS_command, "Help": "FS"}
-        c_PC = {"name": "Print commands", "ID":"pc", "Handler":self.print_commands,"Help":"PC"}
-        c_PG = {"name": "Print gestures", "ID":"pg", "Handler":self.print_gestures,"Help":"PG"}
-        c_HLP = {"name": "Help", "ID":"hlp", "Handler":self.print_help,"Help":"HLP"}
+        c_MA = {"name":"Make Aquisition","ID":"ma","Handler": self.MA_command, "Help":"ma <starting sample number>" }
+        c_SG = {"name":"Set Gesture","ID":"sg", "Handler": self.SG_command, "Help":"sg <gesture name>"}
+        c_WG = {"name":"What Gesture?","ID":"wg", "Handler": self.WG_command, "Help":"wg"}
+        c_SSG = {"name":"Show Sample Graph","ID":"ssg", "Handler":self.SSG_command, "Help":"ssg <gesture name> <sample number>"}
+        c_FS = {"name": "Finish Session", "ID":"fs", "Handler":self.FS_command, "Help": "fs"}
+        c_PC = {"name": "Print commands", "ID":"pc", "Handler":self.print_commands,"Help":"pc"}
+        c_PG = {"name": "Print gestures", "ID":"pg", "Handler":self.print_gestures,"Help":"pg"}
+        c_HLP = {"name": "Help", "ID":"hlp", "Handler":self.print_help,"Help":"hlp"}
+        c_SNL = {"name": "Set number_of_lines", "ID":"snl", "Handler":self.SNL_command,"HELP":"snl <flag>" }
+        c_TCB = {"name": "Aquiving CodeBook Data", "ID":"tcb", "Handler":self.TCB_command,"HELP":"tcb <int>: flag == 1 THEN colecting data for the Codebook ELSE colecting data for training"}
 
-        self.saveSamplesDirectory = ".\\..\\TrainingData\\%s\\"
+        self.number_of_lines = 1
+        self.CodebookDataDirectory =  ".\\..\\CodebookData\\%s\\"
+        self.TrainingDataDirectory =  ".\\..\\TrainingData\\%s\\"
+        self.saveSamplesDirectory = self.TrainingDataDirectory
         self.curGest = g_none["name"]
-        self.commands = (c_MA, c_SG, c_WG, c_FS, c_SSG, c_PC, c_PG, c_HLP)
+        self.commands = (c_MA, c_SG, c_WG, c_FS, c_SSG, c_PC, c_PG, c_HLP, c_SNL, c_TCB)
         self.gestures = (g_pictures, g_video, g_music, g_system_settings, g_play_pause, g_fullscreen, g_next, g_previous, g_none)
         self.On = True
 
@@ -82,10 +89,13 @@ class GMoteCmd():
             return
         sample_nr = arg["ints"][0]
         while aqOn:
-            aq = sc.Aquisition()            #Probably when used with serial port will give some problems
-            data = aq.make_an_aquisition()
-            aline = gp.line(iData = data)
-            graph = gp.graph(iLines_set = [aline])
+            aq = sc.Aquisition()
+            data = aq.make_an_aquisition(self.number_of_lines)
+            print(data)
+            lines = []
+            for i in range(0, self.number_of_lines):
+                lines.append(gp.line(iData = data[i]))
+            graph = gp.graph(iLines_set = lines)
             print("\t$ Aquired data: ")
             print(data)
             #graph.show()
@@ -138,6 +148,32 @@ class GMoteCmd():
         print("\tTraining Session is finished...")
         self.On = False
 
+    def SNL_command(self, in_command):
+        print("** Set number of training lines:")
+        arg = self.getArguments(in_command)
+        if (arg["ints"][0]):
+            self.number_of_lines = arg["ints"][0]
+            print("\tNumber of lines trained")
+        else:
+            print("# ERROR: Insert the number of lines")
+
+    def TCB_command(self, in_command):
+        print("** Setting directory to save data:")
+        arg = self.getArguments(in_command)
+        print(arg)
+        if arg["ints"][0]:
+            if arg["ints"][0] == 1:
+                self.saveSamplesDirectory = self.CodebookDataDirectory
+                self.number_of_lines = 6
+                print("\tYou're currently aquiring data to Codebook directory")
+            elif arg["ints"][0] == 0:
+                self.saveSamplesDirectory = self.TrainingDataDirectory
+                self.number_of_lines = 1
+                print("\tYou're currently aquiring data to training data directory")
+            else:
+                print("# ERROR: you didn't define a valida argument")
+                return
+
     def print_gestures(self, args):
         print("\n**These are the GMote's moves:\n")
         print("\n\t  <name> - <ID>")
@@ -158,7 +194,6 @@ class GMoteCmd():
         for i in range(0,len(self.commands)):
             temp_str = "\t$ %(name)s - '%(Help)s'" % self.commands[i]
             print(temp_str)
-
 
 g = GMoteCmd()
 g.Run_cmdLine()
