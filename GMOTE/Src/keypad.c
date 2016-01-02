@@ -94,11 +94,10 @@ void keypad_actionPressed(int button)
 		xTaskNotify(aqManagerHandle, GStart, eSetBits);
 	}
 	else{
-	
-	while(QRes == pdFALSE){
-		cmd = keypad_getCMD(button);
-		QRes = xQueueSend(communicationMsgQ, &cmd, 10);
-	}
+		while(QRes == pdFALSE){
+			cmd = keypad_getCMD(button);
+			QRes = xQueueSend(communicationMsgQ, &cmd, 10);
+		}
 	}
 }
 

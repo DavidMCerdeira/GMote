@@ -6,7 +6,7 @@
 #include "queue.h"
 #include "semphr.h"
 
-#define communication_send(...) nrfPrint(__VA_ARGS__)
+
 
 #define CMD     0x00
 #define NAV     0x80

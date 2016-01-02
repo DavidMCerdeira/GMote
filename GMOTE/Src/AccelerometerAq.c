@@ -6,8 +6,6 @@ SemaphoreHandle_t  accelDrdySemaph;
 extern QueueHandle_t accelFrameReadyMsgQ;
 extern QueueHandle_t simpleProcFramReadyMsgQ;
 
-int get_nextFram1(int16_t** buff);
-
 void runAccelGest(void* argument)
 {
 	volatile int sampleCount = 0;

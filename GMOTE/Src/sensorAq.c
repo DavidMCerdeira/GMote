@@ -21,7 +21,6 @@ int last = 0;
 
 void aqManager(void* argument)
 {
-	volatile osEvent event;
 	BaseType_t notifRcvd = pdFALSE;
 	uint32_t notification;	
 	
@@ -44,7 +43,7 @@ void aqManager(void* argument)
 	vTaskSuspend(accelSimpleThreadHandle);
 	
 	/*Now that they are suspended we can raise their priority*/
-	vTaskPrioritySet(runAccelGest, AqSensorPriority);
+	vTaskPrioritySet(accelGestThreadHandle, AqSensorPriority);
 	vTaskPrioritySet(gyroThreadHandle, AqSensorPriority);
 	vTaskPrioritySet(accelSimpleThreadHandle, AqSensorPriority);
 	
@@ -133,6 +132,9 @@ void gPress(void)
 				//printFrame(accelRes);
 				//printf("Frame Received!\n");
 			}
+		}
+		else{
+			break;
 		}
 	}	
 	last = 0;
