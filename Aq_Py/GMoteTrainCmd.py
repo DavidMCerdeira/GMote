@@ -9,6 +9,8 @@ def findFirstNonAlph(str):
             return i
     return len(str)
 
+def convertToLineArray(data):
+    pass
 class GMoteCmd():
     def __init__(self):
         g_pictures = {"name":"pictures", "ID":0}
@@ -29,15 +31,15 @@ class GMoteCmd():
         c_PC = {"name": "Print commands", "ID":"pc", "Handler":self.print_commands,"Help":"pc"}
         c_PG = {"name": "Print gestures", "ID":"pg", "Handler":self.print_gestures,"Help":"pg"}
         c_HLP = {"name": "Help", "ID":"hlp", "Handler":self.print_help,"Help":"hlp"}
-        c_SNL = {"name": "Set number_of_lines", "ID":"snr", "Handler":self.SNL_command,"HELP":"snr <flag>" }
+        c_SNL = {"name": "Set number_of_lines", "ID":"snl", "Handler":self.SNL_command,"HELP":"snl <flag>" }
         c_TCB = {"name": "Aquiving CodeBook Data", "ID":"tcb", "Handler":self.TCB_command,"HELP":"tcb <int>: flag == 1 THEN colecting data for the Codebook ELSE colecting data for training"}
 
         self.number_of_lines = 1
-        self.CodebookDataDirectory =  ".\\..\\Codebook\\%s\\"
+        self.CodebookDataDirectory =  ".\\..\\CodebookData\\%s\\"
         self.TrainingDataDirectory =  ".\\..\\TrainingData\\%s\\"
         self.saveSamplesDirectory = self.TrainingDataDirectory
         self.curGest = g_none["name"]
-        self.commands = (c_MA, c_SG, c_WG, c_FS, c_SSG, c_PC, c_PG, c_HLP, c_SNR, c_TCB)
+        self.commands = (c_MA, c_SG, c_WG, c_FS, c_SSG, c_PC, c_PG, c_HLP, c_SNL, c_TCB)
         self.gestures = (g_pictures, g_video, g_music, g_system_settings, g_play_pause, g_fullscreen, g_next, g_previous, g_none)
         self.On = True
 
@@ -87,10 +89,13 @@ class GMoteCmd():
             return
         sample_nr = arg["ints"][0]
         while aqOn:
-            aq = sc.Aquisition(self.number_of_lines)
-            data = aq.make_an_aquisition()
-            aline = gp.line(iData = data)
-            graph = gp.graph(iLines_set = [aline])
+            aq = sc.Aquisition()
+            data = aq.make_an_aquisition(self.number_of_lines)
+            print(data)
+            lines = []
+            for i in range(0, self.number_of_lines):
+                lines.append(gp.line(iData = data[i]))
+            graph = gp.graph(iLines_set = lines)
             print("\t$ Aquired data: ")
             print(data)
             #graph.show()
@@ -146,20 +151,22 @@ class GMoteCmd():
     def SNL_command(self, in_command):
         print("** Set number of training lines:")
         arg = self.getArguments(in_command)
-        if (arg["ints"].isdigit()):
-            self.number_of_lines = arg["ints"]
+        if (arg["ints"][0]):
+            self.number_of_lines = arg["ints"][0]
+            print("\tNumber of lines trained")
         else:
             print("# ERROR: Insert the number of lines")
 
     def TCB_command(self, in_command):
         print("** Setting directory to save data:")
         arg = self.getArguments(in_command)
-        if (arg["ints"].isdigit()):
-            if arg["ints"] == 1:
+        print(arg)
+        if arg["ints"][0]:
+            if arg["ints"][0] == 1:
                 self.saveSamplesDirectory = self.CodebookDataDirectory
                 self.number_of_lines = 6
                 print("\tYou're currently aquiring data to Codebook directory")
-            elif arg["ints"] == 0:
+            elif arg["ints"][0] == 0:
                 self.saveSamplesDirectory = self.TrainingDataDirectory
                 self.number_of_lines = 1
                 print("\tYou're currently aquiring data to training data directory")

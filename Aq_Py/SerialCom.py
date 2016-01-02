@@ -16,9 +16,6 @@ class Aquisition():
         self.ser.open()
 		#self.ser.close()
 
-    def testInit(self):
-        pass
-
     def make_an_aquisition(self, number_of_lines = 1):
         #self.serialPortInit()
         aqDataChars = []
@@ -33,13 +30,13 @@ class Aquisition():
                     sample_nr = int(i / number_of_lines)
                     axe = i % number_of_lines
                     aqDataInt[axe][sample_nr] = int(aqDataChars[i])
-                    return aqDataInt
+            return aqDataInt
         else:
             print("# ERROR: Aquisition Failed\n\tThe length of the data array or the number of axes is not correct (DataLen % number of axes != 0)")
             return None
 
 
 
-a = Aquisition()
-ret = a.make_an_aquisition( 5)
-print(ret)
+#a = Aquisition()
+#ret = a.make_an_aquisition(6)
+#print(ret[0])
