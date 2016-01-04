@@ -55,7 +55,7 @@ void keypad_init(void)
 	
 	/* init gpio */
 	HAL_NVIC_SetPriority(EXTI1_IRQn, 5, 0);
-  HAL_NVIC_EnableIRQ(EXTI1_IRQn);
+ 	HAL_NVIC_EnableIRQ(EXTI1_IRQn);
 	
 //	HAL_NVIC_SetPriority(EXTI2_IRQn, 5, 0);
 //  HAL_NVIC_EnableIRQ(EXTI2_IRQn);
