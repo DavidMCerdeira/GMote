@@ -2,12 +2,13 @@
 #define _PRIORITIES_
 
 #define AqManagerPriority 2
-	#define AqSensorPriority  7
+#define AqSensorPriority  7
 
-#define PreProcPriority 3
-	#define SimpleProcPrioity 4
-	#define GestProcManPriority 6
-	#define GestProcPriority 5
+#define ProcRunPriority 3
+#define GestPreProcPriority 4
+#define SimpleProcPrioity 4
+#define GestProcManPriority 6
+#define GestProcPriority 5
 
 #define CommunicationPriority 1
 

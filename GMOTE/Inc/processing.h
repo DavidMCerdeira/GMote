@@ -8,6 +8,6 @@
 #include "HMM.h"
 #include "comunication.h"
 
-void preprocessing(void*);
+void processing_run(void*);
 
 #endif

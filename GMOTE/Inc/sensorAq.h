@@ -3,7 +3,7 @@
 #include "AccelerometerAq.h"
 #include "GyroAq.h"
 #include "sensor.h"
-#include "pre_processing.h"
+#include "processing.h"
 #include "priorities.h"
 
 void aqManager(void* argument);

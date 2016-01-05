@@ -599,11 +599,6 @@
           <GroupName>GMote</GroupName>
           <Files>
             <File>
-              <FileName>pre_processing.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Src\pre_processing.c</FilePath>
-            </File>
-            <File>
               <FileName>GMoteISR.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\GMoteISR.c</FilePath>
@@ -617,6 +612,11 @@
               <FileName>keypad.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\keypad.c</FilePath>
+            </File>
+            <File>
+              <FileName>processing.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\processing.c</FilePath>
             </File>
           </Files>
         </Group>

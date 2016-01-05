@@ -36,7 +36,7 @@
 
 /* USER CODE BEGIN Includes */
 #include "sensorAq.h"
-#include "pre_processing.h"
+#include "processing.h"
 #include "comunication.h"
 #include "keypad.h"
 #include "boias.h"
@@ -129,7 +129,7 @@ int main(void)
 	//xTaskCreate(boias,     "boias",    1024, NULL, AqManagerPriority, &aqManagerHandle);
 	
 	/* initiate pre processing thread; */
-	xTaskCreate(preprocessing, "PreProcessing", 2048, NULL, PreProcPriority, &preProcThreadHandle);
+	xTaskCreate(processing_run, "Processing", 512, NULL, ProcRunPriority, &preProcThreadHandle);
 	
 	/* initiate keypad module */
 	xTaskCreate(keypad_run, "Keypad", 128, NULL, KeypadPriority, &keypadThreadHandle);
@@ -347,7 +347,7 @@ void MX_GPIO_Init(void)
   /*Configure GPIO pin : PA1 */
   GPIO_InitStruct.Pin = GPIO_PIN_1;
   GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING_FALLING;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Pull = GPIO_PULLDOWN;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
   /*Configure GPIO pins : PA4 PA8 PA9 PA10 
