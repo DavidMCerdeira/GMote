@@ -121,7 +121,7 @@ void gPress(void)
 			else if((gyroRes) != (accelRes)){
 				xTaskNotify(accelGestThreadHandle, STOP, eSetBits);
 				xTaskNotify(gyroThreadHandle, STOP, eSetBits);
-				printf("Accel %d - Gyro %d\n", accelRes, gyroRes);
+				//printf("Accel %d - Gyro %d\n", accelRes, gyroRes);
 				error("Error aquiring: different Lenghts", 3);
 			}
 			/* we received a frame */

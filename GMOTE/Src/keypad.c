@@ -8,19 +8,44 @@ int buttons[N_BUTTONS] = {0};
 
 void keypad_init(void);
 int  keypad_buttonState(int button);
-void disableInterrupt(int button);
-void enableInterrupt(int button);
+void setInterruptState(int button, int state);
 int  keypad_debounceButton(int i);
 int  keypad_getCMD(int button);
 
 void keypad_actionReleased(int button);
 void keypad_actionPressed(int button);
 
-const int GBUTTON = 0;
+const int GMOTE_BUTTON_0 =   0;
+const int GMOTE_BUTTON_1 =   1;
+const int GMOTE_BUTTON_2 =   2;
+const int GMOTE_BUTTON_3 =   3;
+const int GMOTE_BUTTON_4 =   4;
+const int GMOTE_BUTTON_5 =   5;
+const int GMOTE_BUTTON_6 =   6;
+const int GMOTE_BUTTON_7 =   7;
+const int GMOTE_BUTTON_8 =   8;
+const int GMOTE_BUTTON_9 =   9;
+const int GMOTE_BUTTON_10 = 10;
+const int GMOTE_BUTTON_11 = 11;
+const int GMOTE_BUTTON_12 = 12;
+const int GMOTE_BUTTON_13 = 13;
+
+int keypad_getButtonFromPin(uint32_t pin)
+{
+	int idx = 0;
+	
+	while((GMOTE_BUTTON_0_PIN << idx) != pin)
+	{
+		idx++;
+	}
+	
+	return idx;
+}
 
 void keypad_run(void *arg)
 {
 	int button;
+	int pin;
 	int before;
 	int after;
 	BaseType_t QRes = pdFALSE;
@@ -30,20 +55,24 @@ void keypad_run(void *arg)
 	while(1)
 	{
 		while(QRes == pdFALSE){
-			QRes = xQueueReceive(keypadMsgQ, &button, portMAX_DELAY);
+			QRes = xQueueReceive(keypadMsgQ, &pin, portMAX_DELAY);
 		}
 		QRes = pdFALSE;
 		
+		button = keypad_getButtonFromPin(pin);
+		printf("Button %d\n", button);
 		before = buttons[button];
-		disableInterrupt(button);
+		setInterruptState(button, 0);
 		after = buttons[button] = keypad_debounceButton(button);
-		enableInterrupt(button);
+		setInterruptState(button, 1);
 		
 		if(after != before){
-			if(after == 1)
-				keypad_actionPressed(button);
-			else
-				keypad_actionReleased(button);
+			if(after){
+				//keypad_actionPressed(button);
+			}
+			else{
+				//keypad_actionReleased(button);
+			}
 		}
 	}
 }
@@ -54,27 +83,51 @@ void keypad_init(void)
 	keypadMsgQ = xQueueCreate(5, sizeof(int));
 	
 	/* init gpio */
-	HAL_NVIC_SetPriority(EXTI1_IRQn, 5, 0);
- 	HAL_NVIC_EnableIRQ(EXTI1_IRQn);
 	
-//	HAL_NVIC_SetPriority(EXTI2_IRQn, 5, 0);
-//  HAL_NVIC_EnableIRQ(EXTI2_IRQn);
-//	
-//	HAL_NVIC_SetPriority(EXTI3_IRQn, 5, 0);
-//  HAL_NVIC_EnableIRQ(EXTI3_IRQn);
-//	
-//	HAL_NVIC_SetPriority(EXTI4_IRQn, 5, 0);
-//  HAL_NVIC_EnableIRQ(EXTI4_IRQn);
-//	
-//  HAL_NVIC_EnableIRQ(EXTI9_5_IRQn);
-//	
-//	HAL_NVIC_SetPriority(EXTI15_10_IRQn, 5, 0);
-//  HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
+	HAL_NVIC_SetPriority(GMOTE_BUTTON_0_EXTI, GMOTE_BUTTONS_IT_PRIORITY, 0);
+	HAL_NVIC_EnableIRQ(GMOTE_BUTTON_0_EXTI);
+
+	HAL_NVIC_SetPriority(GMOTE_BUTTON_1_EXTI,  GMOTE_BUTTONS_IT_PRIORITY, 0);
+	HAL_NVIC_EnableIRQ(GMOTE_BUTTON_1_EXTI);
+
+	HAL_NVIC_SetPriority(GMOTE_BUTTON_2_EXTI,  GMOTE_BUTTONS_IT_PRIORITY, 0);
+	HAL_NVIC_EnableIRQ(GMOTE_BUTTON_2_EXTI);
+
+	HAL_NVIC_SetPriority(GMOTE_BUTTON_3_EXTI,  GMOTE_BUTTONS_IT_PRIORITY, 0);
+	HAL_NVIC_EnableIRQ(GMOTE_BUTTON_3_EXTI);
+
+	HAL_NVIC_SetPriority(GMOTE_BUTTON_4_EXTI,  GMOTE_BUTTONS_IT_PRIORITY, 0);
+	HAL_NVIC_EnableIRQ(GMOTE_BUTTON_4_EXTI);
+
+	HAL_NVIC_SetPriority(GMOTE_BUTTON_5_EXTI,  GMOTE_BUTTONS_IT_PRIORITY, 0);
+	HAL_NVIC_EnableIRQ(GMOTE_BUTTON_5_EXTI);
+
+	HAL_NVIC_SetPriority(GMOTE_BUTTON_6_EXTI,  GMOTE_BUTTONS_IT_PRIORITY, 0);
+	HAL_NVIC_EnableIRQ(GMOTE_BUTTON_6_EXTI);
+
+	HAL_NVIC_SetPriority(GMOTE_BUTTON_7_EXTI,  GMOTE_BUTTONS_IT_PRIORITY, 0);
+	HAL_NVIC_EnableIRQ(GMOTE_BUTTON_7_EXTI);
+
+	HAL_NVIC_SetPriority(GMOTE_BUTTON_8_EXTI,  GMOTE_BUTTONS_IT_PRIORITY, 0);
+	HAL_NVIC_EnableIRQ(GMOTE_BUTTON_8_EXTI);
+
+	HAL_NVIC_SetPriority(GMOTE_BUTTON_9_EXTI,  GMOTE_BUTTONS_IT_PRIORITY, 0);
+	HAL_NVIC_EnableIRQ(GMOTE_BUTTON_9_EXTI);
+
+	HAL_NVIC_SetPriority(GMOTE_BUTTON_10_EXTI, GMOTE_BUTTONS_IT_PRIORITY, 0);
+	HAL_NVIC_EnableIRQ(GMOTE_BUTTON_10_EXTI);
+
+	HAL_NVIC_SetPriority(GMOTE_BUTTON_11_EXTI, GMOTE_BUTTONS_IT_PRIORITY, 0);
+	HAL_NVIC_EnableIRQ(GMOTE_BUTTON_11_EXTI);
+
+	HAL_NVIC_SetPriority(GMOTE_BUTTON_12_EXTI, GMOTE_BUTTONS_IT_PRIORITY, 0);
+	HAL_NVIC_EnableIRQ(GMOTE_BUTTON_12_EXTI);
+
 }
 
 void keypad_actionReleased(int button)
 {
-	if(button == GBUTTON)
+	if(button == GMOTE_BUTTON_0)
 	{
 		GREEN(0);
 		/* signal aqManager to stop aquiring gesture */
@@ -87,17 +140,22 @@ void keypad_actionPressed(int button)
 	BaseType_t QRes = pdFALSE;
 	int cmd;
 	
-	if(button == GBUTTON)
+	if(button == GMOTE_BUTTON_0)
 	{
 		GREEN(1);
-		/* signal aqManager to start aquiring gesture */ //osSignalSet(aqManagerId, GStart);
+		/* signal aqManager to start aquiring gesture */
 		xTaskNotify(aqManagerHandle, GStart, eSetBits);
 	}
+	else if(button == GMOTE_BUTTON_1)
+	{
+		/* signal aqManager to start equilib mode */
+		xTaskNotify(aqManagerHandle, EqON, eSetBits);
+	}
 	else{
-		while(QRes == pdFALSE){
-			cmd = keypad_getCMD(button);
-			QRes = xQueueSend(communicationMsgQ, &cmd, 10);
-		}
+//		while(QRes == pdFALSE){
+//			cmd = keypad_getCMD(button);
+//			QRes = xQueueSend(communicationMsgQ, &cmd, 10);
+//		}
 	}
 }
 
@@ -106,19 +164,59 @@ int keypad_getCMD(int button)
 	return CMD_PP;
 }
 
-void disableInterrupt(int button)
+void setInterruptState(int button, int state)
 {
-	if(button == GBUTTON){
-		/* enable apropriate interrupt */
-		HAL_NVIC_DisableIRQ(EXTI1_IRQn);
+	int exti;
+	
+	if(button == GMOTE_BUTTON_0){
+		exti = GMOTE_BUTTON_0_EXTI;
 	}
-}
-
-void enableInterrupt(int button)
-{
-		if(button == GBUTTON){
+	else if(button == GMOTE_BUTTON_1){
+		exti = GMOTE_BUTTON_1_EXTI;
+	}
+	else if(button == GMOTE_BUTTON_2){
+		exti = GMOTE_BUTTON_2_EXTI;
+	}
+	else if(button == GMOTE_BUTTON_3){
+		exti = GMOTE_BUTTON_3_EXTI;
+	}
+	else if(button == GMOTE_BUTTON_4){
+		exti = GMOTE_BUTTON_4_EXTI;
+	}
+	else if(button == GMOTE_BUTTON_5){
+		exti = GMOTE_BUTTON_5_EXTI;
+	}
+	else if(button == GMOTE_BUTTON_6){
+		exti = GMOTE_BUTTON_6_EXTI;
+	}
+	else if(button == GMOTE_BUTTON_7){
+		exti = GMOTE_BUTTON_7_EXTI;
+	}
+	else if(button == GMOTE_BUTTON_8){
+		exti = GMOTE_BUTTON_8_EXTI;
+	}
+	else if(button == GMOTE_BUTTON_9){
+		exti = GMOTE_BUTTON_9_EXTI;
+	}
+	else if(button == GMOTE_BUTTON_10){
+		exti = GMOTE_BUTTON_10_EXTI;
+	}
+	else if(button == GMOTE_BUTTON_11){
+		exti = GMOTE_BUTTON_11_EXTI;
+	}
+	else if(button == GMOTE_BUTTON_12){
+		exti = GMOTE_BUTTON_12_EXTI;
+	}
+	else if(button == GMOTE_BUTTON_13){
+		exti = GMOTE_BUTTON_13_EXTI;
+	}
+	
+	if(state){
+		/* enable apropriate interrupt */
+		HAL_NVIC_EnableIRQ(exti);
+	} else {
 		/* disable apropriate interrupt */
-		HAL_NVIC_EnableIRQ(EXTI1_IRQn);
+		HAL_NVIC_DisableIRQ(exti);
 	}
 }
 
@@ -158,14 +256,53 @@ int keypad_debounceButton(int i)
 
 int keypad_buttonState(int button)
 {
-	if(button == GBUTTON){
-		return HAL_GPIO_ReadPin(GBUTTON_PORT, GBUTTON_PIN);;
+	
+	int gmote_button;
+	
+	if(button == GMOTE_BUTTON_0){
+		return HAL_GPIO_ReadPin(GMOTE_BUTTON_0_PORT, GMOTE_BUTTON_0_PIN);
 	} 
-	else if(button == 2){
-		return 1;
+	if(button == GMOTE_BUTTON_1){
+		return HAL_GPIO_ReadPin(GMOTE_BUTTON_1_PORT, GMOTE_BUTTON_1_PIN);
+	} 
+	if(button == GMOTE_BUTTON_2){
+		return HAL_GPIO_ReadPin(GMOTE_BUTTON_2_PORT, GMOTE_BUTTON_2_PIN);
+	} 
+	if(button == GMOTE_BUTTON_3){
+		return HAL_GPIO_ReadPin(GMOTE_BUTTON_3_PORT, GMOTE_BUTTON_3_PIN);
+	} 
+	if(button == GMOTE_BUTTON_4){
+		return HAL_GPIO_ReadPin(GMOTE_BUTTON_4_PORT, GMOTE_BUTTON_4_PIN);
+	} 
+	if(button == GMOTE_BUTTON_5){
+		return HAL_GPIO_ReadPin(GMOTE_BUTTON_5_PORT, GMOTE_BUTTON_5_PIN);
+	} 
+	if(button == GMOTE_BUTTON_6){
+		return HAL_GPIO_ReadPin(GMOTE_BUTTON_6_PORT, GMOTE_BUTTON_6_PIN);
+	} 
+	if(button == GMOTE_BUTTON_7){
+		return HAL_GPIO_ReadPin(GMOTE_BUTTON_7_PORT, GMOTE_BUTTON_7_PIN);
+	} 
+	if(button == GMOTE_BUTTON_8){
+		return HAL_GPIO_ReadPin(GMOTE_BUTTON_8_PORT, GMOTE_BUTTON_8_PIN);
+	} 
+	if(button == GMOTE_BUTTON_9){
+		return HAL_GPIO_ReadPin(GMOTE_BUTTON_9_PORT, GMOTE_BUTTON_9_PIN);
+	} 
+	if(button == GMOTE_BUTTON_10){
+		return HAL_GPIO_ReadPin(GMOTE_BUTTON_10_PORT, GMOTE_BUTTON_10_PIN);
+	} 
+	if(button == GMOTE_BUTTON_11){
+		return HAL_GPIO_ReadPin(GMOTE_BUTTON_11_PORT, GMOTE_BUTTON_11_PIN);
 	}
-	/* etc */
+	if(button == GMOTE_BUTTON_12){
+		return HAL_GPIO_ReadPin(GMOTE_BUTTON_12_PORT, GMOTE_BUTTON_12_PIN);
+	} 
+	if(button == GMOTE_BUTTON_13){
+		return HAL_GPIO_ReadPin(GMOTE_BUTTON_13_PORT, GMOTE_BUTTON_13_PIN);
+	} 
 	else 
 		return -1;
+	
 }
 

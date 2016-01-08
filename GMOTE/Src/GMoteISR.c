@@ -16,10 +16,10 @@ void HAL_GPIO_EXTI_Callback(uint16_t pin)
 {
 	static BaseType_t woke;
 
-	if(pin == GBUTTON_PIN)
+	if((pin >= GMOTE_BUTTON_0_PIN) && (pin <= GMOTE_BUTTON_13_PIN))
 	{
 		woke = pdFALSE;
-		xQueueSendFromISR(keypadMsgQ, &GBUTTON, &woke);
+		xQueueSendFromISR(keypadMsgQ, &pin, &woke);
 		portYIELD_FROM_ISR(woke);
 	}
 	if(pin == GPIO_PIN_0){
@@ -29,7 +29,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t pin)
 		portYIELD_FROM_ISR(woke);
 	}
 	/*MPU ISR*/
-	if(pin == GPIO_PIN_6){			
+	if(pin == GPIO_PIN_1){			
 		woke = pdFALSE;
 		xSemaphoreGiveFromISR(gyroDrdySemaph, &woke);
 		portYIELD_FROM_ISR(woke);

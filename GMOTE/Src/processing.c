@@ -38,6 +38,8 @@ void processing_run(void *arg)
 	
 	/* create thread to deal with gestures mode */
 	xTaskCreate(gestPreprocessing, "GestureProcessing", 512, NULL, GestPreProcPriority, &gestureProcTaskHandle);
+	
+	vTaskDelete( NULL );
 }
 
 void gestPreprocessing(void *arg)

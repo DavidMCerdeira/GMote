@@ -6,6 +6,7 @@
 #include <QFileDialog>
 #include <QGraphicsPixmapItem>
 #include <QtSerialPort/QSerialPort>
+#include <dialog.h>
 
 namespace Ui {
 class MainWindow;
@@ -37,12 +38,14 @@ private:
     QPixmap *image;
     QGraphicsScene* scene;
 
-    QSerialPort* serial;
+    QSerialPort serial;
+    Dialog *dialog;
 
     QList<gesture> gestList;
 
 public slots:
-    void setImage();
+    void setImageTraining();
+    void setImageInteraction(gesture *gesture);
     void serialReceive();
 };
 

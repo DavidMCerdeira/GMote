@@ -78,6 +78,6 @@ void initGyroAq(void)
 	/* prepare buffer */
 	initBuffer(&gyroAq);
 	/* enbale interrupt */
-	HAL_NVIC_EnableIRQ(EXTI9_5_IRQn);
+	HAL_NVIC_EnableIRQ(EXTI1_IRQn);
 }
 
