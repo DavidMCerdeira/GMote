@@ -257,8 +257,6 @@ int keypad_debounceButton(int i)
 int keypad_buttonState(int button)
 {
 	
-	int gmote_button;
-	
 	if(button == GMOTE_BUTTON_0){
 		return HAL_GPIO_ReadPin(GMOTE_BUTTON_0_PORT, GMOTE_BUTTON_0_PIN);
 	} 

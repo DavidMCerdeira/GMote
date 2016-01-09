@@ -354,7 +354,9 @@ void nrf24l01_setcrclength(void) {
 unsigned char SPI_Send(unsigned char dat)
 {
 	unsigned char rcvd;
-	HAL_SPI_TransmitReceive(&NRF_HSPI, (uint8_t*)&dat, (uint8_t*)&rcvd, 1, 30);
+	if(HAL_SPI_TransmitReceive(&NRF_HSPI, (uint8_t*)&dat, (uint8_t*)&rcvd, 1, 30) != HAL_OK){
+		error("NRF problem writing", 3);
+	}
 	return rcvd;
 }
 /*

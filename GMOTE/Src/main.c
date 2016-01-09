@@ -137,12 +137,11 @@ int main(void)
   /* USER CODE END RTOS_TIMERS */
 
   /* Create the thread(s) */
-  /* definition and creation of defaultTask */
 	
   /* USER CODE BEGIN RTOS_THREADS */
 	/* initiate aquisition manager */
-	xTaskCreate(aqManager, "AqManager",    1024, NULL, AqManagerPriority, &aqManagerHandle);		
-	//xTaskCreate(boias,     "boias",    1024, NULL, AqManagerPriority, &aqManagerHandle);
+	xTaskCreate(aqManager, "AqManager", 1024, NULL, AqManagerPriority, &aqManagerHandle);		
+	//xTaskCreate(boias, "boias", 1024, NULL, AqManagerPriority, &aqManagerHandle);
 	
 	/* initiate pre processing thread; */
 	xTaskCreate(processing_run, "Processing", 512, NULL, ProcRunPriority, &preProcThreadHandle);

@@ -21,6 +21,7 @@ Please refer to LICENSE file for licensing information.
 #include "stm32f4xx_hal.h"
 #include "string.h"
 #include "usDelay.h"
+#include "error.h"
 
 
 extern FILE __nrfOut;
