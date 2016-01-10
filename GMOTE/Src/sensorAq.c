@@ -1,5 +1,6 @@
 #include "sensorAq.h"
 
+#define TRAIN
 
 void gPress(void);
 void gEquilib(void);
@@ -128,19 +129,24 @@ void gPress(void)
 			else{
 				/* deal with it */
 				nFrames++;
+				#ifndef TRAIN
 				xQueueSend(preProcFramReadyMsgQ, &accelRes, 10);
-				//printFrame(accelRes);
+				#endif
 				//printf("Frame Received!\n");
 			}
 		}
 		else{
 			break;
 		}
-	}	
-	last = 0;
+	}
 	gyroRes = 0;
+
+	#ifndef TRAIN
+	printFrame(nFrames*FRAME_SIZE);
 	xQueueSend(preProcFramReadyMsgQ, &gyroRes, 10);
-	//printf("Received a total of %d frames\n", nFrames);
+	#endif
+	last = 0;
+
 	nFrames = 0;
 	ORANGE(0);
 }
@@ -150,7 +156,7 @@ void printFrame(int idx)
 	int i = 0;
 	for(; i < (last + idx); i++)
 	{
-		printf("%+06.0f, %+06.0f, %+06.0f, %+06.0f, %+06.0f, %+06.0f\n", 
+		nrfPrint("%+06.0f, %+06.0f, %+06.0f, %+06.0f, %+06.0f, %+06.0f\n", 
 					data[i][ACCEL_X], 
 					data[i][ACCEL_Y], 
 					data[i][ACCEL_Z],
@@ -198,7 +204,7 @@ void gEquilib(void)
 			/* reset flag */
 			accelMsgQRcvd = pdFALSE;	
 
-			xQueueSend(simpleProcFramReadyMsgQ, Qdata, 10);			
+			xQueueSend(simpleProcFramReadyMsgQ, Qdata, 10);		
 		}	
 	}
 }

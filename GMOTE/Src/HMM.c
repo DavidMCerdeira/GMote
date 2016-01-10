@@ -128,7 +128,7 @@ void HMM_ControlTsk(void *arg){
 						
 			xQueueSendToBack(likelyGest, (void*)&most_likely, 10);
 			
-			printf("Gesture %d with P = %f\n", most_likely, fwData[most_likely].prob);
+			//printf("Gesture %d with P = %f\n", most_likely, fwData[most_likely].prob);
 			
 			for(i = 0; i < NUM_GEST; i++)
 			{
