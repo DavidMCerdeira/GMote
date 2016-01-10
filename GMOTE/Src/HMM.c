@@ -102,8 +102,7 @@ void HMM_ControlTsk(void *arg){
 			}
 			/* Reset waiting for forward algorithm */
 			fwFinished = 0;
-			/* once every forward of every model has performed,
-			* the resource is consumed */
+
 		}
 		/* otherwise sends the ID of the most likely gesture */ 
 		else 
@@ -135,10 +134,14 @@ void HMM_ControlTsk(void *arg){
 				fwData[i].prob = 0;
 			}
 		}
+		
+		/* once every forward of every model has performed,
+		* the resource is consumed */
 		while(QMsgW8 == pdFALSE){
-				QMsgW8 = xQueueReceive(framesRdy, (void*)&buff, 100);
-			}
-			QMsgW8 = pdFALSE;
+			QMsgW8 = xQueueReceive(framesRdy, (void*)&buff, 100);
+		}
+		vPortFree(buff);
+		QMsgW8 = pdFALSE;
 	}
 }
 
