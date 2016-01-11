@@ -9,6 +9,7 @@ QueueHandle_t simpleProcFramReadyMsgQ;
 
 TaskHandle_t simpleProcTaskHandle;
 TaskHandle_t gestureProcTaskHandle;
+TaskHandle_t gestureRecTaskHandle;
 
 void gestPreprocessing(void *arg);
 void printIdx(unsigned int* idx);
@@ -38,6 +39,8 @@ void processing_run(void *arg)
 	
 	/* create thread to deal with gestures mode */
 	xTaskCreate(gestPreprocessing, "GestureProcessing", 512, NULL, GestPreProcPriority, &gestureProcTaskHandle);
+	
+	xTaskCreate(gestReconResult, "GestResult", 128, NULL, GestPreProcPriority, &gestureRecTaskHandle);
 	
 	vTaskDelete( NULL );
 }
@@ -83,39 +86,39 @@ void gestReconResult(void *arg)
 	gest Gesture = pictures;
 	int cmd;
 	
-	while(QRes == pdFALSE){
-		QRes = xQueueReceive(likelyGest, (void*)&Gesture, portMAX_DELAY);
+	while(1){
+		QRes = pdFALSE;
+		while(QRes == pdFALSE){
+			QRes = xQueueReceive(likelyGest, (void*)&Gesture, portMAX_DELAY);
+		}
+
+		if(Gesture == pictures){
+			cmd = CMD_PIC;
+		}
+		else if(Gesture == video){
+			cmd = CMD_VID;
+		}
+		else if(Gesture == music){
+			cmd = CMD_MUS;
+		}
+		else if(Gesture == settings){
+			cmd = CMD_SS;
+		}
+		else if(Gesture == play_pause){
+			cmd = CMD_PP;
+		}
+		else if(Gesture == next){
+			cmd = CMD_NXT;
+		}
+		else if(Gesture == previous){
+			cmd = CMD_PRV;
+		}
+		else{
+			cmd = 0;
+		}
+		
+		xQueueSend(communicationMsgQ, &cmd, 10);
 	}
-	QRes = pdFALSE;
-	
-	if(Gesture == pictures){
-		cmd = CMD_PIC;
-	}
-	else if(Gesture == video){
-		cmd = CMD_VID;
-	}
-	else if(Gesture == music){
-		cmd = CMD_MUS;
-	}
-	else if(Gesture == settings){
-		cmd = CMD_SS;
-	}
-	else if(Gesture == play_pause){
-		cmd = CMD_PP;
-	}
-	else if(Gesture == next){
-		cmd = CMD_NXT;
-	}
-	else if(Gesture == previous){
-		cmd = CMD_PRV;
-	}
-	else{
-		cmd = 0;
-	}
-	
-	printf("%d ", Gesture);
-	
-	xQueueSend(communicationMsgQ, &cmd, 10);
 }
 
 void simpleProc(void *arg)

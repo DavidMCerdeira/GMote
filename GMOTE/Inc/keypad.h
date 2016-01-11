@@ -9,10 +9,10 @@
 #include "discoLeds.h"
 
 #define DEBOUNCE_TIME 100
-#define N_BUTTONS 8
+#define N_BUTTONS 13
 #define DEBOUNCE_MAXIMUM 6
 
-#define GMOTE_BUTTONS_IT_PRIORITY 5
+#define GMOTE_BUTTONS_IT_PRIORITY 6
 
 #define GMOTE_BUTTON_0_PORT GPIOC
 #define GMOTE_BUTTON_0_PIN GPIO_PIN_2

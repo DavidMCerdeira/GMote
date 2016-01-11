@@ -1,8 +1,8 @@
 #ifndef _PRIORITIES_
 #define _PRIORITIES_
 
-#define AqManagerPriority 2
-#define AqSensorPriority  7
+#define AqManagerPriority 7
+#define AqSensorPriority  8
 
 #define ProcRunPriority 3
 #define GestPreProcPriority 4
@@ -13,5 +13,7 @@
 #define CommunicationPriority 1
 
 #define KeypadPriority 8
+
+#define GMotePwrCtrlPriority 0
 
 #endif

@@ -74,6 +74,7 @@ void HMM_ControlTsk(void *arg){
 	EventBits_t fwFinished = 0;
 	EventBits_t fwSetMask = 0;
 	UBaseType_t QMsgW8 = pdFALSE;
+	TickType_t ticks2w8 = portMAX_DELAY;
 	
 	/* initializing the expected mask for the events that
 	 * notify the end of a fw function*/
@@ -84,9 +85,10 @@ void HMM_ControlTsk(void *arg){
 	{
 		/* waiting for frames */
 		while(QMsgW8 == pdFALSE){
-			QMsgW8 = xQueuePeek(framesRdy, (void*)&buff, portMAX_DELAY);
+			QMsgW8 = xQueuePeek(framesRdy, (void*)&buff, ticks2w8);
 		}
 		QMsgW8 = pdFALSE;
+		ticks2w8 = 1000;
 		
 		/* if what was inserted on the queue isn't null,
 		 * the aquisition hasn't finished */		
@@ -102,8 +104,7 @@ void HMM_ControlTsk(void *arg){
 			}
 			/* Reset waiting for forward algorithm */
 			fwFinished = 0;
-			/* once every forward of every model has performed,
-			* the resource is consumed */
+
 		}
 		/* otherwise sends the ID of the most likely gesture */ 
 		else 
@@ -128,17 +129,23 @@ void HMM_ControlTsk(void *arg){
 						
 			xQueueSendToBack(likelyGest, (void*)&most_likely, 10);
 			
-			printf("Gesture %d with P = %f\n", most_likely, fwData[most_likely].prob);
+			ticks2w8 = portMAX_DELAY;
+			
+			//printf("Gesture %d with P = %f\n", most_likely, fwData[most_likely].prob);
 			
 			for(i = 0; i < NUM_GEST; i++)
 			{
 				fwData[i].prob = 0;
 			}
 		}
+		
+		/* once every forward of every model has performed,
+		* the resource is consumed */
 		while(QMsgW8 == pdFALSE){
-				QMsgW8 = xQueueReceive(framesRdy, (void*)&buff, 100);
-			}
-			QMsgW8 = pdFALSE;
+			QMsgW8 = xQueueReceive(framesRdy, (void*)&buff, 100);
+		}
+		vPortFree(buff);
+		QMsgW8 = pdFALSE;
 	}
 }
 

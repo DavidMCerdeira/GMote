@@ -21,16 +21,17 @@ void communication_run(void *arg)
 	
 	communication_init();
 	
+	nrfPrint("2");
 	while(1)
 	{
+		msgQrcvd = pdFALSE;
 		while(msgQrcvd == pdFALSE)
 		{
 			msgQrcvd = xQueueReceive(communicationMsgQ, &byte, portMAX_DELAY);
-		}
-		msgQrcvd = pdFALSE;
+		}	
 		
 		if(communication_validate(byte)){		
-			communication_send("%c", byte);	
+			communication_send("%d\n", byte);	
 		}
 	}
 }

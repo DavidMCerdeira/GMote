@@ -40,6 +40,8 @@
 #include "comunication.h"
 #include "keypad.h"
 #include "boias.h"
+#include "GMotePwrCtrl.h"
+#include "priorities.h"
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
@@ -49,6 +51,7 @@ SPI_HandleTypeDef hspi1;
 SPI_HandleTypeDef hspi3;
 
 TIM_HandleTypeDef htim6;
+TIM_HandleTypeDef htim7;
 
 UART_HandleTypeDef huart2;
 
@@ -60,6 +63,7 @@ TaskHandle_t aqManagerHandle = NULL;
 TaskHandle_t preProcThreadHandle = NULL;
 TaskHandle_t communicationThreadHandle = NULL;
 TaskHandle_t keypadThreadHandle = NULL;
+TaskHandle_t gmotePwrCtrl = NULL;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -69,6 +73,7 @@ static void MX_I2C1_Init(void);
 static void MX_SPI1_Init(void);
 static void MX_SPI3_Init(void);
 static void MX_TIM6_Init(void);
+static void MX_TIM7_Init(void);
 static void MX_USART2_UART_Init(void);
 void StartDefaultTask(void const * argument);
 
@@ -78,22 +83,7 @@ void StartDefaultTask(void const * argument);
 /* USER CODE END PFP */
 
 /* USER CODE BEGIN 0 */
-void	IT_Disable()
-{
-  HAL_NVIC_DisableIRQ(EXTI0_IRQn);
 
-  HAL_NVIC_DisableIRQ(EXTI1_IRQn);
-
-  HAL_NVIC_DisableIRQ(EXTI2_IRQn);
-
-  HAL_NVIC_DisableIRQ(EXTI3_IRQn);
-
-  HAL_NVIC_DisableIRQ(EXTI4_IRQn);
-
-  HAL_NVIC_DisableIRQ(EXTI9_5_IRQn);
-
-  HAL_NVIC_DisableIRQ(EXTI15_10_IRQn);
-}
 /* USER CODE END 0 */
 
 int main(void)
@@ -117,11 +107,11 @@ int main(void)
   MX_SPI1_Init();
   MX_SPI3_Init();
   MX_TIM6_Init();
+  MX_TIM7_Init();
   MX_USART2_UART_Init();
 
   /* USER CODE BEGIN 2 */
 	ORANGE(1);
-	IT_Disable();
   /* USER CODE END 2 */
 
   /* USER CODE BEGIN RTOS_MUTEX */
@@ -137,7 +127,8 @@ int main(void)
   /* USER CODE END RTOS_TIMERS */
 
   /* Create the thread(s) */
-	
+  /* definition and creation of defaultTask */
+ 
   /* USER CODE BEGIN RTOS_THREADS */
 	/* initiate aquisition manager */
 	xTaskCreate(aqManager, "AqManager", 1024, NULL, AqManagerPriority, &aqManagerHandle);		
@@ -150,7 +141,10 @@ int main(void)
 	xTaskCreate(keypad_run, "Keypad", 128, NULL, KeypadPriority, &keypadThreadHandle);
 	
 	/* initiate comunication module */
-	//xTaskCreate(communication_run, "Comunication", 512, NULL, ComPriority, &communicationThreadHandle);
+	xTaskCreate(communication_run, "Comunication", 512, NULL, CommunicationPriority, &communicationThreadHandle);
+	
+	/* initiate power mode */
+	//xTaskCreate(GMotePwrCtrl_Run, "GMotePwrCtrl", 128, NULL, GMotePwrCtrlPriority, &gmotePwrCtrl);
   /* USER CODE END RTOS_THREADS */
 
   /* USER CODE BEGIN RTOS_QUEUES */
@@ -166,6 +160,7 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+	
 	vTaskStartScheduler();
   while (1)
   {
@@ -272,7 +267,7 @@ void MX_TIM6_Init(void)
   TIM_MasterConfigTypeDef sMasterConfig;
 
   htim6.Instance = TIM6;
-  htim6.Init.Prescaler = 84;
+  htim6.Init.Prescaler = 8;
   htim6.Init.CounterMode = TIM_COUNTERMODE_UP;
   htim6.Init.Period = 0;
   HAL_TIM_Base_Init(&htim6);
@@ -280,6 +275,24 @@ void MX_TIM6_Init(void)
   sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
   sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
   HAL_TIMEx_MasterConfigSynchronization(&htim6, &sMasterConfig);
+
+}
+
+/* TIM7 init function */
+void MX_TIM7_Init(void)
+{
+
+  TIM_MasterConfigTypeDef sMasterConfig;
+
+  htim7.Instance = TIM7;
+  htim7.Init.Prescaler = 8000;
+  htim7.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim7.Init.Period = 5000;
+  HAL_TIM_Base_Init(&htim7);
+
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+  HAL_TIMEx_MasterConfigSynchronization(&htim7, &sMasterConfig);
 
 }
 
@@ -352,8 +365,14 @@ void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : PC2 PC3 PC4 PC5 */
-  GPIO_InitStruct.Pin = GPIO_PIN_2|GPIO_PIN_3|GPIO_PIN_4|GPIO_PIN_5;
+  /*Configure GPIO pin : PC2 */
+  GPIO_InitStruct.Pin = GPIO_PIN_2;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING_FALLING;
+  GPIO_InitStruct.Pull = GPIO_PULLDOWN;
+  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : PC3 PC4 PC5 */
+  GPIO_InitStruct.Pin = GPIO_PIN_3|GPIO_PIN_4|GPIO_PIN_5;
   GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING_FALLING;
   GPIO_InitStruct.Pull = GPIO_PULLUP;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
@@ -439,30 +458,51 @@ void MX_GPIO_Init(void)
 
   /* EXTI interrupt init*/
   HAL_NVIC_SetPriority(EXTI0_IRQn, 5, 0);
-  HAL_NVIC_EnableIRQ(EXTI0_IRQn);
+  //HAL_NVIC_EnableIRQ(EXTI0_IRQn);
 
   HAL_NVIC_SetPriority(EXTI1_IRQn, 5, 0);
-  HAL_NVIC_EnableIRQ(EXTI1_IRQn);
+  //HAL_NVIC_EnableIRQ(EXTI1_IRQn);
 
   HAL_NVIC_SetPriority(EXTI2_IRQn, 5, 0);
-  HAL_NVIC_EnableIRQ(EXTI2_IRQn);
+  //HAL_NVIC_EnableIRQ(EXTI2_IRQn);
 
   HAL_NVIC_SetPriority(EXTI3_IRQn, 5, 0);
-  HAL_NVIC_EnableIRQ(EXTI3_IRQn);
+  //HAL_NVIC_EnableIRQ(EXTI3_IRQn);
 
   HAL_NVIC_SetPriority(EXTI4_IRQn, 5, 0);
-  HAL_NVIC_EnableIRQ(EXTI4_IRQn);
+  //HAL_NVIC_EnableIRQ(EXTI4_IRQn);
 
   HAL_NVIC_SetPriority(EXTI9_5_IRQn, 5, 0);
-  HAL_NVIC_EnableIRQ(EXTI9_5_IRQn);
+  //HAL_NVIC_EnableIRQ(EXTI9_5_IRQn);
 
   HAL_NVIC_SetPriority(EXTI15_10_IRQn, 5, 0);
-  HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
+  //HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
 
 }
 
 /* USER CODE BEGIN 4 */
+/*
+  HAL_NVIC_SetPriority(EXTI0_IRQn, 5, 0);
+  //HAL_NVIC_EnableIRQ(EXTI0_IRQn);
 
+  HAL_NVIC_SetPriority(EXTI1_IRQn, 5, 0);
+  //HAL_NVIC_EnableIRQ(EXTI1_IRQn);
+
+  HAL_NVIC_SetPriority(EXTI2_IRQn, 5, 0);
+  //HAL_NVIC_EnableIRQ(EXTI2_IRQn);
+
+  HAL_NVIC_SetPriority(EXTI3_IRQn, 5, 0);
+  //HAL_NVIC_EnableIRQ(EXTI3_IRQn);
+
+  HAL_NVIC_SetPriority(EXTI4_IRQn, 5, 0);
+  //HAL_NVIC_EnableIRQ(EXTI4_IRQn);
+
+  HAL_NVIC_SetPriority(EXTI9_5_IRQn, 5, 0);
+  //HAL_NVIC_EnableIRQ(EXTI9_5_IRQn);
+
+  HAL_NVIC_SetPriority(EXTI15_10_IRQn, 5, 0);
+  //HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
+*/
 /* USER CODE END 4 */
 
 /* StartDefaultTask function */

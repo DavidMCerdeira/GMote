@@ -22,7 +22,7 @@ void runAccelGest(void* argument)
 	while(1)
 	{
 		/* start aquisition */
-		BLUE(1);
+		//BLUE(1);
 		
 		/*take hold of mutex*/
 		mutextHold = pdFALSE;
@@ -88,7 +88,7 @@ void runAccelGest(void* argument)
 		sampleCount = 0;
 		frameCount = 0;		
 		initBuffer(&accelAq);
-		BLUE(0);
+		//BLUE(0);
 		/* go to sleep after hard work */
 		vTaskSuspend(NULL);
 	}

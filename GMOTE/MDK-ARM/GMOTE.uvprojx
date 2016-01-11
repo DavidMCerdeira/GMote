@@ -372,7 +372,7 @@
               <MiscControls>--C99</MiscControls>
               <Define>USE_HAL_DRIVER,STM32F407xx</Define>
               <Undefine></Undefine>
-              <IncludePath>..\Inc;             ..\Drivers\STM32F4xx_HAL_Driver\Inc;             ..\Drivers\STM32F4xx_HAL_Driver\Inc\Legacy;             ..\Middlewares\Third_Party\FreeRTOS\Source\portable\RVDS\ARM_CM4F;             ..\Middlewares\Third_Party\FreeRTOS\Source\include;             ..\Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS;             ..\Drivers\CMSIS\Include;             ..\Drivers\CMSIS\Device\ST\STM32F4xx\Include</IncludePath>
+              <IncludePath>..\Inc;                 ..\Drivers\STM32F4xx_HAL_Driver\Inc;                 ..\Drivers\STM32F4xx_HAL_Driver\Inc\Legacy;                 ..\Middlewares\Third_Party\FreeRTOS\Source\portable\RVDS\ARM_CM4F;                 ..\Middlewares\Third_Party\FreeRTOS\Source\include;                 ..\Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS;                 ..\Drivers\CMSIS\Include;                 ..\Drivers\CMSIS\Device\ST\STM32F4xx\Include</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -606,6 +606,11 @@
           <GroupName>GMote</GroupName>
           <Files>
             <File>
+              <FileName>comunication.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\comunication.c</FilePath>
+            </File>
+            <File>
               <FileName>GMoteISR.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\GMoteISR.c</FilePath>
@@ -624,6 +629,11 @@
               <FileName>processing.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\processing.c</FilePath>
+            </File>
+            <File>
+              <FileName>GMotePwrCtrl.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\GMotePwrCtrl.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -704,11 +714,6 @@
               <FileName>nrf24l01.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\nrf24l01.c</FilePath>
-            </File>
-            <File>
-              <FileName>comunication.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Src\comunication.c</FilePath>
             </File>
           </Files>
         </Group>
