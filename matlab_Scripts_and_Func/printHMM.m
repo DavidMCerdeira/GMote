@@ -1,107 +1,84 @@
-fileIDc = fopen('.//GMOTE//Src//HMM_param.c', 'wt');
-fileIDh = fopen('.//GMOTE//Inc//HMM_param.h', 'wt');
+fileIDHMMc = fopen('.//GMOTE//Src//HMM_param.c', 'wt');
+fileIDHMMh = fopen('.//GMOTE//Inc//HMM_param.h', 'wt');
 
-fprintf(fileIDh, '#ifndef _HMM_PARAM_H\n');
-fprintf(fileIDh, '#define _HMM_PARAM_H\n\n');
+fprintf(fileIDHMMh, '#ifndef _HMM_PARAM_H\n');
+fprintf(fileIDHMMh, '#define _HMM_PARAM_H\n\n');
 
-fprintf(fileIDh, '#define NR_OF_STATES %d\n', states);
-fprintf(fileIDh, '#define CDBK_SIZE %d\n', codebookSize);
-fprintf(fileIDh, '#define NR_OF_DIM %d\n\n', 6);
+fprintf(fileIDHMMh, '#include "HMM_param.h"\n');
 
-fprintf(fileIDh, 'enum gest {');
+fprintf(fileIDHMMh, '#define NR_OF_STATES %d\n', states);
+
+fprintf(fileIDHMMh, 'enum gest {');
 for i = 1 : number_of_gestures
-    fprintf(fileIDh, '%s', gesture{i});
+    fprintf(fileIDHMMh, '%s', gesture{i});
     if i == 1
-        fprintf(fileIDh, ' = 0, ');
+        fprintf(fileIDHMMh, ' = 0, ');
     else
-       fprintf(fileIDh, ', ');
+       fprintf(fileIDHMMh, ', ');
     end
 end
 
-fprintf(fileIDh, 'NUM_GEST, NOT_RECOGNIZED};\n');
-fprintf(fileIDh, 'typedef enum gest gest;\n\n');
+fprintf(fileIDHMMh, 'NUM_GEST, NOT_RECOGNIZED};\n');
+fprintf(fileIDHMMh, 'typedef enum gest gest;\n\n');
 
+fprintf(fileIDHMMc, '#include "HMM_param.h"\n');
 
-fprintf(fileIDc, '#include "HMM_param.h"\n');
-
-fprintf(fileIDc, '\n\n');
+fprintf(fileIDHMMc, '\n\n');
 %{
-fprintf(fileIDh, 'extern const float A[NUM_GEST][NR_OF_STATES][NR_OF_STATES];\n');
-fprintf(fileIDc, 'const float A[NUM_GEST][NR_OF_STATES][NR_OF_STATES]={\n');
+fprintf(fileIDHMMh, 'extern const float A[NUM_GEST][NR_OF_STATES][NR_OF_STATES];\n');
+fprintf(fileIDHMMc, 'const float A[NUM_GEST][NR_OF_STATES][NR_OF_STATES]={\n');
 for i = 1 : number_of_gestures
-    h{i}.printA(fileIDc);
+    h{i}.printA(fileIDHMMc);
     if i ~= number_of_gestures
-        fprintf(fileIDc, ',\n\n');
+        fprintf(fileIDHMMc, ',\n\n');
     end
 end
 %}
 % %{
-fprintf(fileIDh, 'extern const float AT[NUM_GEST][NR_OF_STATES][NR_OF_STATES];\n');
-fprintf(fileIDc, 'const float AT[NUM_GEST][NR_OF_STATES][NR_OF_STATES]={\n');
+fprintf(fileIDHMMh, 'extern const float AT[NUM_GEST][NR_OF_STATES][NR_OF_STATES];\n');
+fprintf(fileIDHMMc, 'const float AT[NUM_GEST][NR_OF_STATES][NR_OF_STATES]={\n');
 for i = 1 : number_of_gestures
-    h{i}.printAT(fileIDc);
+    h{i}.printAT(fileIDHMMc);
     if i ~= number_of_gestures
-        fprintf(fileIDc, ',\n\n');
+        fprintf(fileIDHMMc, ',\n\n');
     end
 end
 %}
-fprintf(fileIDc, '\n};\n\n');
+fprintf(fileIDHMMc, '\n};\n\n');
 
 %{
-fprintf(fileIDh, 'extern const float B[NUM_GEST][NR_OF_STATES][CDBK_SIZE];\n');
-fprintf(fileIDc, 'const float B[NUM_GEST][NR_OF_STATES][CDBK_SIZE]={\n');
+fprintf(fileIDHMMh, 'extern const float B[NUM_GEST][NR_OF_STATES][CDBK_SIZE];\n');
+fprintf(fileIDHMMc, 'const float B[NUM_GEST][NR_OF_STATES][CDBK_SIZE]={\n');
 for i = 1 : number_of_gestures
-    h{i}.printB(fileIDc);
+    h{i}.printB(fileIDHMMc);
     if i ~= number_of_gestures
-        fprintf(fileIDc, ',\n\n');
+        fprintf(fileIDHMMc, ',\n\n');
     end
 end
 %}
 % %{
-fprintf(fileIDh, 'extern const float BT[NUM_GEST][CDBK_SIZE][NR_OF_STATES];\n');
-fprintf(fileIDc, 'const float BT[NUM_GEST][CDBK_SIZE][NR_OF_STATES]={\n');
+fprintf(fileIDHMMh, 'extern const float BT[NUM_GEST][CDBK_SIZE][NR_OF_STATES];\n');
+fprintf(fileIDHMMc, 'const float BT[NUM_GEST][CDBK_SIZE][NR_OF_STATES]={\n');
 for i = 1 : number_of_gestures
-    h{i}.printBT(fileIDc);
+    h{i}.printBT(fileIDHMMc);
     if i ~= number_of_gestures
-        fprintf(fileIDc, ',\n\n');
+        fprintf(fileIDHMMc, ',\n\n');
     end
 end
 %}
-fprintf(fileIDc, '\n};\n\n');
- fprintf(fileIDh, 'extern const float Pi[NUM_GEST][NR_OF_STATES];\n');
+fprintf(fileIDHMMc, '\n};\n\n');
+fprintf(fileIDHMMh, 'extern const float Pi[NUM_GEST][NR_OF_STATES];\n');
 
-fprintf(fileIDh, '\n#endif\n');
-fprintf(fileIDc, 'const float Pi[NUM_GEST][NR_OF_STATES]={\n');
+fprintf(fileIDHMMh, '\n#endif\n');
+fprintf(fileIDHMMc, 'const float Pi[NUM_GEST][NR_OF_STATES]={\n');
 for i = 1 : number_of_gestures
-    h{i}.printPi(fileIDc);
+    h{i}.printPi(fileIDHMMc);
     if i ~= number_of_gestures
-        fprintf(fileIDc, ',\n\n');
+        fprintf(fileIDHMMc, ',\n\n');
     end
 end
-fprintf(fileIDc, '\n};\n\n');
-
-fprintf(fileIDh, 'extern const float codeBookData[CDBK_SIZE][NR_OF_DIM];\n');
-fclose(fileIDh);
-
-% fprintf(fileIDc, 'const float codeBookData[CDBK_SIZE][NR_OF_DIM]={\n');
-% for i = 1 : codebookSize
-%     fprintf(fileIDc, '{');
-%     for j = 1 : 6
-%         fprintf(fileIDc, '%012f', m(j, i));
-%         if j ~= 6
-%             fprintf(fileIDc, ', ');
-%         end
-%     end
-%     
-%     if i ~= codebookSize
-%         fprintf(fileIDc, '},\n');
-%     else
-%         fprintf(fileIDc, '}');
-%     end
-% end
-%fprintf(fileIDc, '\n};\n\n');
-fclose(fileIDc);
+fprintf(fileIDHMMc, '\n};\n\n');
 
 
-
-
+fclose(fileIDHMMh);
+fclose(fileIDHMMc);

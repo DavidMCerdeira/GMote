@@ -623,11 +623,6 @@
               <FileType>1</FileType>
               <FilePath>..\Src\processing.c</FilePath>
             </File>
-            <File>
-              <FileName>GMotePwrCtrl.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Src\GMotePwrCtrl.c</FilePath>
-            </File>
           </Files>
         </Group>
         <Group>
@@ -692,6 +687,11 @@
               <FileName>simpleProcessing.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\simpleProcessing.c</FilePath>
+            </File>
+            <File>
+              <FileName>codebook_param.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\codebook_param.c</FilePath>
             </File>
           </Files>
         </Group>

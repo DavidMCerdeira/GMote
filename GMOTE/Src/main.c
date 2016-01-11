@@ -143,8 +143,6 @@ int main(void)
 	/* initiate comunication module */
 	xTaskCreate(communication_run, "Comunication", 512, NULL, CommunicationPriority, &communicationThreadHandle);
 	
-	/* initiate power mode */
-	//xTaskCreate(GMotePwrCtrl_Run, "GMotePwrCtrl", 128, NULL, GMotePwrCtrlPriority, &gmotePwrCtrl);
   /* USER CODE END RTOS_THREADS */
 
   /* USER CODE BEGIN RTOS_QUEUES */

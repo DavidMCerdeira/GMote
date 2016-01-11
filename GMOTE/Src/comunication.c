@@ -28,9 +28,9 @@ void communication_run(void *arg)
 		while(msgQrcvd == pdFALSE)
 		{
 			msgQrcvd = xQueueReceive(communicationMsgQ, &byte, portMAX_DELAY);
-		}	
+		}
 		
-		if(communication_validate(byte)){		
+		if(communication_validate(byte)){
 			communication_send("%d\n", byte);	
 		}
 	}

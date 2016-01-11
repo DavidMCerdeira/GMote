@@ -92,8 +92,8 @@ void gPress(void)
 	ORANGE(1);
 	while(1){
 		/* wait for frames */
-		accelMsgQRcvd = xQueueReceive(accelFrameReadyMsgQ, (void*)&accelRes, portMAX_DELAY);
-		gyroMsgQRcvd =  xQueueReceive(gyroFrameReadyMsgQ,  (void*)&gyroRes,  portMAX_DELAY);
+		accelMsgQRcvd = xQueueReceive(accelFrameReadyMsgQ, (void*)&accelRes, 1000);
+		gyroMsgQRcvd =  xQueueReceive(gyroFrameReadyMsgQ,  (void*)&gyroRes,  1000);
 		
 		/* check if user stopped gesture */
 		notifRcvd = xTaskNotifyWait(GStop, 0, &notification, 0);
@@ -190,7 +190,7 @@ void gEquilib(void)
 		while((accelMsgQRcvd == pdFALSE) && (notifRcvd == pdFALSE))
 		{
 			/* wait for data */
-			accelMsgQRcvd = xQueueReceive(accelFrameReadyMsgQ, (void*)data, portMAX_DELAY);
+			accelMsgQRcvd = xQueueReceive(accelFrameReadyMsgQ, (void*)data, 1000);
 			/* stop? */
 			notifRcvd = xTaskNotifyWait(EqOFF, 0, &notification, 0);
 		}

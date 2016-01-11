@@ -88,6 +88,8 @@ void HMM_ControlTsk(void *arg){
 			QMsgW8 = xQueuePeek(framesRdy, (void*)&buff, ticks2w8);
 		}
 		QMsgW8 = pdFALSE;
+		
+		/*don't let system sleep while we are processing*/ 
 		ticks2w8 = 1000;
 		
 		/* if what was inserted on the queue isn't null,
@@ -129,6 +131,7 @@ void HMM_ControlTsk(void *arg){
 						
 			xQueueSendToBack(likelyGest, (void*)&most_likely, 10);
 			
+			/* the system may sleep */
 			ticks2w8 = portMAX_DELAY;
 			
 			//printf("Gesture %d with P = %f\n", most_likely, fwData[most_likely].prob);

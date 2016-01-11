@@ -1,9 +1,9 @@
 #ifndef _HMM_PARAM_H
 #define _HMM_PARAM_H
 
+#include "codebook_param.h"
+
 #define NR_OF_STATES 10
-#define CDBK_SIZE 32
-#define NR_OF_DIM 6
 
 enum gest {pictures = 0, video, music, settings, play_pause, fullscreen, next, previous, NUM_GEST, NOT_RECOGNIZED};
 typedef enum gest gest;

@@ -51,14 +51,18 @@ void gestPreprocessing(void *arg)
 	BaseType_t preProcMsgRcvd = pdFALSE;
 	int aqSensorRes = 0;
 	static int begin = 0;
+	TickType_t ticks2w8 = portMAX_DELAY;
 	
 	while(1){
 		/*Receive frame for converting*/
 		while(preProcMsgRcvd == pdFALSE){
-			preProcMsgRcvd = xQueueReceive(preProcFramReadyMsgQ, (void*)&aqSensorRes, portMAX_DELAY);
+			preProcMsgRcvd = xQueueReceive(preProcFramReadyMsgQ, (void*)&aqSensorRes, ticks2w8);
 		}
 		/* reset flag */
 		preProcMsgRcvd = pdFALSE;
+		
+		/*don't wait forever so that it doesn't let the system sleep*/
+		ticks2w8 = 1000;
 		
 		if(aqSensorRes != 0)
 		{
@@ -73,9 +77,12 @@ void gestPreprocessing(void *arg)
 		{
 			//printf("#\n");
 			begin = 0;
-			idx = NULL;
+			idx = NULL;		
+			
+			/*the system may sleep after all frames*/
+			ticks2w8 = portMAX_DELAY;
 		}
-		
+
 		xQueueSend(framesRdy, &idx, 10);
 	}
 }
