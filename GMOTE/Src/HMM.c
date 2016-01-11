@@ -74,6 +74,7 @@ void HMM_ControlTsk(void *arg){
 	EventBits_t fwFinished = 0;
 	EventBits_t fwSetMask = 0;
 	UBaseType_t QMsgW8 = pdFALSE;
+	TickType_t ticks2w8 = portMAX_DELAY;
 	
 	/* initializing the expected mask for the events that
 	 * notify the end of a fw function*/
@@ -84,9 +85,10 @@ void HMM_ControlTsk(void *arg){
 	{
 		/* waiting for frames */
 		while(QMsgW8 == pdFALSE){
-			QMsgW8 = xQueuePeek(framesRdy, (void*)&buff, portMAX_DELAY);
+			QMsgW8 = xQueuePeek(framesRdy, (void*)&buff, ticks2w8);
 		}
 		QMsgW8 = pdFALSE;
+		ticks2w8 = 1000;
 		
 		/* if what was inserted on the queue isn't null,
 		 * the aquisition hasn't finished */		
@@ -126,6 +128,8 @@ void HMM_ControlTsk(void *arg){
 				most_likely = NOT_RECOGNIZED;
 						
 			xQueueSendToBack(likelyGest, (void*)&most_likely, 10);
+			
+			ticks2w8 = portMAX_DELAY;
 			
 			//printf("Gesture %d with P = %f\n", most_likely, fwData[most_likely].prob);
 			

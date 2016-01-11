@@ -21,7 +21,7 @@ void communication_run(void *arg)
 	
 	communication_init();
 	
-	nrfPrint("Ready!\n");
+	nrfPrint("2");
 	while(1)
 	{
 		msgQrcvd = pdFALSE;

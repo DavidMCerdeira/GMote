@@ -40,6 +40,8 @@
 #include "comunication.h"
 #include "keypad.h"
 #include "boias.h"
+#include "GMotePwrCtrl.h"
+#include "priorities.h"
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
@@ -48,7 +50,6 @@ I2C_HandleTypeDef hi2c1;
 SPI_HandleTypeDef hspi1;
 SPI_HandleTypeDef hspi3;
 
-TIM_HandleTypeDef htim2;
 TIM_HandleTypeDef htim6;
 TIM_HandleTypeDef htim7;
 
@@ -62,6 +63,7 @@ TaskHandle_t aqManagerHandle = NULL;
 TaskHandle_t preProcThreadHandle = NULL;
 TaskHandle_t communicationThreadHandle = NULL;
 TaskHandle_t keypadThreadHandle = NULL;
+TaskHandle_t gmotePwrCtrl = NULL;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -70,7 +72,6 @@ static void MX_GPIO_Init(void);
 static void MX_I2C1_Init(void);
 static void MX_SPI1_Init(void);
 static void MX_SPI3_Init(void);
-static void MX_TIM2_Init(void);
 static void MX_TIM6_Init(void);
 static void MX_TIM7_Init(void);
 static void MX_USART2_UART_Init(void);
@@ -105,7 +106,6 @@ int main(void)
   MX_I2C1_Init();
   MX_SPI1_Init();
   MX_SPI3_Init();
-  MX_TIM2_Init();
   MX_TIM6_Init();
   MX_TIM7_Init();
   MX_USART2_UART_Init();
@@ -128,9 +128,7 @@ int main(void)
 
   /* Create the thread(s) */
   /* definition and creation of defaultTask */
-//  osThreadDef(defaultTask, StartDefaultTask, osPriorityNormal, 0, 128);
-//  defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
-
+ 
   /* USER CODE BEGIN RTOS_THREADS */
 	/* initiate aquisition manager */
 	xTaskCreate(aqManager, "AqManager", 1024, NULL, AqManagerPriority, &aqManagerHandle);		
@@ -144,6 +142,9 @@ int main(void)
 	
 	/* initiate comunication module */
 	xTaskCreate(communication_run, "Comunication", 512, NULL, CommunicationPriority, &communicationThreadHandle);
+	
+	/* initiate power mode */
+	//xTaskCreate(GMotePwrCtrl_Run, "GMotePwrCtrl", 128, NULL, GMotePwrCtrlPriority, &gmotePwrCtrl);
   /* USER CODE END RTOS_THREADS */
 
   /* USER CODE BEGIN RTOS_QUEUES */
@@ -153,7 +154,7 @@ int main(void)
  
 
   /* Start scheduler */
-//  osKernelStart();
+
   
   /* We should never get here as control is now taken by the scheduler */
 
@@ -259,38 +260,6 @@ void MX_SPI3_Init(void)
 
 }
 
-/* TIM2 init function */
-void MX_TIM2_Init(void)
-{
-
-  TIM_ClockConfigTypeDef sClockSourceConfig;
-  TIM_MasterConfigTypeDef sMasterConfig;
-  TIM_OC_InitTypeDef sConfigOC;
-
-  htim2.Instance = TIM2;
-  htim2.Init.Prescaler = 8;
-  htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim2.Init.Period = 0xFFFFFFFF;
-  htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
-  HAL_TIM_Base_Init(&htim2);
-
-  sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
-  HAL_TIM_ConfigClockSource(&htim2, &sClockSourceConfig);
-
-  HAL_TIM_OC_Init(&htim2);
-
-  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
-  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
-  HAL_TIMEx_MasterConfigSynchronization(&htim2, &sMasterConfig);
-
-  sConfigOC.OCMode = TIM_OCMODE_TIMING;
-  sConfigOC.Pulse = 0;
-  sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
-  sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
-  HAL_TIM_OC_ConfigChannel(&htim2, &sConfigOC, TIM_CHANNEL_1);
-
-}
-
 /* TIM6 init function */
 void MX_TIM6_Init(void)
 {
@@ -316,9 +285,9 @@ void MX_TIM7_Init(void)
   TIM_MasterConfigTypeDef sMasterConfig;
 
   htim7.Instance = TIM7;
-  htim7.Init.Prescaler = 8;
+  htim7.Init.Prescaler = 8000;
   htim7.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim7.Init.Period = 0;
+  htim7.Init.Period = 5000;
   HAL_TIM_Base_Init(&htim7);
 
   sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;

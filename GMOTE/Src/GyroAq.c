@@ -23,7 +23,7 @@ void  runGyroGest(void * argument){
 	
 	while(1){
 		/* start aquisition */
-		RED(1);
+		//RED(1);
 		MPU_WAKEUP();
 		
 		while(sampleCount < AQ_SIZE){			
@@ -64,7 +64,7 @@ void  runGyroGest(void * argument){
 		sampleCount = 0;
 		frameCount = 0;		
 		initBuffer(&gyroAq);
-		RED(0);
+		//RED(0);
 		vTaskSuspend(NULL);
 	}
 }

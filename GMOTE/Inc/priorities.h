@@ -1,17 +1,19 @@
 #ifndef _PRIORITIES_
 #define _PRIORITIES_
 
-#define AqManagerPriority 6
-#define AqSensorPriority  7
+#define AqManagerPriority 7
+#define AqSensorPriority  8
 
-#define ProcRunPriority 2
-#define GestPreProcPriority 3
-#define SimpleProcPrioity 3
-#define GestProcManPriority 5
-#define GestProcPriority 4
+#define ProcRunPriority 3
+#define GestPreProcPriority 4
+#define SimpleProcPrioity 4
+#define GestProcManPriority 6
+#define GestProcPriority 5
 
-#define CommunicationPriority 0
+#define CommunicationPriority 1
 
-#define KeypadPriority 7
+#define KeypadPriority 8
+
+#define GMotePwrCtrlPriority 0
 
 #endif

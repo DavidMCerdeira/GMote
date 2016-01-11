@@ -1,6 +1,6 @@
 #include "sensorAq.h"
 
-#define TRAIN
+//#define TRAIN
 
 void gPress(void);
 void gEquilib(void);
@@ -141,10 +141,13 @@ void gPress(void)
 	}
 	gyroRes = 0;
 
+	#ifdef TRAIN
+	printFrame(nFrames*FRAME_SIZE);	
+	#endif
 	#ifndef TRAIN
-	printFrame(nFrames*FRAME_SIZE);
 	xQueueSend(preProcFramReadyMsgQ, &gyroRes, 10);
 	#endif
+
 	last = 0;
 
 	nFrames = 0;

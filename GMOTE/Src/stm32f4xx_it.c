@@ -37,12 +37,13 @@
 #include "cmsis_os.h"
 
 /* USER CODE BEGIN 0 */
-
+#include "GMotePwrCtrl.h"
+#include "DiscoLeds.h"
 /* USER CODE END 0 */
 
 /* External variables --------------------------------------------------------*/
 extern void xPortSysTickHandler(void);
-extern TIM_HandleTypeDef htim2;
+extern TIM_HandleTypeDef htim7;
 
 /******************************************************************************/
 /*            Cortex-M4 Processor Interruption and Exception Handlers         */ 
@@ -159,20 +160,6 @@ void EXTI9_5_IRQHandler(void)
 }
 
 /**
-* @brief This function handles TIM2 global interrupt.
-*/
-void TIM2_IRQHandler(void)
-{
-  /* USER CODE BEGIN TIM2_IRQn 0 */
-
-  /* USER CODE END TIM2_IRQn 0 */
-  HAL_TIM_IRQHandler(&htim2);
-  /* USER CODE BEGIN TIM2_IRQn 1 */
-
-  /* USER CODE END TIM2_IRQn 1 */
-}
-
-/**
 * @brief This function handles EXTI line[15:10] interrupts.
 */
 void EXTI15_10_IRQHandler(void)
@@ -189,6 +176,26 @@ void EXTI15_10_IRQHandler(void)
   /* USER CODE BEGIN EXTI15_10_IRQn 1 */
 
   /* USER CODE END EXTI15_10_IRQn 1 */
+}
+
+/**
+* @brief This function handles TIM7 global interrupt.
+*/
+void TIM7_IRQHandler(void)
+{
+  /* USER CODE BEGIN TIM7_IRQn 0 */
+	static int state = 1;
+	static BaseType_t woke = pdTRUE;
+  /* USER CODE END TIM7_IRQn 0 */
+  HAL_TIM_IRQHandler(&htim7);
+  /* USER CODE BEGIN TIM7_IRQn 1 */
+	if(woke != pdTRUE){
+		xSemaphoreGiveFromISR(GMotePwrCtrl_Sem, &woke);
+		portYIELD_FROM_ISR(woke);
+	}
+	woke = pdFALSE;
+	RED(state = !state);
+  /* USER CODE END TIM7_IRQn 1 */
 }
 
 /* USER CODE BEGIN 1 */

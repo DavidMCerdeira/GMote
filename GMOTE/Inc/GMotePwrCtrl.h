@@ -11,7 +11,7 @@
 
 extern SemaphoreHandle_t GMotePwrCtrl_Sem;
 
-void GMotePwrCtrl_RefreshTimeoutTimer();
+void GMotePwrCtrl_RefreshTimeoutTimer(void);
 
 void GMotePwrCtrl_Run(void *arg);
 
