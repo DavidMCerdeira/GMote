@@ -159,7 +159,7 @@ void printFrame(int idx)
 	int i = 0;
 	for(; i < (last + idx); i++)
 	{
-		nrfPrint("%+06.0f, %+06.0f, %+06.0f, %+06.0f, %+06.0f, %+06.0f\n", 
+		nrfPrint("%+06.0f %+06.0f %+06.0f %+06.0f %+06.0f %+06.0f ", 
 					data[i][ACCEL_X], 
 					data[i][ACCEL_Y], 
 					data[i][ACCEL_Z],
@@ -167,6 +167,8 @@ void printFrame(int idx)
 					data[i][GYRO_Y], 
 					data[i][GYRO_Z]);
 	}
+	
+			nrfPrint("\n");
 	
 	last += idx;
 }
