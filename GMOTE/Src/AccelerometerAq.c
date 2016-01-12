@@ -4,7 +4,7 @@ aquisitn accelAq;
 
 SemaphoreHandle_t  accelDrdySemaph;
 extern QueueHandle_t accelFrameReadyMsgQ;
-extern QueueHandle_t simpleProcFramReadyMsgQ;
+extern QueueHandle_t accelSampleReadyMsgQ;
 
 void runAccelGest(void* argument)
 {
@@ -37,7 +37,7 @@ void runAccelGest(void* argument)
 		/* continue sampling until condition */
 		while((sampleCount < AQ_SIZE)){
 			/* stop listening? */
-			notifRcvd = xTaskNotifyWait(STOP, 0, &notification, 0);
+			notifRcvd = xTaskNotifyWait(0, STOP, &notification, 0);
 			/* stop aquiring? */
 			if(notifRcvd && (notification & STOP)){
 				goto EXIT;
@@ -116,6 +116,7 @@ void runAccelSimple(void* argument)
 		
 		while(!leave){
 			/* wait for data or notfication*/
+			receivedSem = receivedNotify = pdFALSE;
 			while((receivedSem == pdFALSE) && (receivedNotify == pdFALSE)){
 				receivedSem = xSemaphoreTake(accelDrdySemaph, portMAX_DELAY);
 				/* stop listening? */
@@ -135,7 +136,7 @@ void runAccelSimple(void* argument)
 				/* read sample */
 				read_sample((uint8_t*)(&sample));				
 				/* send sample in Q */
-				xQueueSend(simpleProcFramReadyMsgQ, sample, 10);
+				xQueueSend(accelSampleReadyMsgQ, sample, 10);
 			}
 			/* notification*/
 			else if(receivedNotify == pdTRUE)
@@ -144,6 +145,7 @@ void runAccelSimple(void* argument)
 				leave = 1;
 			}			
 		}
+		
 		/* pause accel */
 		pause_accel();
 		/*release mutex*/
@@ -154,7 +156,7 @@ void runAccelSimple(void* argument)
 		/* reset flag */
 		leave = 0;
 		/* go to sleep, sweet dreams */
-		vTaskSuspend(NULL);		
+		vTaskSuspend(NULL);
 	}
 }
 

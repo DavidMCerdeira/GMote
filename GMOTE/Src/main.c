@@ -40,7 +40,6 @@
 #include "comunication.h"
 #include "keypad.h"
 #include "boias.h"
-#include "GMotePwrCtrl.h"
 #include "priorities.h"
 /* USER CODE END Includes */
 
@@ -55,7 +54,6 @@ TIM_HandleTypeDef htim7;
 
 UART_HandleTypeDef huart2;
 
-osThreadId defaultTaskHandle;
 
 /* USER CODE BEGIN PV */
 /* Private variables ---------------------------------------------------------*/
@@ -75,7 +73,6 @@ static void MX_SPI3_Init(void);
 static void MX_TIM6_Init(void);
 static void MX_TIM7_Init(void);
 static void MX_USART2_UART_Init(void);
-void StartDefaultTask(void const * argument);
 
 /* USER CODE BEGIN PFP */
 /* Private function prototypes -----------------------------------------------*/
@@ -132,7 +129,7 @@ int main(void)
   /* USER CODE BEGIN RTOS_THREADS */
 	/* initiate aquisition manager */
 	xTaskCreate(aqManager, "AqManager", 1024, NULL, AqManagerPriority, &aqManagerHandle);		
-	//xTaskCreate(boias, "boias", 1024, NULL, AqManagerPriority, &aqManagerHandle);
+//	//xTaskCreate(boias, "boias", 1024, NULL, AqManagerPriority, &aqManagerHandle);
 	
 	/* initiate pre processing thread; */
 	xTaskCreate(processing_run, "Processing", 512, NULL, ProcRunPriority, &preProcThreadHandle);
@@ -147,7 +144,7 @@ int main(void)
 
   /* USER CODE BEGIN RTOS_QUEUES */
   /* add queues, ... */
-	ORANGE(0);
+	
   /* USER CODE END RTOS_QUEUES */
  
 
@@ -158,7 +155,7 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-	
+	ORANGE(0);
 	vTaskStartScheduler();
   while (1)
   {

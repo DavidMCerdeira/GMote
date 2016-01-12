@@ -4,6 +4,7 @@ HMM alphabet_Models[NUM_GEST];
 forward fwData[NUM_GEST];
 
 QueueHandle_t framesRdy;
+QueueHandle_t likelyGest;
 
 TaskHandle_t forwardTsks[NUM_GEST];
 TaskHandle_t hmmCtrlTsk;
@@ -11,7 +12,6 @@ TaskHandle_t hmmCtrlTsk;
 EventGroupHandle_t goForward;
 EventGroupHandle_t fwComplete;
 
-QueueHandle_t likelyGest;
 
 float32_t vec_content_sum(const float32_t* vector, const int size);
 
@@ -115,7 +115,6 @@ void HMM_ControlTsk(void *arg){
 			for(i = 0; i < NUM_GEST; i++)
 			{
 				//printf("Gesture %d with P = %f\n", i, fwData[i].prob);
-				
 				if((fwData[i].prob == fwData[i].prob) && (fwData[i].prob > fwData[most_likely].prob))
 				{
 					if(i != most_likely)
@@ -123,7 +122,6 @@ void HMM_ControlTsk(void *arg){
 				}
 				/* reset algorithm structures */
 				fwData[i].firstTime = 1;
-				
 			}
 			
 			if((fwData[most_likely].prob != fwData[most_likely].prob) || (isinf(fwData[most_likely].prob)))
@@ -134,8 +132,7 @@ void HMM_ControlTsk(void *arg){
 			/* the system may sleep */
 			ticks2w8 = portMAX_DELAY;
 			
-			//printf("Gesture %d with P = %f\n", most_likely, fwData[most_likely].prob);
-			
+			//printf("Gesture %d with P = %f\n", most_likely, fwData[most_likely].prob);		
 			for(i = 0; i < NUM_GEST; i++)
 			{
 				fwData[i].prob = 0;

@@ -2,9 +2,10 @@
 
 extern QueueHandle_t communicationMsgQ;
 extern TaskHandle_t aqManagerHandle;
+extern TaskHandle_t accelSimpleThreadHandle;
 QueueHandle_t keypadMsgQ;
 
-int buttons[N_BUTTONS] = {0};
+int buttons[N_BUTTONS] = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
 
 void keypad_init(void);
 int  keypad_buttonState(int button);
@@ -60,19 +61,20 @@ void keypad_run(void *arg)
 		QRes = pdFALSE;
 		
 		button = keypad_getButtonFromPin(pin);
-		printf("Button %d\n", button);
+		
 		before = buttons[button];
 		setInterruptState(button, 0);
 		after = buttons[button] = keypad_debounceButton(button);
 		setInterruptState(button, 1);
 		
 		if(after != before){
-			if(after){
+			if(!after){				
 				keypad_actionPressed(button);
 			}
 			else{
 				keypad_actionReleased(button);
 			}
+			//printf("Button %d->%d\n", button, after);
 		}
 	}
 }
@@ -82,56 +84,58 @@ void keypad_init(void)
 	/* init Q */ 
 	keypadMsgQ = xQueueCreate(5, sizeof(int));
 	
-	/* init gpio */
-	
+	/* init gpio */	
 	HAL_NVIC_SetPriority(GMOTE_BUTTON_0_EXTI, GMOTE_BUTTONS_IT_PRIORITY, 0);
 	HAL_NVIC_EnableIRQ(GMOTE_BUTTON_0_EXTI);
 
-//	HAL_NVIC_SetPriority(GMOTE_BUTTON_1_EXTI,  GMOTE_BUTTONS_IT_PRIORITY, 0);
-//	HAL_NVIC_EnableIRQ(GMOTE_BUTTON_1_EXTI);
+	HAL_NVIC_SetPriority(GMOTE_BUTTON_1_EXTI,  GMOTE_BUTTONS_IT_PRIORITY, 0);
+	HAL_NVIC_EnableIRQ(GMOTE_BUTTON_1_EXTI);
 
-//	HAL_NVIC_SetPriority(GMOTE_BUTTON_2_EXTI,  GMOTE_BUTTONS_IT_PRIORITY, 0);
-//	HAL_NVIC_EnableIRQ(GMOTE_BUTTON_2_EXTI);
+	HAL_NVIC_SetPriority(GMOTE_BUTTON_2_EXTI,  GMOTE_BUTTONS_IT_PRIORITY, 0);
+	HAL_NVIC_EnableIRQ(GMOTE_BUTTON_2_EXTI);
 
-//	HAL_NVIC_SetPriority(GMOTE_BUTTON_3_EXTI,  GMOTE_BUTTONS_IT_PRIORITY, 0);
-//	HAL_NVIC_EnableIRQ(GMOTE_BUTTON_3_EXTI);
+	HAL_NVIC_SetPriority(GMOTE_BUTTON_3_EXTI,  GMOTE_BUTTONS_IT_PRIORITY, 0);
+	HAL_NVIC_EnableIRQ(GMOTE_BUTTON_3_EXTI);
 
-//	HAL_NVIC_SetPriority(GMOTE_BUTTON_4_EXTI,  GMOTE_BUTTONS_IT_PRIORITY, 0);
-//	HAL_NVIC_EnableIRQ(GMOTE_BUTTON_4_EXTI);
+	HAL_NVIC_SetPriority(GMOTE_BUTTON_4_EXTI,  GMOTE_BUTTONS_IT_PRIORITY, 0);
+	HAL_NVIC_EnableIRQ(GMOTE_BUTTON_4_EXTI);
 
-//	HAL_NVIC_SetPriority(GMOTE_BUTTON_5_EXTI,  GMOTE_BUTTONS_IT_PRIORITY, 0);
-//	HAL_NVIC_EnableIRQ(GMOTE_BUTTON_5_EXTI);
+	HAL_NVIC_SetPriority(GMOTE_BUTTON_5_EXTI,  GMOTE_BUTTONS_IT_PRIORITY, 0);
+	HAL_NVIC_EnableIRQ(GMOTE_BUTTON_5_EXTI);
 
-//	HAL_NVIC_SetPriority(GMOTE_BUTTON_6_EXTI,  GMOTE_BUTTONS_IT_PRIORITY, 0);
-//	HAL_NVIC_EnableIRQ(GMOTE_BUTTON_6_EXTI);
+	HAL_NVIC_SetPriority(GMOTE_BUTTON_6_EXTI,  GMOTE_BUTTONS_IT_PRIORITY, 0);
+	HAL_NVIC_EnableIRQ(GMOTE_BUTTON_6_EXTI);
 
-//	HAL_NVIC_SetPriority(GMOTE_BUTTON_7_EXTI,  GMOTE_BUTTONS_IT_PRIORITY, 0);
-//	HAL_NVIC_EnableIRQ(GMOTE_BUTTON_7_EXTI);
+	HAL_NVIC_SetPriority(GMOTE_BUTTON_7_EXTI,  GMOTE_BUTTONS_IT_PRIORITY, 0);
+	HAL_NVIC_EnableIRQ(GMOTE_BUTTON_7_EXTI);
 
-//	HAL_NVIC_SetPriority(GMOTE_BUTTON_8_EXTI,  GMOTE_BUTTONS_IT_PRIORITY, 0);
-//	HAL_NVIC_EnableIRQ(GMOTE_BUTTON_8_EXTI);
+	HAL_NVIC_SetPriority(GMOTE_BUTTON_8_EXTI,  GMOTE_BUTTONS_IT_PRIORITY, 0);
+	HAL_NVIC_EnableIRQ(GMOTE_BUTTON_8_EXTI);
 
-//	HAL_NVIC_SetPriority(GMOTE_BUTTON_9_EXTI,  GMOTE_BUTTONS_IT_PRIORITY, 0);
-//	HAL_NVIC_EnableIRQ(GMOTE_BUTTON_9_EXTI);
+	HAL_NVIC_SetPriority(GMOTE_BUTTON_9_EXTI,  GMOTE_BUTTONS_IT_PRIORITY, 0);
+	HAL_NVIC_EnableIRQ(GMOTE_BUTTON_9_EXTI);
 
-//	HAL_NVIC_SetPriority(GMOTE_BUTTON_10_EXTI, GMOTE_BUTTONS_IT_PRIORITY, 0);
-//	HAL_NVIC_EnableIRQ(GMOTE_BUTTON_10_EXTI);
+	HAL_NVIC_SetPriority(GMOTE_BUTTON_10_EXTI, GMOTE_BUTTONS_IT_PRIORITY, 0);
+	HAL_NVIC_EnableIRQ(GMOTE_BUTTON_10_EXTI);
 
-//	HAL_NVIC_SetPriority(GMOTE_BUTTON_11_EXTI, GMOTE_BUTTONS_IT_PRIORITY, 0);
-//	HAL_NVIC_EnableIRQ(GMOTE_BUTTON_11_EXTI);
+	HAL_NVIC_SetPriority(GMOTE_BUTTON_11_EXTI, GMOTE_BUTTONS_IT_PRIORITY, 0);
+	HAL_NVIC_EnableIRQ(GMOTE_BUTTON_11_EXTI);
 
-//	HAL_NVIC_SetPriority(GMOTE_BUTTON_12_EXTI, GMOTE_BUTTONS_IT_PRIORITY, 0);
-//	HAL_NVIC_EnableIRQ(GMOTE_BUTTON_12_EXTI);
+	HAL_NVIC_SetPriority(GMOTE_BUTTON_12_EXTI, GMOTE_BUTTONS_IT_PRIORITY, 0);
+	HAL_NVIC_EnableIRQ(GMOTE_BUTTON_12_EXTI);
 
 }
 
 void keypad_actionReleased(int button)
 {
-	if(button == GMOTE_BUTTON_0)
+	if((button == GMOTE_BUTTON_0) || (button == GMOTE_BUTTON_8))
 	{
-		GREEN(0);
 		/* signal aqManager to stop aquiring gesture */
 		xTaskNotify(aqManagerHandle, GStop, eSetBits);
+	}
+	else if(button == GMOTE_BUTTON_12)
+	{
+		
 	}
 }
 
@@ -139,28 +143,80 @@ void keypad_actionPressed(int button)
 {
 	BaseType_t QRes = pdFALSE;
 	int cmd;
+	static int aux_button_1 = 0;
 	
-	if(button == GMOTE_BUTTON_0)
+	if((button == GMOTE_BUTTON_0 ) || (button == GMOTE_BUTTON_8))
 	{
-		GREEN(1);
+		xTaskNotify(aqManagerHandle, EqOFF, eSetBits);
 		/* signal aqManager to start aquiring gesture */
 		xTaskNotify(aqManagerHandle, GStart, eSetBits);
 	}
-	else if(button == GMOTE_BUTTON_1)
+	else if(button == GMOTE_BUTTON_12)
 	{
 		/* signal aqManager to start equilib mode */
-		xTaskNotify(aqManagerHandle, EqON, eSetBits);
+		
+		if((aux_button_1 = !aux_button_1)){
+			xTaskNotify(aqManagerHandle, GStop, eSetBits);
+			xTaskNotify(aqManagerHandle, EqON, eSetBits);
+		} else {
+			xTaskNotify(aqManagerHandle, EqOFF, eSetBits);
+		}
 	}
 	else{
-//		while(QRes == pdFALSE){
-//			cmd = keypad_getCMD(button);
-//			QRes = xQueueSend(communicationMsgQ, &cmd, 10);
-//		}
+		while(QRes == pdFALSE){
+			cmd = keypad_getCMD(button);
+			QRes = xQueueSend(communicationMsgQ, &cmd, 10);
+		}
 	}
 }
 
 int keypad_getCMD(int button)
 {
+	int cmd = 0;
+	
+	if(button == GMOTE_BUTTON_0){
+		
+	}
+	else if(button == GMOTE_BUTTON_1){
+		cmd = NAV_DWN;
+	}
+	else if(button == GMOTE_BUTTON_2){
+		cmd = CMD_RW;
+	}
+	else if(button == GMOTE_BUTTON_3){
+		
+	}
+	else if(button == GMOTE_BUTTON_4){
+		cmd = NAV_L;
+	}
+	else if(button == GMOTE_BUTTON_5){
+		cmd = CMD_PP;
+	}
+	else if(button == GMOTE_BUTTON_6){
+		cmd = CMD_PRV;
+	}
+	else if(button == GMOTE_BUTTON_7){
+		cmd = NAV_UP;
+	}
+	else if(button == GMOTE_BUTTON_8){
+		/*gbutton*/
+	}
+	else if(button == GMOTE_BUTTON_9){
+		cmd = CMD_OK;
+	}
+	else if(button == GMOTE_BUTTON_10){
+		cmd = NAV_R;
+	}
+	else if(button == GMOTE_BUTTON_11){
+		cmd = CMD_FF;
+	}
+	else if(button == GMOTE_BUTTON_12){
+		/*equilb toggle*/
+	}
+	else if(button == GMOTE_BUTTON_13){
+		cmd = CMD_NXT;
+	}
+	
 	return CMD_PP;
 }
 

@@ -138,12 +138,12 @@ void simpleProc(void *arg)
 	
 	while(1)
 	{
+		/* reset flag */
+		preProcMsgRcvd = pdFALSE;	
 		/*Receive frame for converting*/
 		while(preProcMsgRcvd == pdFALSE){
 			preProcMsgRcvd = xQueueReceive(simpleProcFramReadyMsgQ, (void*)QData, portMAX_DELAY);
-		}
-		/* reset flag */
-		preProcMsgRcvd = pdFALSE;	
+		}		
 		
 		/* process data */
 		simpleRes = simpleProcessing(QData);
@@ -152,33 +152,27 @@ void simpleProc(void *arg)
 		if(simpleRes == RESXp)
 		{
 			send = NAV_R;	
-			c = 'X';
-			printf("%c", c);
 		}
 		else if(simpleRes == RESXm)
 		{
 			send = NAV_L;
-			c = 'x';
-			printf("%c", c);
 		}
 		else if(simpleRes == RESYp)
 		{
 			send = NAV_DWN;
-			c = 'y';
-			printf("%c", c);
 		}
 		else if(simpleRes == RESYm)
 		{
 			send = NAV_UP;
-			c = 'Y';
-			printf("%c", c);
 		}
 		else
 		{
 			send = 0;
 		}
 			
-		//xQueueSend(communicationMsgQ, &send, 10);
+		if(send != 0){
+			xQueueSend(communicationMsgQ, &send, 10);
+		}
 	}
 }
 

@@ -81,8 +81,9 @@ int main(void)
 
   /* USER CODE BEGIN 2 */
 	//initSPI();
-	nrf24l01_init();
 	printf("Hello\n");
+	nrf24l01_init();
+	
 	nrf24l01_printinfo();
 	//nrf24l01_printinfo();
   /* USER CODE END 2 */

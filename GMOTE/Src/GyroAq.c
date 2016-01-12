@@ -4,8 +4,9 @@
 aquisitn gyroAq;
 
 volatile int interruptEn = 0;
+
 SemaphoreHandle_t gyroDrdySemaph;
-extern volatile osMessageQId gyroFrameReadyMsgQ;
+extern QueueHandle_t gyroFrameReadyMsgQ;
 
 void gyroGetAq(void);
 

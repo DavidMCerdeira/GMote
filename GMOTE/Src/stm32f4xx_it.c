@@ -37,7 +37,6 @@
 #include "cmsis_os.h"
 
 /* USER CODE BEGIN 0 */
-#include "GMotePwrCtrl.h"
 #include "DiscoLeds.h"
 /* USER CODE END 0 */
 
@@ -184,17 +183,11 @@ void EXTI15_10_IRQHandler(void)
 void TIM7_IRQHandler(void)
 {
   /* USER CODE BEGIN TIM7_IRQn 0 */
-	static int state = 1;
-	static BaseType_t woke = pdTRUE;
+
   /* USER CODE END TIM7_IRQn 0 */
   HAL_TIM_IRQHandler(&htim7);
   /* USER CODE BEGIN TIM7_IRQn 1 */
-	if(woke != pdTRUE){
-		xSemaphoreGiveFromISR(GMotePwrCtrl_Sem, &woke);
-		portYIELD_FROM_ISR(woke);
-	}
-	woke = pdFALSE;
-	RED(state = !state);
+
   /* USER CODE END TIM7_IRQn 1 */
 }
 
