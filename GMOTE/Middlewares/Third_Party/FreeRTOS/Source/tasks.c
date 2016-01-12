@@ -2721,7 +2721,7 @@ static portTASK_FUNCTION( prvIdleTask, pvParameters )
 		#if ( configUSE_TICKLESS_IDLE != 0 )
 		{
 			BLUE(1);	
-		TickType_t xExpectedIdleTime;
+			TickType_t xExpectedIdleTime;
 
 			/* It is not desirable to suspend then resume the scheduler on
 			each iteration of the idle task.  Therefore, a preliminary

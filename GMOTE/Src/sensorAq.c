@@ -1,6 +1,6 @@
 #include "sensorAq.h"
 
-//#define TRAIN
+#define TRAIN
 
 void gPress(void);
 void gEquilib(void);
@@ -144,8 +144,7 @@ void gPress(void)
 
 	#ifdef TRAIN
 	printFrame(nFrames*FRAME_SIZE);	
-	#endif
-	#ifndef TRAIN
+	#else 
 	xQueueSend(preProcFramReadyMsgQ, &gyroRes, 10);
 	#endif
 
@@ -193,7 +192,7 @@ void gEquilib(void)
 		while((accelMsgQRcvd == pdFALSE) && (notifRcvd == pdFALSE))
 		{
 			/* wait for data */
-			accelMsgQRcvd = xQueueReceive(accelSampleReadyMsgQ, (void*)data, portMAX_DELAY);
+			accelMsgQRcvd = xQueueReceive(accelSampleReadyMsgQ, (void*)Qdata, portMAX_DELAY);
 			/* stop? */
 			notifRcvd = xTaskNotifyWait(0, EqOFF, &notification, 0);
 		}

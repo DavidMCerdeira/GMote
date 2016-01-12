@@ -144,7 +144,9 @@ void HMM_ControlTsk(void *arg){
 		while(QMsgW8 == pdFALSE){
 			QMsgW8 = xQueueReceive(framesRdy, (void*)&buff, 100);
 		}
-		vPortFree(buff);
+		if(buff != NULL){
+			vPortFree(buff);
+		}
 		QMsgW8 = pdFALSE;
 	}
 }

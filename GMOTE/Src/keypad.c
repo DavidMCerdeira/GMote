@@ -121,8 +121,8 @@ void keypad_init(void)
 	HAL_NVIC_SetPriority(GMOTE_BUTTON_11_EXTI, GMOTE_BUTTONS_IT_PRIORITY, 0);
 	HAL_NVIC_EnableIRQ(GMOTE_BUTTON_11_EXTI);
 
-	HAL_NVIC_SetPriority(GMOTE_BUTTON_12_EXTI, GMOTE_BUTTONS_IT_PRIORITY, 0);
-	HAL_NVIC_EnableIRQ(GMOTE_BUTTON_12_EXTI);
+//	HAL_NVIC_SetPriority(GMOTE_BUTTON_12_EXTI, GMOTE_BUTTONS_IT_PRIORITY, 0);
+//	HAL_NVIC_EnableIRQ(GMOTE_BUTTON_12_EXTI);
 
 }
 
@@ -133,7 +133,7 @@ void keypad_actionReleased(int button)
 		/* signal aqManager to stop aquiring gesture */
 		xTaskNotify(aqManagerHandle, GStop, eSetBits);
 	}
-	else if(button == GMOTE_BUTTON_12)
+	else if(button == GMOTE_BUTTON_3)
 	{
 		
 	}
@@ -151,7 +151,7 @@ void keypad_actionPressed(int button)
 		/* signal aqManager to start aquiring gesture */
 		xTaskNotify(aqManagerHandle, GStart, eSetBits);
 	}
-	else if(button == GMOTE_BUTTON_12)
+	else if(button == GMOTE_BUTTON_3)
 	{
 		/* signal aqManager to start equilib mode */
 		
@@ -193,7 +193,7 @@ int keypad_getCMD(int button)
 		cmd = CMD_PP;
 	}
 	else if(button == GMOTE_BUTTON_6){
-		cmd = CMD_PRV;
+		cmd = CMD_VOLm;
 	}
 	else if(button == GMOTE_BUTTON_7){
 		cmd = NAV_UP;
@@ -214,10 +214,13 @@ int keypad_getCMD(int button)
 		/*equilb toggle*/
 	}
 	else if(button == GMOTE_BUTTON_13){
-		cmd = CMD_NXT;
+		cmd = CMD_VOLp;
+	}
+	else{
+		cmd = -1;
 	}
 	
-	return CMD_PP;
+	return cmd;
 }
 
 void setInterruptState(int button, int state)

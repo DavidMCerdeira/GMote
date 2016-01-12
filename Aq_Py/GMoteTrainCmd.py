@@ -35,8 +35,8 @@ class GMoteCmd():
         c_TCB = {"name": "Aquiving CodeBook Data", "ID":"tcb", "Handler":self.TCB_command,"HELP":"tcb <int>: flag == 1 THEN colecting data for the Codebook ELSE colecting data for training"}
 
         self.number_of_lines = 1
-        self.CodebookDataDirectory =  ".\\..\\CodebookData\\%s\\"
-        self.TrainingDataDirectory =  ".\\..\\TrainingData\\%s\\"
+        self.CodebookDataDirectory =  ".\\..\\TrainingData\\codebook\\%s\\"
+        self.TrainingDataDirectory =  ".\\..\\TrainingData\\idx\\%s\\"
         self.saveSamplesDirectory = self.TrainingDataDirectory
         self.curGest = g_none["name"]
         self.commands = (c_MA, c_SG, c_WG, c_FS, c_SSG, c_PC, c_PG, c_HLP, c_SNL, c_TCB)

@@ -143,7 +143,7 @@ void simpleProc(void *arg)
 		/*Receive frame for converting*/
 		while(preProcMsgRcvd == pdFALSE){
 			preProcMsgRcvd = xQueueReceive(simpleProcFramReadyMsgQ, (void*)QData, portMAX_DELAY);
-		}		
+		}
 		
 		/* process data */
 		simpleRes = simpleProcessing(QData);
