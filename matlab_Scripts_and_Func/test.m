@@ -21,13 +21,13 @@ for pk = 1 : 2
             end
             %fprintf('Testing data: %s\n', gesture{j});
             for k = 1 : number_of_samples
-                tic;
+                %tic;
                 if pk == 1
                     [~, P] = hmmdecode(idx{j, k}', h{i}.A, h{i}.b);
                 else
                     P = h{i}.problem1(idx{j,k});
                 end
-                t = toc;
+                %t = toc;
                 %fprintf('Time to decode :%f\n', t);
                 
                 if t > tmax
@@ -55,7 +55,7 @@ for pk = 1 : 2
     for i = 1 : length(h)
         fprintf('*%10s(%08.2f) NaN(%d/%d)\n', h{i}.name, avg(i,i), sum(isnan(results(:,i,i))), number_of_samples);
         base = avg(i,i);
-        for j = 1 : 7
+        for j = 1 : length(h)
             if avg(i,j) > base
                 fprintf(' %10s(%08.2f) NaN(%d/%d) is more likely\n', gesture{j}, avg(i,j), sum(isnan(results(:,j,i))), number_of_samples);
             end

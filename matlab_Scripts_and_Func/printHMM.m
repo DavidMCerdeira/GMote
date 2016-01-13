@@ -5,6 +5,7 @@ fprintf(fileIDHMMh, '#ifndef _HMM_PARAM_H\n');
 fprintf(fileIDHMMh, '#define _HMM_PARAM_H\n\n');
 
 fprintf(fileIDHMMh, '#include "HMM_param.h"\n');
+fprintf(fileIDHMMh, '#include "codebook_param.h"\n');
 
 fprintf(fileIDHMMh, '#define NR_OF_STATES %d\n', states);
 

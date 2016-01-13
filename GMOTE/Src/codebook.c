@@ -63,10 +63,10 @@ unsigned int* codebook_vecToIdx(float **vec, unsigned int rows, unsigned int col
 	if((vec != NULL) && (codebook != NULL))
 	{
 		/* alloc buffer for results */
-		idx = (unsigned int*)myalloc(sizeof(int)*(rows));
+		idx = (unsigned int*)pvPortMalloc(sizeof(int)*(rows));
 		/* error? */
 		if(idx == NULL){
-			error("Error allocating memory in idx", 3);
+			error("Error allocating memory in idx", 4);
 		}
 		
 		/* go trough all columns and retreive indexes*/

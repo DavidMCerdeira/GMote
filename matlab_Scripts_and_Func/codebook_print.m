@@ -1,7 +1,7 @@
 fileIDCDBKh = fopen('.//GMOTE//Inc//codebook_param.h', 'wt');
 
-fprintf(fileIDHMMh, '#ifndef _CDBK_PARAM_H\n');
-fprintf(fileIDHMMh, '#define _CDBK_PARAM_H\n\n');
+fprintf(fileIDCDBKh, '#ifndef _CDBK_PARAM_H\n');
+fprintf(fileIDCDBKh, '#define _CDBK_PARAM_H\n\n');
 
 fprintf(fileIDCDBKh, '#define CDBK_SIZE %d\n', codebookSize);
 fprintf(fileIDCDBKh, '#define NR_OF_DIM %d\n\n', 6);

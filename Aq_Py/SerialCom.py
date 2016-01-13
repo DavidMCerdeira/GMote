@@ -21,24 +21,24 @@ class Aquisition():
         aqDataChars = self.ser.readline().decode("utf-8").rsplit(" ")
         #aqDataChars = self.testFile.readline().rsplit(" ") # Testando com ficheiros
         #self.ser.close()
-        print(aqDataChars)
-        print(aqDataChars[0])
         dataLen = len(aqDataChars)
-        print(dataLen)
-        rest = (dataLen) % number_of_lines
-        print(rest)
+        rest = (dataLen - 1) % number_of_lines
+        #~3print(rest)
         #if not (rest):
         aqDataInt = [[0 for x in range(int(dataLen/number_of_lines))] for x in range(number_of_lines)]
-        for i in range(0, dataLen):
-            #if aqDataChars[i].isdigit():
-            sample_nr = int(i / number_of_lines)
-            axe = i % number_of_lines
-            aqDataInt[axe][sample_nr] = int(float(aqDataChars[i]))
+        #print(aqDataInt[len(aqDataInt)-1])
+        for i in range(0, dataLen-1):
+            if aqDataChars[i].isdigit():
+                sample_nr = int(i / number_of_lines)
+                axe = i % number_of_lines
+                aqDataInt[axe][sample_nr] = int(aqDataChars[i])
+                if (aqDataInt[axe][sample_nr] > 32):
+                    return None
         self.ser.close()
         return aqDataInt
 
 
 
-a = Aquisition()
-ret = a.make_an_aquisition(6)
-print(ret)
+#a = Aquisition()
+#ret = a.make_an_aquisition(6)
+#print(ret)

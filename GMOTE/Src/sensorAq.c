@@ -1,6 +1,6 @@
 #include "sensorAq.h"
 
-#define TRAIN
+//#define TRAIN
 
 void gPress(void);
 void gEquilib(void);
@@ -124,7 +124,7 @@ void gPress(void)
 				xTaskNotify(accelGestThreadHandle, STOP, eSetBits);
 				xTaskNotify(gyroThreadHandle, STOP, eSetBits);
 				//printf("Accel %d - Gyro %d\n", accelRes, gyroRes);
-				error("Error aquiring: different Lenghts", 3);
+				error("Error aquiring: different Lenghts", 5);
 			}
 			/* we received a frame */
 			else{
@@ -159,7 +159,7 @@ void printFrame(int idx)
 	int i = 0;
 	for(; i < (last + idx); i++)
 	{
-		nrfPrint("%+06.0f %+06.0f %+06.0f %+06.0f %+06.0f %+06.0f ", 
+		nrfPrint("%+06.0f, %+06.0f, %+06.0f, %+06.0f, %+06.0f, %+06.0f\n", 
 					data[i][ACCEL_X], 
 					data[i][ACCEL_Y], 
 					data[i][ACCEL_Z],
@@ -168,7 +168,6 @@ void printFrame(int idx)
 					data[i][GYRO_Z]);
 	}
 	
-			nrfPrint("\n");
 	
 	last += idx;
 }

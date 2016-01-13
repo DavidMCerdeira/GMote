@@ -1,6 +1,7 @@
+tic;
 init
 
-states = 10;
+states = 8;
 
 for j = 1 : number_of_gestures
     
@@ -14,3 +15,4 @@ for j = 1 : number_of_gestures
 end
 
 test
+toc

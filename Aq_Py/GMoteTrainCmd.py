@@ -34,6 +34,7 @@ class GMoteCmd():
         c_SNL = {"name": "Set number_of_lines", "ID":"snl", "Handler":self.SNL_command,"HELP":"snl <flag>" }
         c_TCB = {"name": "Aquiving CodeBook Data", "ID":"tcb", "Handler":self.TCB_command,"HELP":"tcb <int>: flag == 1 THEN colecting data for the Codebook ELSE colecting data for training"}
 
+        self.codebookMax = 32
         self.number_of_lines = 1
         self.CodebookDataDirectory =  ".\\..\\TrainingData\\codebook\\%s\\"
         self.TrainingDataDirectory =  ".\\..\\TrainingData\\idx\\%s\\"
@@ -91,26 +92,31 @@ class GMoteCmd():
         while aqOn:
             aq = sc.Aquisition()
             data = aq.make_an_aquisition(self.number_of_lines)
-            print(data)
-            lines = []
-            for i in range(0, self.number_of_lines):
-                lines.append(gp.line(iData = data[i]))
-            graph = gp.graph(iLines_set = lines)
-            print("\t$ Aquired data: ")
-            print(data)
-            #graph.show()
-            response = " "
-            while response != 'y' and response !='n':
-                response = input("\t$ Do you want to save this sample?(y/n) ")
-            if response == 'y':
-                tempdir = self.saveSamplesDirectory % self.curGest
-                graph.save_graph(tempdir, str(sample_nr))
+            if data is not None:
+                lines = []
+                for i in range(0, self.number_of_lines):
+                    lines.append(gp.line(iData = data[i]))
+                graph = gp.graph(iLines_set = lines)
+                print("\t$ Aquired data: ")
+                print(data)
+                response = " "
+                while response != 'y' and response !='n':
+                    response = input("\t$ Do you want to save this sample(%d)?(y/n) " % sample_nr)
+                if response == 'y':
+                    tempdir = self.saveSamplesDirectory % self.curGest
+                    graph.save_graph(tempdir, str(sample_nr))
+                    saved = True
+                else:
+                    saved = False
+            else:
+                print("###ERROR Sample bigger then codebook limit")
             response = ' '
             while response != 'y' and response != 'n':
                 response = input("\t$ Make another Aquisition?(y/n) ")
+
             if response == 'n':
                 aqOn = False
-            else:
+            elif saved:
                 sample_nr += 1
         print("\t  Aquisition Finished...")
 

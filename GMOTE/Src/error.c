@@ -11,6 +11,8 @@ void error(char* msg, int severity)
 		case 1: goto ERROR1;
 		case 2: goto ERROR2;
 		case 3: goto ERROR3;
+		case 4: goto ERROR4;
+		case 5: goto ERROR5;
 	}
 	
 	ERROR1:
@@ -32,10 +34,27 @@ void error(char* msg, int severity)
 		while(1)
 		{
 			state = !state;
+			GREEN(state);
+			HAL_Delay(500);
+		}
+		
+	ERROR4:
+		while(1)
+		{
+			state = !state;
+			BLUE(state);
+			HAL_Delay(500);
+		}
+		
+		ERROR5:
+				while(1)
+		{
+			state = !state;
+			BLUE(state);
+			GREEN(state);
 			RED(state);
 			ORANGE(state);
-			GREEN(state);
-			BLUE(state);
+
 			HAL_Delay(500);
 		}
 }
