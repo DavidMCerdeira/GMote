@@ -3,14 +3,14 @@
 
 #include "stm32f4xx_hal.h"
 
-//#define NO_LEDS
+#define NO_LEDS
 
 #ifdef NO_LEDS
 
-#define GREEN(s)
-#define ORANGE(s)
-#define RED(s)
-#define BLUE(s)
+#define GREEN(s)  
+#define ORANGE(s) 
+#define RED(s)    
+#define BLUE(s)   
 
 #else
 
