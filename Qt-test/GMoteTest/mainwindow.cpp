@@ -9,13 +9,14 @@ MainWindow::MainWindow(QWidget *parent) :
     image = new QPixmap;
     scene = new QGraphicsScene(this);
 
-    gestList.append(gesture("Pictures",   "0.png", "A"));
-    gestList.append(gesture("Video",      "1.png", "B"));
-    gestList.append(gesture("Music",      "2.png", "C"));
-    gestList.append(gesture("Settings",   "3.png", "D"));
-    gestList.append(gesture("Play/Pause", "4.png", "E"));
-    gestList.append(gesture("Next",       "5.png", "F"));
-    gestList.append(gesture("Previous",   "6.png", "G"));
+    gestList.append(gesture("Pictures",   "0.png", "11"));
+    gestList.append(gesture("Video",      "1.png", "12"));
+    gestList.append(gesture("Music",      "2.png", "13"));
+    gestList.append(gesture("Settings",   "3.png", "14"));
+    gestList.append(gesture("Play/Pause", "4.png", "9"));
+    //gestList.append(gesture("Fullscreen", "5.png", "10"));
+    gestList.append(gesture("Next",       "6.png", "15"));
+    gestList.append(gesture("Previous",   "7.png", "16"));
 
     for(int i = 0; i < gestList.length(); i++)
     {
@@ -24,14 +25,18 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->result->setText("");
 
-    dialog = new Dialog(&serial);
+    serial = new QSerialPort();
+
+    dialog = new Dialog(serial);
     dialog->exec();
 
-    serial.open(QIODevice::ReadWrite);
+    if(serial == NULL)
+        this->close();
 
+    serial->open(QIODevice::ReadWrite);
 
     connect(ui->gestureListWidget, SIGNAL(currentRowChanged(int)), this, SLOT(setImageTraining()));
-    connect(&serial, SIGNAL(readyRead()), this, SLOT(serialReceive()));
+    connect(serial, SIGNAL(readyRead()), this, SLOT(serialReceive()));
     ui->gestureListWidget->setCurrentRow(0);
 }
 
@@ -58,9 +63,9 @@ void MainWindow::setImageTraining()
 
 }
 
-void MainWindow::setImageInteraction(gesture *gesture)
+void MainWindow::setImageInteraction(QString fileName)
 {
-    image->load(gesture->fileName);
+    image->load(fileName);
     scene->clear();
     scene->addPixmap(*image);
     scene->setSceneRect(image->rect());
@@ -71,18 +76,21 @@ void MainWindow::setImageInteraction(gesture *gesture)
 
 void MainWindow::serialReceive()
 {
-    QByteArray received = serial.readAll();
+    QByteArray received = serial->readLine(10);
+    received.remove(received.length()-1, 1);
     QString str(received);
 
-    if(ui->tab->isEnabled()){
+    qDebug() << str;
+
+    if(ui->tabWidget->currentIndex() == 0){
         if(gestList[ui->gestureListWidget->currentRow()].cmd == str){
             ui->result->setText("Correct!");
         }
         else
             ui->result->setText("Incorrect!");
     }
-    else if(ui->tab_2->isEnabled()){
-        QList<gesture>::iterator it;
+    else if(ui->tabWidget->currentIndex() == 1){
+        QList<gesture>::iterator it = gestList.begin();
        while(it != gestList.end() && it->cmd != str){
            it++;
        }
@@ -90,7 +98,7 @@ void MainWindow::serialReceive()
            qDebug() << "No gesture recognized...";
        }
        else if(it->cmd == str){ /* defensive condition */
-           setImageInteraction(&(*it));
+           setImageInteraction("8.png");
        }
     }
 

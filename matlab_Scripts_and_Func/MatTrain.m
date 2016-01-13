@@ -1,7 +1,7 @@
 tic;
 init
 
-states = 8;
+states = 4;
 
 for j = 1 : number_of_gestures
     

@@ -1,4 +1,7 @@
 #include "HMM.h"
+#include "comunication.h"
+
+#define PROB_TRESHOLD (-400)
 
 HMM alphabet_Models[NUM_GEST];
 forward fwData[NUM_GEST];
@@ -115,7 +118,7 @@ void HMM_ControlTsk(void *arg){
 			for(i = 0; i < NUM_GEST; i++)
 			{
 				//printf("Gesture %d with P = %f\n", i, fwData[i].prob);
-				if((fwData[i].prob == fwData[i].prob) && (fwData[i].prob > fwData[most_likely].prob))
+				if((fwData[i].prob == fwData[i].prob) && (fwData[i].prob > fwData[most_likely].prob) )
 				{
 					if(i != most_likely)
 						most_likely = i;
@@ -124,7 +127,7 @@ void HMM_ControlTsk(void *arg){
 				fwData[i].firstTime = 1;
 			}
 			
-			if((fwData[most_likely].prob != fwData[most_likely].prob) || (isinf(fwData[most_likely].prob)))
+			if((fwData[most_likely].prob != fwData[most_likely].prob) || (isinf(fwData[most_likely].prob)) || (fwData[i].prob < PROB_TRESHOLD))
 				most_likely = NOT_RECOGNIZED;
 						
 			xQueueSendToBack(likelyGest, (void*)&most_likely, 10);
@@ -132,7 +135,7 @@ void HMM_ControlTsk(void *arg){
 			/* the system may sleep */
 			ticks2w8 = portMAX_DELAY;
 			
-			//printf("Gesture %d with P = %f\n", most_likely, fwData[most_likely].prob);		
+			//nrfPrint("Gesture %d with P = %f\n", most_likely, fwData[most_likely].prob);		
 			for(i = 0; i < NUM_GEST; i++)
 			{
 				fwData[i].prob = 0;

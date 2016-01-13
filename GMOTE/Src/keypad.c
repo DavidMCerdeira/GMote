@@ -145,13 +145,7 @@ void keypad_actionPressed(int button)
 	int cmd;
 	static int aux_button_1 = 0;
 	
-	if((button == GMOTE_BUTTON_0 ) || (button == GMOTE_BUTTON_8))
-	{
-		xTaskNotify(aqManagerHandle, EqOFF, eSetBits);
-		/* signal aqManager to start aquiring gesture */
-		xTaskNotify(aqManagerHandle, GStart, eSetBits);
-	}
-	else if(button == GMOTE_BUTTON_3)
+	if(button == GMOTE_BUTTON_3)
 	{
 		/* signal aqManager to start equilib mode */
 		
@@ -161,6 +155,13 @@ void keypad_actionPressed(int button)
 		} else {
 			xTaskNotify(aqManagerHandle, EqOFF, eSetBits);
 		}
+	}
+	
+	if((button == GMOTE_BUTTON_0 ) || (button == GMOTE_BUTTON_8))
+	{
+		xTaskNotify(aqManagerHandle, EqOFF, eSetBits);
+		/* signal aqManager to start aquiring gesture */
+		xTaskNotify(aqManagerHandle, GStart, eSetBits);
 	}
 	else{
 		while(QRes == pdFALSE){
@@ -172,6 +173,7 @@ void keypad_actionPressed(int button)
 
 int keypad_getCMD(int button)
 {
+	static int toggle = INFO_EQON;
 	int cmd = 0;
 	
 	if(button == GMOTE_BUTTON_0){
@@ -184,7 +186,14 @@ int keypad_getCMD(int button)
 		cmd = CMD_RW;
 	}
 	else if(button == GMOTE_BUTTON_3){
-		
+		/*equilb toggle*/
+		cmd = toggle;
+		if(toggle == INFO_EQON){
+			toggle = INFO_EQOFF;
+		}
+		else if(toggle == INFO_EQOFF){
+			toggle = INFO_EQON;
+		}
 	}
 	else if(button == GMOTE_BUTTON_4){
 		cmd = NAV_L;
@@ -211,13 +220,13 @@ int keypad_getCMD(int button)
 		cmd = CMD_FF;
 	}
 	else if(button == GMOTE_BUTTON_12){
-		/*equilb toggle*/
+		
 	}
 	else if(button == GMOTE_BUTTON_13){
 		cmd = CMD_VOLp;
 	}
 	else{
-		cmd = -1;
+		cmd = NO_CMD;
 	}
 	
 	return cmd;

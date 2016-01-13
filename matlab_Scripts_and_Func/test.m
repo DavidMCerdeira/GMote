@@ -1,5 +1,4 @@
-%quantos Gestos?
-n_gest = 1;
+
 results = zeros(number_of_samples, number_of_gestures, length(h));
 
 threshold = -400;
@@ -21,13 +20,13 @@ for pk = 1 : 2
             end
             %fprintf('Testing data: %s\n', gesture{j});
             for k = 1 : number_of_samples
-                %tic;
+                tstart = toc;
                 if pk == 1
                     [~, P] = hmmdecode(idx{j, k}', h{i}.A, h{i}.b);
                 else
                     P = h{i}.problem1(idx{j,k});
                 end
-                %t = toc;
+                t = toc - tstart;
                 %fprintf('Time to decode :%f\n', t);
                 
                 if t > tmax
@@ -56,7 +55,7 @@ for pk = 1 : 2
         fprintf('*%10s(%08.2f) NaN(%d/%d)\n', h{i}.name, avg(i,i), sum(isnan(results(:,i,i))), number_of_samples);
         base = avg(i,i);
         for j = 1 : length(h)
-            if avg(i,j) > base
+            if avg(i,j) > base && avg(i,j) > avg(j,j)
                 fprintf(' %10s(%08.2f) NaN(%d/%d) is more likely\n', gesture{j}, avg(i,j), sum(isnan(results(:,j,i))), number_of_samples);
             end
         end

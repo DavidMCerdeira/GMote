@@ -128,8 +128,11 @@ void gestReconResult(void *arg)
 		else if(Gesture == previous){
 			cmd = CMD_PRV;
 		}
+//		else if(Gesture == fullscreen){
+//			cmd = CMD_FLS;
+//		}
 		else{
-			cmd = 0;
+			cmd = NO_CMD;
 		}
 		
 		xQueueSend(communicationMsgQ, &cmd, 10);

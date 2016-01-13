@@ -1,7 +1,7 @@
 cd E:\Universidade\MESTRADO_EEIC\ProjectoI\GMote
 % cd C:\Users\Utilizador\Documents\GitHub\GMote;
  
-gesture = {'pictures'; 'video';  'music'; 'settings'; 'play_pause'; 'fullscreen';'next'; 'previous'
+gesture = {'pictures'; 'video';  'music'; 'settings'; 'play_pause'; 'next'; 'previous'; %'fullscreen'
     };
 number_of_samples = 40;
 number_of_gestures = length(gesture);

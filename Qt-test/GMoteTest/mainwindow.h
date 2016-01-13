@@ -38,14 +38,14 @@ private:
     QPixmap *image;
     QGraphicsScene* scene;
 
-    QSerialPort serial;
+    QSerialPort *serial;
     Dialog *dialog;
 
     QList<gesture> gestList;
 
 public slots:
     void setImageTraining();
-    void setImageInteraction(gesture *gesture);
+    void setImageInteraction(QString filename);
     void serialReceive();
 };
 

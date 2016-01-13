@@ -3,8 +3,8 @@
 
 #include "HMM_param.h"
 #include "codebook_param.h"
-#define NR_OF_STATES 10
-enum gest {pictures = 0, video, music, settings, play_pause, fullscreen, next, previous, NUM_GEST, NOT_RECOGNIZED};
+#define NR_OF_STATES 4
+enum gest {pictures = 0, video, music, settings, play_pause, next, previous, NUM_GEST, NOT_RECOGNIZED};
 typedef enum gest gest;
 
 extern const float AT[NUM_GEST][NR_OF_STATES][NR_OF_STATES];

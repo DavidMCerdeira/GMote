@@ -172,5 +172,22 @@
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>gestureListWidget</sender>
+   <signal>currentItemChanged(QListWidgetItem*,QListWidgetItem*)</signal>
+   <receiver>result</receiver>
+   <slot>clear()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>186</x>
+     <y>229</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>194</x>
+     <y>167</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

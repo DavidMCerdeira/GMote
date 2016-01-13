@@ -16,6 +16,7 @@ Dialog::Dialog(QSerialPort *serial, QWidget *parent) :
      }
 
      connect(this, SIGNAL(accepted()), this, SLOT(serialConnect()));
+     connect(this, SIGNAL(rejected()), this, SLOT(close()));
 }
 
 Dialog::~Dialog()
@@ -27,7 +28,7 @@ void Dialog::serialConnect()
 {
     qDebug() << "Serial Connect " << ui->comboBox->currentText();
     serial->setPortName(ui->comboBox->currentText());
-    serial->setBaudRate(115200);
+    serial->setBaudRate(2000000);
     serial->setDataBits(QSerialPort::Data8);
     serial->setFlowControl(QSerialPort::NoFlowControl);
     serial->setParity(QSerialPort::NoParity);
