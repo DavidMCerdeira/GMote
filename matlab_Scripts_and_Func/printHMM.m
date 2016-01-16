@@ -25,6 +25,7 @@ fprintf(fileIDHMMh, 'typedef enum gest gest;\n\n');
 fprintf(fileIDHMMc, '#include "HMM_param.h"\n');
 
 fprintf(fileIDHMMc, '\n\n');
+
 %{
 fprintf(fileIDHMMh, 'extern const float A[NUM_GEST][NR_OF_STATES][NR_OF_STATES];\n');
 fprintf(fileIDHMMc, 'const float A[NUM_GEST][NR_OF_STATES][NR_OF_STATES]={\n');

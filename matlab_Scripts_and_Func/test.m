@@ -1,67 +1,59 @@
 
+%Matrix holding probability values of each model against all acquired
+%gestures
 results = zeros(number_of_samples, number_of_gestures, length(h));
 
+%Probabilities above this treshold will be considered NaN
 threshold = -400;
 
-%%{
+%Test gestures against Matlab implemention and our implementation
 for pk = 1 : 2
-    tmax = 0;
     if pk == 1
         fprintf('Matlab:\n');
     else
         fprintf('GMote:\n');
     end
     for i = 1 : number_of_gestures
-        %fprintf('HMM: %s\n', h{i}.name);
         for j = 1 : number_of_gestures
-            %fprintf('\t')
-            if j == i
-                %fprintf('*');
-            end
-            %fprintf('Testing data: %s\n', gesture{j});
             for k = 1 : number_of_samples
-                tstart = toc;
-                if pk == 1
+                if pk == 1 %Matlab's implementation
                     [~, P] = hmmdecode(idx{j, k}', h{i}.A, h{i}.b);
-                else
+                else %our implementation
                     P = h{i}.problem1(idx{j,k});
                 end
-                t = toc - tstart;
-                %fprintf('Time to decode :%f\n', t);
                 
-                if t > tmax
-                    tmax = t;
-                end
                 if P < threshold
                     P = NaN;
                 end
                 
+                %save probability of sample i from gesture j measured
+                %against model k
                 results(k, j, i) = P;
             end
         end
     end
-    %}
-    fprintf('Worst time:%f\n', tmax);
-    %fprintf('\n');
     
+    %allocate space to averages
     avg = zeros(length(h), length(h));
     for i = 1 : length(h)
         for j = 1 : length(h)
+            %calculate mean withou including NaN
             avg(i,j) = nanmean(results(:,j,i));
         end
     end
     
+    %for every gesture
     for i = 1 : length(h)
         fprintf('*%10s(%08.2f) NaN(%d/%d)\n', h{i}.name, avg(i,i), sum(isnan(results(:,i,i))), number_of_samples);
-        base = avg(i,i);
+        base = avg(i,i); %average of the model's own gestures
         for j = 1 : length(h)
+            %if gesture j is more likely
             if avg(i,j) > base && avg(i,j) > avg(j,j)
                 fprintf(' %10s(%08.2f) NaN(%d/%d) is more likely\n', gesture{j}, avg(i,j), sum(isnan(results(:,j,i))), number_of_samples);
             end
         end
         fprintf('\n');
     end
-    
 end
 
 fprintf('Done!\n\n');
