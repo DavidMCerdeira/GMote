@@ -106,8 +106,8 @@
 #define configUSE_16_BIT_TICKS                   0
 #define configUSE_MUTEXES                        1
 #define configQUEUE_REGISTRY_SIZE                8
-#define configUSE_RECURSIVE_MUTEXES              1
 #define configUSE_COUNTING_SEMAPHORES            1
+#define configUSE_PORT_OPTIMISED_TASK_SELECTION  1
 
 /* Co-routine definitions. */
 #define configUSE_CO_ROUTINES                    0
@@ -121,7 +121,7 @@ to exclude the API function. */
 #define INCLUDE_vTaskCleanUpResources       0
 #define INCLUDE_vTaskSuspend                1
 #define INCLUDE_vTaskDelayUntil             0
-#define INCLUDE_vTaskDelay                  1
+#define INCLUDE_vTaskDelay                  0
 #define INCLUDE_xTaskGetSchedulerState      1
 
 #define INCLUDE_eTaskGetState               1
@@ -169,6 +169,8 @@ standard names. */
 /* USER CODE BEGIN Defines */   	      
 /* Section where parameter definitions can be added (for instance, to override default ones in FreeRTOS.h) */
 #define configUSE_TICKLESS_IDLE 1
+//extern void preSleep(TickType_t *time);
+#define configPRE_SLEEP_PROCESSING( xModifiableIdleTime ) preSleep(xModifiableIdleTime)
 /* USER CODE END Defines */ 
 
 #endif /* FREERTOS_CONFIG_H */

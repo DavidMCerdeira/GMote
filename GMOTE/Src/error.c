@@ -1,12 +1,12 @@
 #include "error.h"
 
-void error(char* msg, int severity)
+void error(char* msg, int code)
 {
-	int state = 0;
+	/* disable all interrupts to stop the system */
+	portDISABLE_INTERRUPTS();
+	/* turn everything off? */
 	
-	printf("Error(%d): %s\n", severity, msg);
-	
-	switch(severity)
+	switch(code)
 	{
 		case 1: goto ERROR1;
 		case 2: goto ERROR2;
@@ -16,45 +16,24 @@ void error(char* msg, int severity)
 	}
 	
 	ERROR1:
-		while(1)
-		{
-			state = !state;
-			ORANGE(state);
-			HAL_Delay(500);
-		}
+		ORANGE(1);
+		while(1);
+		
 	ERROR2:
-		while(1)
-		{
-			state = !state;
-			RED(state);
-			HAL_Delay(500);
-		}
+		RED(1);		
+		while(1);
 	
 	ERROR3:
-		while(1)
-		{
-			state = !state;
-			GREEN(state);
-			HAL_Delay(500);
-		}
+		GREEN(1);
+		while(1);
 		
 	ERROR4:
-		while(1)
-		{
-			state = !state;
-			BLUE(state);
-			HAL_Delay(500);
-		}
+		BLUE(1);
+		while(1);
 		
-		ERROR5:
-				while(1)
-		{
-			state = !state;
-			BLUE(state);
-			GREEN(state);
-			RED(state);
-			ORANGE(state);
-
-			HAL_Delay(500);
-		}
+	ERROR5:
+		BLUE(1);
+		GREEN(1);
+		RED(1);
+		ORANGE(1);
 }

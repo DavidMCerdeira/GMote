@@ -46,7 +46,6 @@
 "gmote configuration\hmm_param.o"
 "gmote configuration\hmm.o"
 "gmote configuration\kdtree.o"
-"gmote configuration\boias.o"
 "gmote configuration\simpleprocessing.o"
 "gmote configuration\codebook_param.o"
 "gmote configuration\retarget.o"

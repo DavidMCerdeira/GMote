@@ -22,8 +22,12 @@ int fputc(int ch, FILE *f) {
 	if(f == &__stdout)
 			HAL_UART_Transmit(&huart2, (uint8_t*)&ch, 1, 1000);
 	
-	else if(f == &__nrfOut)
+	else 
+	
+	if(f == &__nrfOut)
 		nrf24l01_txSend((char*)&ch, 0);
+		
+		
     return ch;
 }
 

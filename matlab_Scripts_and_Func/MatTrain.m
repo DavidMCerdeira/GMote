@@ -1,5 +1,5 @@
 init
-states = 4;
+states = 2;
 %initate time counter
 tic;
 for j = 1 : number_of_gestures

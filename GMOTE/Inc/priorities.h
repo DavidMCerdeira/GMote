@@ -14,6 +14,4 @@
 
 #define KeypadPriority 8
 
-#define GMotePwrCtrlPriority 0
-
 #endif

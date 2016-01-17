@@ -26,6 +26,7 @@ Dialog::~Dialog()
 
 void Dialog::serialConnect()
 {
+    serial = new QSerialPort();
     qDebug() << "Serial Connect " << ui->comboBox->currentText();
     serial->setPortName(ui->comboBox->currentText());
     serial->setBaudRate(2000000);
@@ -34,6 +35,11 @@ void Dialog::serialConnect()
     serial->setParity(QSerialPort::NoParity);
     serial->setStopBits(QSerialPort::OneStop);
     serial->open(QIODevice::ReadWrite);
+
+    if(!serial->isOpen()){
+        delete serial;
+        serial = NULL;
+    }
 
     qDebug() << ((serial->isOpen()) ? "true" : "false");
 }

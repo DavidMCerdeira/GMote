@@ -39,7 +39,6 @@
 #include "processing.h"
 #include "comunication.h"
 #include "keypad.h"
-#include "boias.h"
 #include "priorities.h"
 /* USER CODE END Includes */
 
@@ -54,6 +53,7 @@ TIM_HandleTypeDef htim7;
 
 UART_HandleTypeDef huart2;
 
+osThreadId defaultTaskHandle;
 
 /* USER CODE BEGIN PV */
 /* Private variables ---------------------------------------------------------*/
@@ -73,6 +73,7 @@ static void MX_SPI3_Init(void);
 static void MX_TIM6_Init(void);
 static void MX_TIM7_Init(void);
 static void MX_USART2_UART_Init(void);
+void StartDefaultTask(void const * argument);
 
 /* USER CODE BEGIN PFP */
 /* Private function prototypes -----------------------------------------------*/
@@ -81,6 +82,12 @@ static void MX_USART2_UART_Init(void);
 
 /* USER CODE BEGIN 0 */
 
+
+void preSleep(TickType_t *xModifiableIdleTime)
+{
+    *xModifiableIdleTime = 0;
+		HAL_PWR_EnterSTOPMode(PWR_LOWPOWERREGULATOR_ON, PWR_STOPENTRY_WFI);	
+}
 /* USER CODE END 0 */
 
 int main(void)
@@ -105,7 +112,7 @@ int main(void)
   MX_SPI3_Init();
   MX_TIM6_Init();
   MX_TIM7_Init();
-  MX_USART2_UART_Init();
+  //MX_USART2_UART_Init();
 
   /* USER CODE BEGIN 2 */
 	ORANGE(1);
@@ -125,7 +132,7 @@ int main(void)
 
   /* Create the thread(s) */
   /* definition and creation of defaultTask */
- 
+
   /* USER CODE BEGIN RTOS_THREADS */
 	/* initiate aquisition manager */
 	xTaskCreate(aqManager, "AqManager", 1024, NULL, AqManagerPriority, &aqManagerHandle);		
@@ -149,7 +156,6 @@ int main(void)
  
 
   /* Start scheduler */
-
   
   /* We should never get here as control is now taken by the scheduler */
 
@@ -280,9 +286,9 @@ void MX_TIM7_Init(void)
   TIM_MasterConfigTypeDef sMasterConfig;
 
   htim7.Instance = TIM7;
-  htim7.Init.Prescaler = 8000;
+  htim7.Init.Prescaler = 8;
   htim7.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim7.Init.Period = 5000;
+  htim7.Init.Period = 0;
   HAL_TIM_Base_Init(&htim7);
 
   sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;

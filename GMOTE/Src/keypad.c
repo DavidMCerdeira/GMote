@@ -60,31 +60,38 @@ void keypad_run(void *arg)
 		}
 		QRes = pdFALSE;
 		
+		/* which pin is associated to button */
 		button = keypad_getButtonFromPin(pin);
 		
+		/*previous state*/
 		before = buttons[button];
+		/*disable button interrupt*/
 		setInterruptState(button, 0);
+		/*perform debounce*/
 		after = buttons[button] = keypad_debounceButton(button);
+		/*re-enable button interrupt*/
 		setInterruptState(button, 1);
 		
+		/*id state as changed*/
 		if(after != before){
+			/*if button was pressd*/
 			if(!after){				
 				keypad_actionPressed(button);
 			}
+			/*if button was released*/
 			else{
 				keypad_actionReleased(button);
 			}
-			//printf("Button %d->%d\n", button, after);
 		}
 	}
 }
 
 void keypad_init(void)
 {
-	/* init Q */ 
+	/* init msgQ */ 
 	keypadMsgQ = xQueueCreate(5, sizeof(int));
 	
-	/* init gpio */	
+	/* init EXTI */	
 	HAL_NVIC_SetPriority(GMOTE_BUTTON_0_EXTI, GMOTE_BUTTONS_IT_PRIORITY, 0);
 	HAL_NVIC_EnableIRQ(GMOTE_BUTTON_0_EXTI);
 
@@ -120,10 +127,6 @@ void keypad_init(void)
 
 	HAL_NVIC_SetPriority(GMOTE_BUTTON_11_EXTI, GMOTE_BUTTONS_IT_PRIORITY, 0);
 	HAL_NVIC_EnableIRQ(GMOTE_BUTTON_11_EXTI);
-
-//	HAL_NVIC_SetPriority(GMOTE_BUTTON_12_EXTI, GMOTE_BUTTONS_IT_PRIORITY, 0);
-//	HAL_NVIC_EnableIRQ(GMOTE_BUTTON_12_EXTI);
-
 }
 
 void keypad_actionReleased(int button)
@@ -132,10 +135,6 @@ void keypad_actionReleased(int button)
 	{
 		/* signal aqManager to stop aquiring gesture */
 		xTaskNotify(aqManagerHandle, GStop, eSetBits);
-	}
-	else if(button == GMOTE_BUTTON_3)
-	{
-		
 	}
 }
 
@@ -147,24 +146,27 @@ void keypad_actionPressed(int button)
 	
 	if(button == GMOTE_BUTTON_3)
 	{
-		/* signal aqManager to start equilib mode */
 		
 		if((aux_button_1 = !aux_button_1)){
+			/* signal aqManager to start equilib mode and stop gesture */
 			xTaskNotify(aqManagerHandle, GStop, eSetBits);
 			xTaskNotify(aqManagerHandle, EqON, eSetBits);
 		} else {
+			/* signal aqManager to stop equilib mode */
 			xTaskNotify(aqManagerHandle, EqOFF, eSetBits);
 		}
 	}
 	
 	if((button == GMOTE_BUTTON_0 ) || (button == GMOTE_BUTTON_8))
 	{
+		/* signal aqManager to stop equilib mode */
 		xTaskNotify(aqManagerHandle, EqOFF, eSetBits);
 		/* signal aqManager to start aquiring gesture */
 		xTaskNotify(aqManagerHandle, GStart, eSetBits);
 	}
 	else{
 		while(QRes == pdFALSE){
+			/* get corresponding command */
 			cmd = keypad_getCMD(button);
 			QRes = xQueueSend(communicationMsgQ, &cmd, 10);
 		}
@@ -220,7 +222,7 @@ int keypad_getCMD(int button)
 		cmd = CMD_FF;
 	}
 	else if(button == GMOTE_BUTTON_12){
-		
+		   /*not used*/
 	}
 	else if(button == GMOTE_BUTTON_13){
 		cmd = CMD_VOLp;

@@ -25,18 +25,17 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->result->setText("");
 
-    serial = new QSerialPort();
-
     dialog = new Dialog(serial);
     dialog->exec();
 
-    if(serial == NULL)
-        this->close();
-
-    serial->open(QIODevice::ReadWrite);
+    if(serial == NULL){
+        exit(1);
+        return;
+    }
 
     connect(ui->gestureListWidget, SIGNAL(currentRowChanged(int)), this, SLOT(setImageTraining()));
     connect(serial, SIGNAL(readyRead()), this, SLOT(serialReceive()));
+
     ui->gestureListWidget->setCurrentRow(0);
 }
 
@@ -45,6 +44,8 @@ MainWindow::~MainWindow()
     delete image;
     delete scene;
     delete ui;
+    if(serial != NULL)
+            delete serial;
 }
 
 void MainWindow::setImageTraining()
@@ -95,10 +96,10 @@ void MainWindow::serialReceive()
            it++;
        }
        if(it == gestList.end()){
-           qDebug() << "No gesture recognized...";
-       }
-       else if(it->cmd == str){ /* defensive condition */
            setImageInteraction("8.png");
+       }
+       else if(it->cmd == str){
+           setImageInteraction((*it).fileName);
        }
     }
 

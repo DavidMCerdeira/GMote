@@ -4,7 +4,7 @@ fprintf(fileIDCDBKh, '#ifndef _CDBK_PARAM_H\n');
 fprintf(fileIDCDBKh, '#define _CDBK_PARAM_H\n\n');
 
 fprintf(fileIDCDBKh, '#define CDBK_SIZE %d\n', codebookSize);
-fprintf(fileIDCDBKh, '#define NR_OF_DIM %d\n\n', 6);
+fprintf(fileIDCDBKh, '#define NR_OF_DIM %d\n\n', size(codebookData, 2));
 fprintf(fileIDCDBKh, 'extern const float codeBookData[CDBK_SIZE][NR_OF_DIM];\n');
 
 fprintf(fileIDCDBKh, '\n#endif\n');

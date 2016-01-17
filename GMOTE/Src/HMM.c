@@ -142,8 +142,8 @@ void HMM_ControlTsk(void *arg){
 			}
 		}
 		
-		/* once every forward of every model has performed,
-		* the resource is consumed */
+		/* once the forward variable of every model was checked,
+		 the resource is consumed */
 		while(QMsgW8 == pdFALSE){
 			QMsgW8 = xQueueReceive(framesRdy, (void*)&buff, 100);
 		}
@@ -200,13 +200,9 @@ void HMM_ForwardTsk(void* rModel){
 			arm_fill_f32(0, temp2, ownModel->N);		// preparing temp2 var for calculations
 			O = (*frame)[t]; 												// sets current observation
 			
-			/* resets the fw[t] vector */
-			//arm_fill_f32(0, fwData[fwIndex].fw[t], FRAME_SIZE);
-			
 			/* being the first time, it requires a diferent calculation */
 			if(fwData[fwIndex].firstTime)
 			{
-				test_DSP_mult((*(ownModel->Bt))[O], *(ownModel->pi), fwData[fwIndex].N);  													//DEBUG
 				arm_mult_f32(*(ownModel->pi), (*(ownModel->Bt))[O], (float32_t*)(fwData[fwIndex].fw[t]), fwData[fwIndex].N);
 				fwData[fwIndex].firstTime = 0;
 			}
@@ -220,17 +216,14 @@ void HMM_ForwardTsk(void* rModel){
 				
 				for(j = 0; j < ownModel->N; j++)
 				{
-					//test_DSP_mult((*(ownModel->At))[j], (float32_t*)(*curLastFw), fwData[fwIndex].N);										//DEBUG
 					arm_mult_f32((*(ownModel->At))[j], (float32_t*)(*curLastFw), temp1, ownModel->N);
 					/* stores the sum of each line of temp1 */
 					temp2[j] = vec_content_sum(temp1, ownModel->N);
 				}
-				//test_DSP_mult(temp2, (*(ownModel->Bt))[O],fwData[fwIndex].N);																					//DEBUG
 				arm_mult_f32(temp2, (*(ownModel->Bt))[O], (fwData[fwIndex].fw[t]), fwData[fwIndex].N);
 			}
 			fwData[fwIndex].C[t] = ((float)1.0/vec_content_sum(fwData[fwIndex].fw[t], fwData[fwIndex].N));
 			
-			//test_DSP_scale((float32_t*)fwData[fwIndex].fw[t],fwData[fwIndex].C[t], fwData[fwIndex].N);							//DEBUG
 			arm_scale_f32((float32_t*)fwData[fwIndex].fw[t], fwData[fwIndex].C[t], temp2, fwData[fwIndex].N);
 			arm_copy_f32(temp2, (float32_t*)fwData[fwIndex].fw[t], fwData[fwIndex].N);
 			

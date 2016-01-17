@@ -24,7 +24,6 @@ void  runGyroGest(void * argument){
 	
 	while(1){
 		/* start aquisition */
-		//RED(1);
 		MPU_WAKEUP();
 		
 		while(sampleCount < AQ_SIZE){			
@@ -60,14 +59,13 @@ void  runGyroGest(void * argument){
 		}
 		i = 0;
 		
-		/* send NULL pointer indicating end of aquisition */
+		/* send 0 indicating end of aquisition */
 		xQueueSend(gyroFrameReadyMsgQ, &i, 10);
 		EXIT:		
 		MPU_SLEEP();
 		sampleCount = 0;
 		frameCount = 0;		
 		initBuffer(&gyroAq);
-		//RED(0);
 		vTaskSuspend(NULL);
 	}
 }

@@ -365,7 +365,7 @@
               <MiscControls>--C99</MiscControls>
               <Define>USE_HAL_DRIVER,STM32F407xx</Define>
               <Undefine></Undefine>
-              <IncludePath>..\Inc;                 ..\Drivers\STM32F4xx_HAL_Driver\Inc;                 ..\Drivers\STM32F4xx_HAL_Driver\Inc\Legacy;                 ..\Middlewares\Third_Party\FreeRTOS\Source\portable\RVDS\ARM_CM4F;                 ..\Middlewares\Third_Party\FreeRTOS\Source\include;                 ..\Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS;                 ..\Drivers\CMSIS\Include;                 ..\Drivers\CMSIS\Device\ST\STM32F4xx\Include</IncludePath>
+              <IncludePath>..\Inc;                   ..\Drivers\STM32F4xx_HAL_Driver\Inc;                   ..\Drivers\STM32F4xx_HAL_Driver\Inc\Legacy;                   ..\Middlewares\Third_Party\FreeRTOS\Source\portable\RVDS\ARM_CM4F;                   ..\Middlewares\Third_Party\FreeRTOS\Source\include;                   ..\Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS;                   ..\Drivers\CMSIS\Include;                   ..\Drivers\CMSIS\Device\ST\STM32F4xx\Include</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -677,11 +677,6 @@
               <FileName>kdtree.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\kdtree.c</FilePath>
-            </File>
-            <File>
-              <FileName>boias.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Src\boias.c</FilePath>
             </File>
             <File>
               <FileName>simpleProcessing.c</FileName>

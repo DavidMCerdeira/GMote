@@ -36,6 +36,7 @@ void runAccelGest(void* argument)
 		
 		/* continue sampling until condition */
 		while((sampleCount < AQ_SIZE)){
+		
 			/* stop listening? */
 			notifRcvd = xTaskNotifyWait(0, STOP, &notification, 0);
 			/* stop aquiring? */
@@ -44,7 +45,7 @@ void runAccelGest(void* argument)
 			}
 			
 			/* wait for accelerometer data */
-			received = xSemaphoreTake(accelDrdySemaph, portMAX_DELAY);
+			received = xSemaphoreTake(accelDrdySemaph, 1000);
 			/* received data? */
 			if(received == pdTRUE){
 				received = pdFALSE;
@@ -88,7 +89,6 @@ void runAccelGest(void* argument)
 		sampleCount = 0;
 		frameCount = 0;		
 		initBuffer(&accelAq);
-		//BLUE(0);
 		/* go to sleep after hard work */
 		vTaskSuspend(NULL);
 	}
@@ -96,7 +96,6 @@ void runAccelGest(void* argument)
 
 void runAccelSimple(void* argument)
 {
-	int leave = 0;
 	BaseType_t receivedSem = pdFALSE;
 	BaseType_t receivedNotify = pdFALSE;
 	uint32_t notification;
@@ -104,7 +103,6 @@ void runAccelSimple(void* argument)
 	BaseType_t mutextHold = pdFALSE;
 	
 	while(1){
-		
 		/*take hold of mutex*/
 		mutextHold = pdFALSE;
 		while(mutextHold == pdFALSE){
@@ -114,11 +112,11 @@ void runAccelSimple(void* argument)
 		accel_byteByByte();
 		start_accel(LOW_SPEED);
 		
-		while(!leave){
+		while(1){
 			/* wait for data or notfication*/
 			receivedSem = receivedNotify = pdFALSE;
 			while((receivedSem == pdFALSE) && (receivedNotify == pdFALSE)){
-				receivedSem = xSemaphoreTake(accelDrdySemaph, portMAX_DELAY);
+				receivedSem = xSemaphoreTake(accelDrdySemaph, 1000);
 				/* stop listening? */
 				receivedNotify = xTaskNotifyWait(STOP, 0, &notification, 0);
 			}
@@ -142,7 +140,7 @@ void runAccelSimple(void* argument)
 			else if(receivedNotify == pdTRUE)
 			{
 				/*read contents then leave*/
-				leave = 1;
+				break;
 			}			
 		}
 		
@@ -153,8 +151,6 @@ void runAccelSimple(void* argument)
 		while(mutextHold == pdFALSE){
 			mutextHold = xSemaphoreGive(accelMutex);
 		}
-		/* reset flag */
-		leave = 0;
 		/* go to sleep, sweet dreams */
 		vTaskSuspend(NULL);
 	}

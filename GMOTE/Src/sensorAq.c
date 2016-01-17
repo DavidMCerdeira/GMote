@@ -49,7 +49,7 @@ void aqManager(void* argument)
 	vTaskPrioritySet(gyroThreadHandle, AqSensorPriority);
 	vTaskPrioritySet(accelSimpleThreadHandle, AqSensorPriority);
 	
-	//gPress();
+
 	/* infinite cycle */
 	while(1)
 	{
@@ -133,7 +133,6 @@ void gPress(void)
 				#ifndef TRAIN
 				xQueueSend(preProcFramReadyMsgQ, &accelRes, 10);
 				#endif
-				//printf("Frame Received!\n");
 			}
 		}
 		else{

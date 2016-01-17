@@ -8,7 +8,7 @@ gesture = {'pictures'; 'video';  'music'; 'settings'; 'play_pause'; 'next'; 'pre
 %How many getures
 number_of_gestures = length(gesture);
 
-%%{
+%{
 %number of HMM training samples per gesture
 number_of_samples = 40;
 
@@ -27,7 +27,7 @@ for k = 1 : number_of_gestures
 end
 %}
 
-%{
+% %{
 %number of HMM training samples per gesture
 number_of_cdbk_samples = 10;
 
@@ -38,7 +38,7 @@ sample = cell(number_of_gestures, number_of_samples);
 codebookData = [];
 
 %for every gesture and for every sample put data into the data vector
-for k = 1 : number_of_cdbk_samples
+for k = 1 : number_of_gestures
     for i = 1 : number_of_cdbk_samples
         sample{k, i} = getDataFromFile(gesture{k}, i, 'codebook');
         codebookData = [codebookData; sample{k, i}];
@@ -51,4 +51,5 @@ end
 
 %create Kd-tree with the points obtained previously
 codebook = KDTreeSearcher(m');
+
 %}

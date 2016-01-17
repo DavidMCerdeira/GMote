@@ -14,13 +14,6 @@ classdef HMM < handle
         b     = []; % NxM mean vector (D = number of features)
         pi    = []; % Nx1 initial state distribution vector
         
-        %aproximate
-        Anum     = [];
-        Aden     = [];
-        bnum     = [];
-        bden     = [];
-        P        = [];
-        
         %functionality
         scaling = 1;
     end
@@ -91,17 +84,7 @@ classdef HMM < handle
             end
             
             %generate the initial state probabillity matrix as suggest by Stamp
-            self.pi = ones(self.N,1)/self.N;
-            
-            %allocate variables in that would be used to solve problem 3 to
-            %multiple observation sequences
-            self.Anum = zeros(self.N, self.N);
-            self.Aden = zeros(self.N, 1);
-            self.bnum = zeros(self.N, self.M);
-            self.bden = zeros(self.N, 1);
-            
-            %initiate probability as multiplication's neutral element
-            self.P = 1;
+            self.pi = ones(self.N,1)/self.N;           
         end
         
         %compute forward variable
@@ -334,96 +317,6 @@ classdef HMM < handle
             fprintf(' : %f\n', logProb);
             %number of iterations
             fprintf('Iterated %d times\n\n', iters);
-        end
-        
-        %Train a model with multiple observation sequences
-        %the user sould call this function for each sequnce and then call
-        %commit_multiple the perform the aproximation.
-        %!Unfortunatly this function does not work as expected
-        %input: single observation sequence
-        %output: none
-        function train_multiple(self, O)
-            T = length(O);
-            
-            %forward variable and scaling factors
-            [fw, c] = self.forward(O);
-            %backward variable
-            bw = self.backward(O, c);
-            
-            %pi is 1 for the first state 0 for the rest
-            self.pi = zeros(self.N, 1);
-            self.pi(1) = 1;
-            
-            %102 on Rabiner HMM paper
-            Pk = 1;
-            for t = 1 : T - 1
-                Pk = Pk * 1/c(t);
-            end
-            
-            %109 on Rabiner HMM paper
-            for i = 1 : self.N
-                den = 0;
-                for j = 1 : self.N
-                    num = 0;
-                    for t = 1 : T - 1
-                        num = num + fw(t,i) * self.A(i,j) * self.B(j, O(t+1)) * bw(t+1, j);
-                        if j == 1
-                            den = den + fw(t,i) * bw(t,i);
-                        end
-                    end
-                    self.Anum(i,j) = self.Anum(i,j) + num / Pk;
-                end
-                self.Aden(i) = self.Aden(i) + den / Pk;
-            end
-            
-            %110 on Rabiner HMM paper
-            for i = 1 : self.N
-                den = 0;
-                for l = 1 : self.M
-                    num = 0;
-                    for t = 1 : T
-                        if O(t) == l
-                            num = num + fw(t, i) * bw(t, i);
-                        end
-                        if l == 1
-                            den = den + fw(t, i) * bw(t, i);
-                        end
-                    end
-                    self.bnum(i,l) = self.bnum(i,l) + num/Pk;
-                end
-                self.bden(i) = self.bden(i) + den/Pk;
-            end
-        end
-        
-        %Perform the aproximation after calling train_multiple() on
-        %multiple Obsevation sequences
-        function commit_multiple(self)
-            for i = 1 : self.N
-                sum = 0;
-                for j = 1 : self.N
-                    %109 on Rabiner HMM paper
-                    self.A(i,j) = self.Anum(i,j)/self.Aden(i);
-                    sum = sum + self.A(i,j);
-                end
-                fprintf('Sum of A(%d,:) = %f\n', i, sum);
-            end
-            
-            
-            for i = 1 : self.N
-                sum = 0;
-                for l = 1 : self.M
-                    %110 on Rabiner HMM paper
-                    self.b(i,l) = self.bnum(i,l)/self.bden(i);
-                    sum = sum + self.b(i,l);
-                end
-                fprintf('Sum of b(%d,:) = %f\n', i, sum);
-            end
-            
-            %reset aghorithm variables
-            self.Anum = zeros(self.N, self.N);
-            self.Aden = zeros(self.N, 1);
-            self.bnum = zeros(self.N, self.M);
-            self.bden = zeros(self.N, 1);
         end
         
         %Solves Rabiner's problem 1: How likely it is that the observation

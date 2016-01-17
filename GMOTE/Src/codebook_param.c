@@ -1,4 +1,4 @@
-#include "HMM_param.h"
+#include "codebook_param.h"
 
 
 const float codeBookData[CDBK_SIZE][NR_OF_DIM]={

@@ -2655,17 +2655,13 @@ void vTaskMissedYield( void )
  * void prvIdleTask( void *pvParameters );
  *
  */
-	
-#include "DiscoLeds.h"
 static portTASK_FUNCTION( prvIdleTask, pvParameters )
 {
-	
 	/* Stop warnings. */
 	( void ) pvParameters;
 
 	for( ;; )
 	{
-
 		/* See if any tasks have been deleted. */
 		prvCheckTasksWaitingTermination();
 
@@ -2720,8 +2716,7 @@ static portTASK_FUNCTION( prvIdleTask, pvParameters )
 		configUSE_TICKLESS_IDLE to be set to a value other than 1. */
 		#if ( configUSE_TICKLESS_IDLE != 0 )
 		{
-			BLUE(1);	
-			TickType_t xExpectedIdleTime;
+		TickType_t xExpectedIdleTime;
 
 			/* It is not desirable to suspend then resume the scheduler on
 			each iteration of the idle task.  Therefore, a preliminary
@@ -2757,12 +2752,9 @@ static portTASK_FUNCTION( prvIdleTask, pvParameters )
 			{
 				mtCOVERAGE_TEST_MARKER();
 			}
-			
 		}
 		#endif /* configUSE_TICKLESS_IDLE */
-		
 	}
-
 }
 /*-----------------------------------------------------------*/
 

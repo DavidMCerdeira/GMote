@@ -199,7 +199,7 @@ static void prvTaskExitError( void );
  * 24 bit resolution of the SysTick timer.
  */
 #if configUSE_TICKLESS_IDLE == 1
-	static uint32_t xMaximumPossibleSuppressedTicks = 16777216;
+	static uint32_t xMaximumPossibleSuppressedTicks = 0;
 #endif /* configUSE_TICKLESS_IDLE */
 
 /*

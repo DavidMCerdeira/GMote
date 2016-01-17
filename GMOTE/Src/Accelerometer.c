@@ -22,7 +22,7 @@ void accel_write(uint8_t addr, uint8_t wat);
 
 /*Fifo mode*/
 	#define REG3_CONFIG_FIFO      0x68  				 // Interrupt active high, interrupt pulsed, Enable IT	
-	#define REG5_CONFIG_FIFO 		  0xC0  				 // Anti aliasing filter bandwidth 50Hz, +/-2G, self-test, 4-wire interface
+	#define REG5_CONFIG_FIFO 		  0xC0  				 // Anti aliasing filter bandwidth 50Hz, +/-2G, 4-wire interface
 	#define REG6_CONFIG_FIFO      0x54				 	 // fifo enabled, ADD_INC, watermark interrupt
 	#define FIFO_CTRL_CONFIG_FIFO (0x40 | 0x18)  // FIFO stream mode, watermark on 24th sample
 
@@ -40,7 +40,7 @@ inline void accel_fifoEnable(void)
 	accel_write(ACCEL_CTRL_REG5, REG5_CONFIG_FIFO);					
 	accel_write(ACCEL_CTRL_REG6, REG6_CONFIG_FIFO);				 
 	accel_write(ACCEL_CTRL_REG3, REG3_CONFIG_FIFO);   
-	accel_write(ACCEL_FIFO_CTRL, 0x18); 				// watermark 24th sample, bypass mode to reset FIFO	
+	accel_write(ACCEL_FIFO_CTRL, 0x0); 					 //bypass mode to reset FIFO	
 	accel_write(ACCEL_FIFO_CTRL, FIFO_CTRL_CONFIG_FIFO);
 	
 	ret = accel_read(ACCEL_CTRL_REG5);
@@ -122,7 +122,7 @@ inline void start_accel(int speed)
 
 inline void pause_accel(void)
 {
-	/* no sampling */
+	/* sleep tight */
 	accel_write(ACCEL_CTRL_REG4, HZ_0);
 }
 
@@ -135,12 +135,12 @@ void accelInit(void)
 	accel_write(ACCEL_CTRL_REG6, 0x80);		// reboot
 	
 	addr = ACCEL_CTRL_REG6;
-	while(c & 0x80) {
-		HAL_SPI_TransmitReceive(&hspi1, &addr, &c, 1, 10);
-	}
+//	while(c & 0x80) {
+//		HAL_SPI_TransmitReceive(&hspi1, &addr, &c, 1, 10);
+//	}
 	
-//	/* give time to reboot */
-//	HAL_Delay(10);
+	/* give time to reboot */
+	HAL_Delay(10);
 	
 	accel_fifoEnable();
 	
@@ -195,6 +195,7 @@ void accel_write(uint8_t addr, uint8_t wat)
 	CS_HIGH();
 	
 	return;
+	
 ERROR:
 	error("Accel comunication failure: writing", 2);
 }
