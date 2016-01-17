@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addon id="script.gmote" name="GMote" version="1.0.0" provider-name="AlvesCerdeiraSw">
+    <requires>
+		<import addon="xbmc.python" version="2.14.0"/>
+	</requires>
+	<extension point="xbmc.service" library="addon.py" start="startup" />
+	<extension point="xbmc.addon.metadata">
+		<platform>all</platform>
+		<summary lang="en">Gesture remote controller</summary>
+		<description lang="en">You can use this remote in order to control Kodi's Interface</description>
+		<license>GNU General Public License, v2</license>
+		<language>Body Language</language>
+		<forum></forum>
+		<source></source>
+		<email></email>
+	</extension>
+</addon>

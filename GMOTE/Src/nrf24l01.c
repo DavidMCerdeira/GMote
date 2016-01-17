@@ -17,7 +17,6 @@ unsigned char SPI_Send(unsigned char dat);
 
 int nrf24l01_txSend(char* str, char pipe){
 	uint8_t writeret;
-		
 	//write buffer
 	writeret = nrf24l01_write((uint8_t*)str);
 

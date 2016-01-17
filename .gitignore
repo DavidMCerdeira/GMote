@@ -5,6 +5,9 @@
 *.htm
 *.dep
 *~
+*.mat
+*.lnp
+
 GMOTE/MDK-ARM/
 !*.uvprojx
 !*.uvoptx
