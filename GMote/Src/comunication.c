@@ -8,7 +8,7 @@ int communication_validate(int8_t byte);
 
 void communication_init(void)
 {
-	/* init comunicationQ`*/
+	/* init comunicationQ*/
 	communicationMsgQ  = xQueueCreate(30, sizeof(int8_t));
 	/*init comunication hardware*/
 	comunication_hw_init();
@@ -37,6 +37,5 @@ void communication_run(void *arg)
 
 int communication_validate(int8_t byte)
 {
-	
 	return 1;
 }
